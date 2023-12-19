@@ -44,27 +44,22 @@ struct ContentView: View {
     }
 
     private func mainContentView(geometry: GeometryProxy) -> some View {
-        ZStack {
-            LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
-                .edgesIgnoringSafeArea(.all)
-
+        ScrollView {
             VStack {
-                MovieListView()
+                // Placeholder image directly under the navigation title
+                Image(systemName: "photo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: geometry.size.width * 0.5, height: geometry.size.width * 0.5)
+                    .padding(.top, geometry.size.height * 0.2)
+                    .padding(.bottom, geometry.size.height * 0.05) // Adjust this value as needed
 
-                Spacer(minLength: 20)
-
-                // ZStack to overlay the image and My Logs section
-                ZStack(alignment: .center) {
-                    MyLogsView()
-                        .padding(.top, geometry.size.height * 0.2) // Increase this value to move My Logs section lower
-
-                    ImagePlaceholderView(geometry: geometry)
-                        .offset(y: -geometry.size.height * 0.05) // Adjust this value as needed
-                }
-                
-                Spacer()
+                // 'My Logs' section
+                MyLogsView()
             }
+            .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
         }
+        .edgesIgnoringSafeArea(.all)
     }
 
 
