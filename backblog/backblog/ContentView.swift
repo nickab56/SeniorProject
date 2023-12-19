@@ -6,6 +6,7 @@ struct ContentView: View {
     
     init() {
         configureNavigationBar()
+        configureTabBar()
     }
 
     var body: some View {
@@ -59,6 +60,7 @@ struct ContentView: View {
             }
             .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
         }
+        .background(Color(hex: "#212222"))
         .edgesIgnoringSafeArea(.all)
     }
 
@@ -72,6 +74,20 @@ struct ContentView: View {
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
+    
+    private func configureTabBar() {
+            let appearance = UITabBarAppearance()
+            appearance.configureWithOpaqueBackground()
+
+            // Set the tab bar's background to a grayish-black color
+            appearance.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0)
+
+            // Apply the appearance to the tab bar
+            UITabBar.appearance().standardAppearance = appearance
+            if #available(iOS 15.0, *) {
+                UITabBar.appearance().scrollEdgeAppearance = appearance
+            }
+        }
 }
 
 struct ImagePlaceholderView: View {
