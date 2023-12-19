@@ -1,86 +1,98 @@
-//
-//  ContentView.swift
-//  backblog
-//
-//  Created by Nick Abegg on 12/18/23.
-//
-
 import SwiftUI
 import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    
+    init() {
+            // Customizing navigation bar title color for large display mode
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = UIColor.clear  // If you want to have a specific background color for the navigation bar, set it here
+            appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
 
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-        animation: .default)
-    private var items: FetchedResults<Item>
-
+            // Apply the appearance to all navigation bar instances
+            UINavigationBar.appearance().standardAppearance = appearance
+            UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        }
+    
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
-                    }
+        TabView {
+            NavigationView {
+                ZStack {
+                    LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                        .edgesIgnoringSafeArea(.all)
+
+                    MovieListView()
                 }
-                .onDelete(perform: deleteItems)
+                .navigationTitle("What's Next?")
+                .navigationBarTitleDisplayMode(.large)
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
+            .tabItem {
+                Image(systemName: "house.fill")
+                Text("Home")
             }
-            Text("Select an item")
+            
+            NavigationView {
+                ZStack {
+                    LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                        .edgesIgnoringSafeArea(.all)
+
+                    Text("Search View")
+                }
+                .navigationTitle("Search")
+            }
+            .tabItem {
+                Image(systemName: "magnifyingglass")
+                Text("Search")
+            }
+            
+            NavigationView {
+                ZStack {
+                    LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                        .edgesIgnoringSafeArea(.all)
+
+                    Text("Social View")
+                }
+                .navigationTitle("Social")
+            }
+            .tabItem {
+                Image(systemName: "person.2.fill")
+                Text("Social")
+            }
         }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
+        .accentColor(.white)
+        .onAppear {
+            UITabBar.appearance().barTintColor = .white
         }
     }
 }
 
-private let itemFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .medium
-    return formatter
-}()
+struct MovieListView: View {
+    var body: some View {
+        Text("Movies List")
+    }
+}
 
-#Preview {
-    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    }
+}
+
+// Extension to allow hex color initialization
+extension Color {
+    init(hex: String) {
+        let scanner = Scanner(string: hex)
+        _ = scanner.scanString("#")
+
+        var rgbValue: UInt64 = 0
+        scanner.scanHexInt64(&rgbValue)
+
+        let r = Double((rgbValue & 0xff0000) >> 16) / 255.0
+        let g = Double((rgbValue & 0x00ff00) >> 8) / 255.0
+        let b = Double(rgbValue & 0x0000ff) / 255.0
+
+        self.init(red: r, green: g, blue: b)
+    }
 }
