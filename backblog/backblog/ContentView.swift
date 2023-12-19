@@ -5,66 +5,89 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
     init() {
-            // Customizing navigation bar title color for large display mode
-            let appearance = UINavigationBarAppearance()
-            appearance.configureWithOpaqueBackground()
-            appearance.backgroundColor = UIColor.clear  // If you want to have a specific background color for the navigation bar, set it here
-            appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        configureNavigationBar()
+    }
 
-            // Apply the appearance to all navigation bar instances
-            UINavigationBar.appearance().standardAppearance = appearance
-            UINavigationBar.appearance().scrollEdgeAppearance = appearance
-        }
-    
     var body: some View {
-        TabView {
-            NavigationView {
-                ZStack {
-                    LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
-                        .edgesIgnoringSafeArea(.all)
-
-                    MovieListView()
+        GeometryReader { geometry in
+            TabView {
+                NavigationView {
+                    mainContentView(geometry: geometry)
+                    .navigationTitle("What's Next?")
+                    .navigationBarTitleDisplayMode(.large)
                 }
-                .navigationTitle("What's Next?")
-                .navigationBarTitleDisplayMode(.large)
-            }
-            .tabItem {
-                Image(systemName: "house.fill")
-                Text("Home")
-            }
-            
-            NavigationView {
-                ZStack {
-                    LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
-                        .edgesIgnoringSafeArea(.all)
-
-                    Text("Search View")
+                .tabItem {
+                    Image(systemName: "square.stack.3d.up")
                 }
-                .navigationTitle("Search")
-            }
-            .tabItem {
-                Image(systemName: "magnifyingglass")
-                Text("Search")
-            }
-            
-            NavigationView {
-                ZStack {
-                    LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
-                        .edgesIgnoringSafeArea(.all)
-
-                    Text("Social View")
+                
+                NavigationView {
+                    SearchView()
+                    .navigationTitle("Search")
                 }
-                .navigationTitle("Social")
+                .tabItem {
+                    Image(systemName: "magnifyingglass")
+                }
+                
+                NavigationView {
+                    SocialView()
+                    .navigationTitle("Social")
+                }
+                .tabItem {
+                    Image(systemName: "person.2.fill")
+                }
             }
-            .tabItem {
-                Image(systemName: "person.2.fill")
-                Text("Social")
-            }
+            .accentColor(.white)
         }
-        .accentColor(.white)
         .onAppear {
             UITabBar.appearance().barTintColor = .white
         }
+    }
+
+    private func mainContentView(geometry: GeometryProxy) -> some View {
+        ZStack {
+            LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                .edgesIgnoringSafeArea(.all)
+
+            VStack {
+                MovieListView()
+
+                Spacer(minLength: 20)
+
+                // ZStack to overlay the image and My Logs section
+                ZStack(alignment: .center) {
+                    MyLogsView()
+                        .padding(.top, geometry.size.height * 0.2) // Increase this value to move My Logs section lower
+
+                    ImagePlaceholderView(geometry: geometry)
+                        .offset(y: -geometry.size.height * 0.05) // Adjust this value as needed
+                }
+                
+                Spacer()
+            }
+        }
+    }
+
+
+    private func configureNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor.clear
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+    }
+}
+
+struct ImagePlaceholderView: View {
+    var geometry: GeometryProxy
+
+    var body: some View {
+        Image(systemName: "photo")
+            .resizable()
+            .scaledToFit()
+            .frame(width: geometry.size.width * 0.5, height: geometry.size.width * 0.5)
+            .padding(.bottom, geometry.size.height * 0.5)
     }
 }
 
@@ -74,9 +97,68 @@ struct MovieListView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+struct MyLogsView: View {
+    // Sample data for logs
+    let logs = Array(1...25) // Assuming 20 log items for demonstration
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text("My Logs")
+                .padding()
+                .font(.system(size: 24))
+                .bold()
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
+                    ForEach(logs, id: \.self) { log in
+                        NavigationLink(destination: LogDetailView(logID: log)) {
+                            LogItemView(logID: log)
+                        }
+                    }
+                }
+                .padding(.horizontal)
+            }
+        }
+    }
+}
+
+struct LogItemView: View {
+    let logID: Int
+
+    var body: some View {
+        Image(systemName: "photo")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 100, height: 100) // Adjust size as needed
+            .background(Color.gray.opacity(0.3)) // Placeholder styling
+            .cornerRadius(10)
+    }
+}
+
+struct LogDetailView: View {
+    let logID: Int
+
+    var body: some View {
+        Text("Details for Log \(logID)")
+            // Customize this view to show the details of each log
+    }
+}
+
+struct SearchView: View {
+    var body: some View {
+        ZStack {
+            Text("Search View")
+        }
+    }
+}
+
+struct SocialView: View {
+    var body: some View {
+        ZStack {
+            Text("Social View")
+        }
     }
 }
 
@@ -94,5 +176,11 @@ extension Color {
         let b = Double(rgbValue & 0x0000ff) / 255.0
 
         self.init(red: r, green: g, blue: b)
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }
