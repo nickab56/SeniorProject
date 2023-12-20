@@ -14,8 +14,6 @@ struct ContentView: View {
             TabView {
                 NavigationView {
                     mainContentView(geometry: geometry)
-                    .navigationTitle("What's Next?")
-                    .navigationBarTitleDisplayMode(.large)
                 }
                 .tabItem {
                     Image(systemName: "square.stack.3d.up")
@@ -47,22 +45,40 @@ struct ContentView: View {
     private func mainContentView(geometry: GeometryProxy) -> some View {
         ScrollView {
             VStack {
-                // Placeholder image directly under the navigation title
+                // Custom Title View
+                CustomTitleView(title: "What's Next?")
+                    .bold()
+                    .padding(.top, geometry.size.height * 0.08)
+
+                // Rest of the content
                 Image(systemName: "photo")
                     .resizable()
                     .scaledToFit()
                     .frame(width: geometry.size.width * 0.5, height: geometry.size.width * 0.5)
-                    .padding(.top, geometry.size.height * 0.2)
-                    .padding(.bottom, geometry.size.height * 0.05) // Adjust this value as needed
+                    //.padding(.top, geometry.size.height * 0.2)
+                    .padding(.bottom, geometry.size.height * 0.05)
 
-                // 'My Logs' section
                 MyLogsView()
+                    .padding(.bottom, 150) // Added bottom padding
             }
-            .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
         }
-        .background(Color(hex: "#212222"))
+        .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .edgesIgnoringSafeArea(.all)
     }
+
+    
+    struct CustomTitleView: View {
+        var title: String
+        var body: some View {
+            Text(title)
+                .font(.largeTitle) // Large title style
+                .foregroundColor(.white)
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.clear) // Transparent background
+        }
+    }
+
 
 
     private func configureNavigationBar() {
@@ -109,17 +125,31 @@ struct MovieListView: View {
 }
 
 struct MyLogsView: View {
-    // Sample data for logs
-    let logs = Array(1...25) // Assuming 20 log items for demonstration
-
+    @State private var logs: [Int] = []
+    
     var body: some View {
         VStack(alignment: .leading) {
-            Text("My Logs")
-                .padding()
-                .font(.system(size: 24))
-                .bold()
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            HStack {
+                Text("My Logs")
+                    .font(.system(size: 24))
+                    .bold()
+                    .foregroundColor(.white)
+
+                Spacer() // This will push the button to the right
+
+                // Button to add a new log
+                Button(action: {
+                    // Add a new log to the array
+                    logs.append(logs.count + 1)
+                }) {
+                    Image(systemName: "plus.square.fill.on.square.fill")
+                        .foregroundColor(Color(hex: "#1b2731")) // Color for the icon
+                }
+                .padding(8)
+                .background(Color(hex: "#3891e1")) // Background color for the button
+                .cornerRadius(8)
+            }
+            .padding([.top, .leading, .trailing])
 
             ScrollView {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
@@ -134,6 +164,8 @@ struct MyLogsView: View {
         }
     }
 }
+
+
 
 struct LogItemView: View {
     let logID: Int
