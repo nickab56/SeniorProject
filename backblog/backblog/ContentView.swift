@@ -1,6 +1,12 @@
 import SwiftUI
 import CoreData
 
+struct LogEntry: Identifiable {
+    let id: Int
+    let name: String
+}
+
+
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
@@ -125,8 +131,10 @@ struct MovieListView: View {
 }
 
 struct MyLogsView: View {
-    @State private var logs: [Int] = []
-    
+    @State private var logs: [LogEntry] = []
+    @State private var showingAddLogSheet = false // State for showing the sheet
+    @State private var newLogName = "" // State for the new log name
+
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -135,59 +143,86 @@ struct MyLogsView: View {
                     .bold()
                     .foregroundColor(.white)
 
-                Spacer() // This will push the button to the right
+                Spacer()
 
                 // Button to add a new log
                 Button(action: {
-                    // Add a new log to the array
-                    logs.append(logs.count + 1)
+                    showingAddLogSheet = true // Show the sheet
                 }) {
                     Image(systemName: "plus.square.fill.on.square.fill")
-                        .foregroundColor(Color(hex: "#1b2731")) // Color for the icon
+                        .foregroundColor(Color(hex: "#1b2731"))
                 }
                 .padding(8)
-                .background(Color(hex: "#3891e1")) // Background color for the button
+                .background(Color(hex: "#3891e1"))
                 .cornerRadius(8)
             }
             .padding([.top, .leading, .trailing])
 
             ScrollView {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-                    ForEach(logs, id: \.self) { log in
-                        NavigationLink(destination: LogDetailView(logID: log)) {
-                            LogItemView(logID: log)
+                    ForEach(logs) { log in
+                        NavigationLink(destination: LogDetailView(log: log)) {
+                            LogItemView(log: log)
                         }
                     }
                 }
                 .padding(.horizontal)
             }
+
+        }
+        .sheet(isPresented: $showingAddLogSheet) {
+            // Present the sheet for adding a new log
+            AddLogSheetView(isPresented: $showingAddLogSheet, logs: $logs, newLogName: $newLogName)
+        }
+    }
+}
+
+// View for adding a new log
+struct AddLogSheetView: View {
+    @Binding var isPresented: Bool
+    @Binding var logs: [LogEntry] // Updated to LogEntry array
+    @Binding var newLogName: String
+
+    var body: some View {
+        NavigationView {
+            Form {
+                TextField("Log Name", text: $newLogName)
+                Button("Add Log") {
+                    let newLog = LogEntry(id: logs.count + 1, name: newLogName)
+                    logs.append(newLog)
+                    newLogName = "" // Clear the text field
+                    isPresented = false // Dismiss the sheet
+                }
+            }
+            .navigationBarTitle("Add New Log", displayMode: .inline)
+            .navigationBarItems(trailing: Button("Cancel") {
+                isPresented = false
+            })
         }
     }
 }
 
 
-
 struct LogItemView: View {
-    let logID: Int
+    let log: LogEntry
 
     var body: some View {
-        Image(systemName: "photo")
-            .resizable()
-            .scaledToFit()
-            .frame(width: 100, height: 100) // Adjust size as needed
-            .background(Color.gray.opacity(0.3)) // Placeholder styling
+        Text(log.name) // Display the log name
+            .frame(width: 100, height: 100)
+            .background(Color.gray.opacity(0.3))
             .cornerRadius(10)
     }
 }
 
 struct LogDetailView: View {
-    let logID: Int
+    let log: LogEntry
 
     var body: some View {
-        Text("Details for Log \(logID)")
-            // Customize this view to show the details of each log
+        Text("Details for Log \(log.name)")
+        // Additional details about the log can be added here
     }
 }
+
 
 struct SearchView: View {
     var body: some View {
