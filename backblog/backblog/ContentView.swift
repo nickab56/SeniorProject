@@ -1,11 +1,6 @@
 import SwiftUI
 import CoreData
 
-struct LogEntry: Identifiable {
-    let id: Int
-    let name: String
-}
-
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -131,9 +126,13 @@ struct MovieListView: View {
 }
 
 struct MyLogsView: View {
-    @State private var logs: [LogEntry] = []
-    @State private var showingAddLogSheet = false // State for showing the sheet
-    @State private var newLogName = "" // State for the new log name
+    @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \LogEntity.logid, ascending: true)],
+        animation: .default)
+    private var logs: FetchedResults<LogEntity>
+
+    @State private var showingAddLogSheet = false
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -145,9 +144,8 @@ struct MyLogsView: View {
 
                 Spacer()
 
-                // Button to add a new log
                 Button(action: {
-                    showingAddLogSheet = true // Show the sheet
+                    showingAddLogSheet = true
                 }) {
                     Image(systemName: "plus.square.fill.on.square.fill")
                         .foregroundColor(Color(hex: "#1b2731"))
@@ -160,7 +158,7 @@ struct MyLogsView: View {
 
             ScrollView {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-                    ForEach(logs) { log in
+                    ForEach(logs, id: \.self) { log in
                         NavigationLink(destination: LogDetailView(log: log)) {
                             LogItemView(log: log)
                         }
@@ -171,27 +169,24 @@ struct MyLogsView: View {
 
         }
         .sheet(isPresented: $showingAddLogSheet) {
-            // Present the sheet for adding a new log
-            AddLogSheetView(isPresented: $showingAddLogSheet, logs: $logs, newLogName: $newLogName)
+            AddLogSheetView(isPresented: $showingAddLogSheet)
         }
     }
 }
 
-// View for adding a new log
+
 struct AddLogSheetView: View {
     @Binding var isPresented: Bool
-    @Binding var logs: [LogEntry] // Updated to LogEntry array
-    @Binding var newLogName: String
+    @Environment(\.managedObjectContext) private var viewContext
+    @State private var newLogName = ""
 
     var body: some View {
         NavigationView {
             Form {
                 TextField("Log Name", text: $newLogName)
                 Button("Add Log") {
-                    let newLog = LogEntry(id: logs.count + 1, name: newLogName)
-                    logs.append(newLog)
-                    newLogName = "" // Clear the text field
-                    isPresented = false // Dismiss the sheet
+                    addNewLog()
+                    isPresented = false
                 }
             }
             .navigationBarTitle("Add New Log", displayMode: .inline)
@@ -200,28 +195,65 @@ struct AddLogSheetView: View {
             })
         }
     }
+
+    private func addNewLog() {
+        let newLog = LogEntity(context: viewContext)
+        newLog.logname = newLogName
+        newLog.logid = Int64(UUID().hashValue)
+
+        do {
+            try viewContext.save()
+        } catch {
+            // Handle the error
+        }
+    }
 }
 
 
+
 struct LogItemView: View {
-    let log: LogEntry
+    let log: LogEntity
 
     var body: some View {
-        Text(log.name) // Display the log name
+        Text(log.logname ?? "") // Display the log name
             .frame(width: 100, height: 100)
             .background(Color.gray.opacity(0.3))
             .cornerRadius(10)
     }
 }
 
+
 struct LogDetailView: View {
-    let log: LogEntry
+    let log: LogEntity
+    @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
-        Text("Details for Log \(log.name)")
-        // Additional details about the log can be added here
+        VStack {
+            Text("Details for Log \(log.logname ?? "Unknown")")
+            // Add more details about the log here if needed
+
+            Button("Delete Log") {
+                deleteLog()
+            }
+            .foregroundColor(.red)
+        }
+    }
+
+    private func deleteLog() {
+        viewContext.delete(log)
+
+        do {
+            try viewContext.save()
+            presentationMode.wrappedValue.dismiss() // Dismiss the detail view after deletion
+        } catch {
+            print("Error deleting log: \(error)")
+        }
     }
 }
+
+
+
 
 
 struct SearchView: View {

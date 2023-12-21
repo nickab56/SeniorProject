@@ -16,6 +16,8 @@
 		3469C1922B312A4700B8EEFB /* backblogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C1912B312A4700B8EEFB /* backblogTests.swift */; };
 		3469C19C2B312A4700B8EEFB /* backblogUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C19B2B312A4700B8EEFB /* backblogUITests.swift */; };
 		3469C19E2B312A4700B8EEFB /* backblogUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C19D2B312A4700B8EEFB /* backblogUITestsLaunchTests.swift */; };
+		3496CD292B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3496CD272B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift */; };
+		3496CD2A2B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3496CD282B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +50,8 @@
 		3469C1972B312A4700B8EEFB /* backblogUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = backblogUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3469C19B2B312A4700B8EEFB /* backblogUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = backblogUITests.swift; sourceTree = "<group>"; };
 		3469C19D2B312A4700B8EEFB /* backblogUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = backblogUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		3496CD272B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LogEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
+		3496CD282B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LogEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +102,7 @@
 		3469C17A2B312A4600B8EEFB /* backblog */ = {
 			isa = PBXGroup;
 			children = (
+				3496CD262B33ADB400D2A848 /* Model */,
 				3469C17B2B312A4600B8EEFB /* backblogApp.swift */,
 				3469C17D2B312A4600B8EEFB /* ContentView.swift */,
 				3469C17F2B312A4700B8EEFB /* Assets.xcassets */,
@@ -131,6 +136,15 @@
 				3469C19D2B312A4700B8EEFB /* backblogUITestsLaunchTests.swift */,
 			);
 			path = backblogUITests;
+			sourceTree = "<group>";
+		};
+		3496CD262B33ADB400D2A848 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				3496CD272B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift */,
+				3496CD282B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -267,6 +281,8 @@
 				3469C17E2B312A4600B8EEFB /* ContentView.swift in Sources */,
 				3469C1882B312A4700B8EEFB /* backblog.xcdatamodeld in Sources */,
 				3469C17C2B312A4600B8EEFB /* backblogApp.swift in Sources */,
+				3496CD292B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift in Sources */,
+				3496CD2A2B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
