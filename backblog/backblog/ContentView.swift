@@ -5,6 +5,12 @@ import CoreData
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
+    // Fetch the first log entry
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \LogEntity.logid, ascending: true)],
+        animation: .default)
+    private var logs: FetchedResults<LogEntity>
+    
     init() {
         configureNavigationBar()
         configureTabBar()
@@ -51,13 +57,19 @@ struct ContentView: View {
                     .bold()
                     .padding(.top, geometry.size.height * 0.08)
 
-                // Rest of the content
-                Image(systemName: "photo")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: geometry.size.width * 0.5, height: geometry.size.width * 0.5)
-                    //.padding(.top, geometry.size.height * 0.2)
-                    .padding(.bottom, geometry.size.height * 0.05)
+                if let firstLog = logs.first {
+                    VStack(alignment: .leading) {
+                        Text("From \(firstLog.logname ?? "Unknown")")
+                            .font(.subheadline)
+                            .foregroundColor(.white)
+                            .padding(.leading)
+
+                        Image("img_placeholder_poster")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: geometry.size.width * 0.9)
+                    }
+                }
 
                 MyLogsView()
                     .padding(.bottom, 150) // Added bottom padding
@@ -66,6 +78,7 @@ struct ContentView: View {
         .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .edgesIgnoringSafeArea(.all)
     }
+
 
     
     struct CustomTitleView: View {
@@ -215,12 +228,19 @@ struct LogItemView: View {
     let log: LogEntity
 
     var body: some View {
-        Text(log.logname ?? "") // Display the log name
-            .frame(width: 100, height: 100)
-            .background(Color.gray.opacity(0.3))
-            .cornerRadius(10)
+        VStack {
+            Image("img_placeholder_log_batman")
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 150, height: 150) // Adjust size as needed
+
+            Text(log.logname ?? "")
+                .foregroundColor(.white)
+                .bold()
+        }
     }
 }
+
 
 
 struct LogDetailView: View {
