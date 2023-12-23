@@ -1,42 +1,59 @@
+//
+//  ContentView.swift
+//  backblog
+//
+//  Created by Nick Abegg on 12/18/23.
+//
+//  Description:
+//  ContentView serves as the primary view of the BackBlog app. It sets up the main tab
+//  navigation interface and manages the display of different content sections including
+//  logs, search, and social functionalities.
+
 import SwiftUI
 import CoreData
 
-
 struct ContentView: View {
+    // Access the managed object context for Core Data operations.
     @Environment(\.managedObjectContext) private var viewContext
-    
-    // Fetch the first log entry
+
+    // FetchRequest to retrieve LogEntity objects sorted by 'logid'.
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \LogEntity.logid, ascending: true)],
         animation: .default)
     private var logs: FetchedResults<LogEntity>
-    
+
+    // Initializer to configure navigation and tab bar appearances.
     init() {
-        configureNavigationBar()
-        configureTabBar()
+        NavConfigUtility.configureNavigationBar()
+        NavConfigUtility.configureTabBar()
     }
 
+    // The main body of ContentView.
     var body: some View {
         GeometryReader { geometry in
+            // Tab view serving as the main navigation component.
             TabView {
+                // Main content view with log entries.
                 NavigationView {
                     mainContentView(geometry: geometry)
                 }
                 .tabItem {
                     Image(systemName: "square.stack.3d.up")
                 }
-                
+
+                // Search functionality.
                 NavigationView {
                     SearchView()
-                    .navigationTitle("Search")
+                        .navigationTitle("Search")
                 }
                 .tabItem {
                     Image(systemName: "magnifyingglass")
                 }
-                
+
+                // Social interaction view.
                 NavigationView {
                     SocialView()
-                    .navigationTitle("Social")
+                        .navigationTitle("Social")
                 }
                 .tabItem {
                     Image(systemName: "person.2.fill")
@@ -45,289 +62,61 @@ struct ContentView: View {
             .accentColor(.white)
         }
         .onAppear {
+            // Configure the tab bar's appearance on view appearance.
             UITabBar.appearance().barTintColor = .white
         }
     }
 
+    // Helper function to create the main content view.
     private func mainContentView(geometry: GeometryProxy) -> some View {
         ScrollView {
             VStack {
-                // Custom Title View
+                // Custom title for the main content area.
                 CustomTitleView(title: "What's Next?")
                     .bold()
                     .padding(.top, geometry.size.height * 0.08)
 
+                // Display the first log entry if available.
                 if let firstLog = logs.first {
-                    VStack(alignment: .leading) {
-                        Text("From \(firstLog.logname ?? "Unknown")")
-                            .font(.subheadline)
-                            .foregroundColor(.white)
-                            .padding(.leading)
-
-                        Image("img_placeholder_poster")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: geometry.size.width * 0.9)
-                    }
+                    LogDisplayView(log: firstLog, geometry: geometry)
                 }
 
+                // View for managing and displaying user logs.
                 MyLogsView()
-                    .padding(.bottom, 150) // Added bottom padding
+                    .padding(.bottom, 150)
             }
         }
+        // Background styling for the main content area.
         .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .edgesIgnoringSafeArea(.all)
     }
-
-
-    
-    struct CustomTitleView: View {
-        var title: String
-        var body: some View {
-            Text(title)
-                .font(.largeTitle) // Large title style
-                .foregroundColor(.white)
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color.clear) // Transparent background
-        }
-    }
-
-
-
-    private func configureNavigationBar() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor.clear
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-
-        UINavigationBar.appearance().standardAppearance = appearance
-        UINavigationBar.appearance().scrollEdgeAppearance = appearance
-    }
-    
-    private func configureTabBar() {
-            let appearance = UITabBarAppearance()
-            appearance.configureWithOpaqueBackground()
-
-            // Set the tab bar's background to a grayish-black color
-            appearance.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0)
-
-            // Apply the appearance to the tab bar
-            UITabBar.appearance().standardAppearance = appearance
-            if #available(iOS 15.0, *) {
-                UITabBar.appearance().scrollEdgeAppearance = appearance
-            }
-        }
 }
 
-struct ImagePlaceholderView: View {
-    var geometry: GeometryProxy
-
-    var body: some View {
-        Image(systemName: "photo")
-            .resizable()
-            .scaledToFit()
-            .frame(width: geometry.size.width * 0.5, height: geometry.size.width * 0.5)
-            .padding(.bottom, geometry.size.height * 0.5)
-    }
-}
-
-struct MovieListView: View {
-    var body: some View {
-        Text("Movies List")
-    }
-}
-
-struct MyLogsView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \LogEntity.logid, ascending: true)], // Sort in descending order
-        animation: .default)
-    private var logs: FetchedResults<LogEntity>
-
-    @State private var showingAddLogSheet = false
+// View for displaying a single log entry.
+private struct LogDisplayView: View {
+    let log: LogEntity
+    let geometry: GeometryProxy
 
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
-                Text("My Logs")
-                    .font(.system(size: 24))
-                    .bold()
-                    .foregroundColor(.white)
+            Text("From \(log.logname ?? "Unknown")")
+                .font(.subheadline)
+                .foregroundColor(.white)
+                .padding(.leading)
 
-                Spacer()
-
-                Button(action: {
-                    showingAddLogSheet = true
-                }) {
-                    Image(systemName: "plus.square.fill.on.square.fill")
-                        .foregroundColor(Color(hex: "#1b2731"))
-                }
-                .padding(8)
-                .background(Color(hex: "#3891e1"))
-                .cornerRadius(8)
-            }
-            .padding([.top, .leading, .trailing])
-
-            ScrollView {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-                    ForEach(logs, id: \.self) { log in
-                        NavigationLink(destination: LogDetailView(log: log)) {
-                            LogItemView(log: log)
-                        }
-                        .padding(10) // Adjust padding if necessary
-                    }
-                }
-                .padding(.horizontal, 20) // Adjust horizontal padding if necessary
-            }
-        }
-        .sheet(isPresented: $showingAddLogSheet) {
-            AddLogSheetView(isPresented: $showingAddLogSheet)
-        }
-    }
-}
-
-
-struct AddLogSheetView: View {
-    @Binding var isPresented: Bool
-    @Environment(\.managedObjectContext) private var viewContext
-    @State private var newLogName = ""
-
-    var body: some View {
-        NavigationView {
-            Form {
-                TextField("Log Name", text: $newLogName)
-                Button("Add Log") {
-                    addNewLog()
-                    isPresented = false
-                }
-            }
-            .navigationBarTitle("Add New Log", displayMode: .inline)
-            .navigationBarItems(trailing: Button("Cancel") {
-                isPresented = false
-            })
-        }
-    }
-
-    private func addNewLog() {
-        let newLog = LogEntity(context: viewContext)
-        newLog.logname = newLogName
-        newLog.logid = Int64(UUID().hashValue)
-
-        do {
-            try viewContext.save()
-        } catch {
-            // Handle the error
-        }
-    }
-}
-
-
-
-struct LogItemView: View {
-    let log: LogEntity
-
-    var body: some View {
-        ZStack {
-            // Image layer as the base
-            Image("img_placeholder_log_batman")
+            // Placeholder image for the log.
+            Image("img_placeholder_poster")
                 .resizable()
-                .scaledToFill() // Adjust to fill the entire frame
-                .frame(width: 150, height: 150) // Increased size of the image
-                .clipped() // Clip the image to the bounds of the frame
-                .cornerRadius(5)
-
-            // Overlay with black background and text
-            VStack {
-                Text(log.logname ?? "")
-                    .font(.title)
-                    .bold()
-                    .foregroundColor(.white)
-            }
-            .frame(width: 150, height: 150) // Match the frame size to the image
-            .background(Color.black.opacity(0.7))
-            .cornerRadius(5)
+                .scaledToFit()
+                .frame(width: geometry.size.width * 0.9)
         }
     }
 }
 
-
-
-
-
-
-
-
-
-struct LogDetailView: View {
-    let log: LogEntity
-    @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) var presentationMode
-
-    var body: some View {
-        VStack {
-            Text("Details for Log \(log.logname ?? "Unknown")")
-            // Add more details about the log here if needed
-
-            Button("Delete Log") {
-                deleteLog()
-            }
-            .foregroundColor(.red)
-        }
-    }
-
-    private func deleteLog() {
-        viewContext.delete(log)
-
-        do {
-            try viewContext.save()
-            presentationMode.wrappedValue.dismiss() // Dismiss the detail view after deletion
-        } catch {
-            print("Error deleting log: \(error)")
-        }
-    }
-}
-
-
-
-
-
-struct SearchView: View {
-    var body: some View {
-        ZStack {
-            Text("Search View")
-        }
-    }
-}
-
-struct SocialView: View {
-    var body: some View {
-        ZStack {
-            Text("Social View")
-        }
-    }
-}
-
-// Extension to allow hex color initialization
-extension Color {
-    init(hex: String) {
-        let scanner = Scanner(string: hex)
-        _ = scanner.scanString("#")
-
-        var rgbValue: UInt64 = 0
-        scanner.scanHexInt64(&rgbValue)
-
-        let r = Double((rgbValue & 0xff0000) >> 16) / 255.0
-        let g = Double((rgbValue & 0x00ff00) >> 8) / 255.0
-        let b = Double(rgbValue & 0x0000ff) / 255.0
-
-        self.init(red: r, green: g, blue: b)
-    }
-}
-
+// Preview provider for ContentView.
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
+        // Inject the managed object context for preview purposes.
         ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }
