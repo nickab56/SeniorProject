@@ -140,8 +140,9 @@ struct MovieListView: View {
 
 struct MyLogsView: View {
     @Environment(\.managedObjectContext) private var viewContext
+
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \LogEntity.logid, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \LogEntity.logid, ascending: true)], // Sort in descending order
         animation: .default)
     private var logs: FetchedResults<LogEntity>
 
@@ -175,11 +176,11 @@ struct MyLogsView: View {
                         NavigationLink(destination: LogDetailView(log: log)) {
                             LogItemView(log: log)
                         }
+                        .padding(10) // Adjust padding if necessary
                     }
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 20) // Adjust horizontal padding if necessary
             }
-
         }
         .sheet(isPresented: $showingAddLogSheet) {
             AddLogSheetView(isPresented: $showingAddLogSheet)
@@ -228,18 +229,34 @@ struct LogItemView: View {
     let log: LogEntity
 
     var body: some View {
-        VStack {
+        ZStack {
+            // Image layer as the base
             Image("img_placeholder_log_batman")
                 .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 150, height: 150) // Adjust size as needed
+                .scaledToFill() // Adjust to fill the entire frame
+                .frame(width: 150, height: 150) // Increased size of the image
+                .clipped() // Clip the image to the bounds of the frame
+                .cornerRadius(5)
 
-            Text(log.logname ?? "")
-                .foregroundColor(.white)
-                .bold()
+            // Overlay with black background and text
+            VStack {
+                Text(log.logname ?? "")
+                    .font(.title)
+                    .bold()
+                    .foregroundColor(.white)
+            }
+            .frame(width: 150, height: 150) // Match the frame size to the image
+            .background(Color.black.opacity(0.7))
+            .cornerRadius(5)
         }
     }
 }
+
+
+
+
+
+
 
 
 
