@@ -92,7 +92,6 @@ struct ContentView: View {
     }
 }
 
-// View for displaying a single log entry.
 private struct LogDisplayView: View {
     let log: LogEntity
     let geometry: GeometryProxy
@@ -104,14 +103,43 @@ private struct LogDisplayView: View {
                 .foregroundColor(.white)
                 .padding(.leading)
 
-            // Placeholder image for the log.
+            // Centering the placeholder image
             Image("img_placeholder_poster")
                 .resizable()
                 .scaledToFit()
-                .frame(width: geometry.size.width * 0.9)
+                .frame(width: geometry.size.width * 1, alignment: .center) // Align image to the center
+
+            // Movie title, age rating, release year, and check button
+            HStack {
+                VStack(alignment: .leading) {
+                    Text("Tenet") // Placeholder movie title
+                        .font(.title) // Larger font for the movie title
+                        .foregroundColor(.white)
+
+                    Text("PG-13 · 2020") // Placeholder age rating and release year
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                }
+                
+                Spacer() // This will push the button to the right
+
+                // Modified check button
+                Button(action: {
+                    // Action for the button
+                }) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                        .foregroundColor(Color(hex: "#3891e1"))
+                }
+                .padding(.trailing, 20) // Added padding to the right of the button
+            }
+            .padding(.horizontal, geometry.size.width * 0.02) // Relative padding based on the width of the view
         }
     }
 }
+
+
 
 // Preview provider for ContentView.
 struct ContentView_Previews: PreviewProvider {

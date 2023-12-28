@@ -26,7 +26,3 @@ struct CustomTitleView: View {
             .background(Color.clear) // Sets a transparent background.
     }
 }
-
-// Note: As of the current state of the project, it's unclear if CustomTitleView
-// is being utilized. It's designed for reuse and can be incorporated into views
-// that require a uniform title style.
