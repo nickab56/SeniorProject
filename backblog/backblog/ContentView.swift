@@ -53,7 +53,7 @@ struct ContentView: View {
                 // Social interaction view.
                 NavigationView {
                     SocialView()
-                        .navigationTitle("Social")
+                        //.navigationTitle("Social")
                 }
                 .tabItem {
                     Image(systemName: "person.2.fill")
