@@ -13,27 +13,20 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
-    // Access the managed object context for Core Data operations.
     @Environment(\.managedObjectContext) private var viewContext
-
-    // FetchRequest to retrieve LogEntity objects sorted by 'logid'.
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \LogEntity.logid, ascending: true)],
-        animation: .default)
+    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \LogEntity.logid, ascending: true)], animation: .default)
     private var logs: FetchedResults<LogEntity>
 
-    // Initializer to configure navigation and tab bar appearances.
+    @State private var isLoggedInToSocial = false
+
     init() {
         NavConfigUtility.configureNavigationBar()
         NavConfigUtility.configureTabBar()
     }
 
-    // The main body of ContentView.
     var body: some View {
         GeometryReader { geometry in
-            // Tab view serving as the main navigation component.
             TabView {
-                // Main content view with log entries.
                 NavigationView {
                     mainContentView(geometry: geometry)
                 }
@@ -41,7 +34,6 @@ struct ContentView: View {
                     Image(systemName: "square.stack.3d.up")
                 }
 
-                // Search functionality.
                 NavigationView {
                     SearchView()
                         .navigationTitle("Search")
@@ -50,10 +42,12 @@ struct ContentView: View {
                     Image(systemName: "magnifyingglass")
                 }
 
-                // Social interaction view.
                 NavigationView {
-                    SocialView()
-                        //.navigationTitle("Social")
+                    if isLoggedInToSocial {
+                        SocialView()
+                    } else {
+                        LoginView(isLoggedInToSocial: $isLoggedInToSocial)
+                    }
                 }
                 .tabItem {
                     Image(systemName: "person.2.fill")
@@ -62,7 +56,6 @@ struct ContentView: View {
             .accentColor(.white)
         }
         .onAppear {
-            // Configure the tab bar's appearance on view appearance.
             UITabBar.appearance().barTintColor = .white
         }
     }

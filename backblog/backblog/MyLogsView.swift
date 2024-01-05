@@ -116,7 +116,7 @@ struct LogItemView: View {
                 .scaledToFill()
                 .frame(width: 150, height: 150)
                 .clipped()
-                .cornerRadius(5)
+                .cornerRadius(15)
 
             // Text overlay with log information.
             VStack {
@@ -127,7 +127,7 @@ struct LogItemView: View {
             }
             .frame(width: 150, height: 150)
             .background(Color.black.opacity(0.7))
-            .cornerRadius(5)
+            .cornerRadius(15)
         }
     }
 }

@@ -13,6 +13,8 @@
 		344BA27A2B378713002626F1 /* SocialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2792B378713002626F1 /* SocialView.swift */; };
 		344BA27C2B37875D002626F1 /* ExtensionUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA27B2B37875D002626F1 /* ExtensionUtility.swift */; };
 		344BA27E2B3788F4002626F1 /* NavConfigUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA27D2B3788F4002626F1 /* NavConfigUtility.swift */; };
+		344BA2802B489F01002626F1 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA27F2B489F01002626F1 /* LoginView.swift */; };
+		344BA2822B48AC8E002626F1 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2812B48AC8E002626F1 /* SignupView.swift */; };
 		3469C17C2B312A4600B8EEFB /* backblogApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C17B2B312A4600B8EEFB /* backblogApp.swift */; };
 		3469C17E2B312A4600B8EEFB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C17D2B312A4600B8EEFB /* ContentView.swift */; };
 		3469C1802B312A4700B8EEFB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3469C17F2B312A4700B8EEFB /* Assets.xcassets */; };
@@ -50,6 +52,8 @@
 		344BA2792B378713002626F1 /* SocialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialView.swift; sourceTree = "<group>"; };
 		344BA27B2B37875D002626F1 /* ExtensionUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionUtility.swift; sourceTree = "<group>"; };
 		344BA27D2B3788F4002626F1 /* NavConfigUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavConfigUtility.swift; sourceTree = "<group>"; };
+		344BA27F2B489F01002626F1 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		344BA2812B48AC8E002626F1 /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
 		3469C1782B312A4600B8EEFB /* backblog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = backblog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3469C17B2B312A4600B8EEFB /* backblogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = backblogApp.swift; sourceTree = "<group>"; };
 		3469C17D2B312A4600B8EEFB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -117,6 +121,8 @@
 				3496CD262B33ADB400D2A848 /* Model */,
 				3469C17B2B312A4600B8EEFB /* backblogApp.swift */,
 				3469C17D2B312A4600B8EEFB /* ContentView.swift */,
+				344BA27F2B489F01002626F1 /* LoginView.swift */,
+				344BA2812B48AC8E002626F1 /* SignupView.swift */,
 				344BA27D2B3788F4002626F1 /* NavConfigUtility.swift */,
 				344BA27B2B37875D002626F1 /* ExtensionUtility.swift */,
 				344BA2772B378709002626F1 /* SearchView.swift */,
@@ -295,6 +301,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				344BA2822B48AC8E002626F1 /* SignupView.swift in Sources */,
 				3469C1852B312A4700B8EEFB /* Persistence.swift in Sources */,
 				344BA27C2B37875D002626F1 /* ExtensionUtility.swift in Sources */,
 				344BA27A2B378713002626F1 /* SocialView.swift in Sources */,
@@ -305,6 +312,7 @@
 				344BA2742B3785ED002626F1 /* CustomTitleView.swift in Sources */,
 				3469C1882B312A4700B8EEFB /* backblog.xcdatamodeld in Sources */,
 				3469C17C2B312A4600B8EEFB /* backblogApp.swift in Sources */,
+				344BA2802B489F01002626F1 /* LoginView.swift in Sources */,
 				3496CD292B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift in Sources */,
 				3496CD2A2B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift in Sources */,
 			);
@@ -476,8 +484,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -505,8 +512,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
