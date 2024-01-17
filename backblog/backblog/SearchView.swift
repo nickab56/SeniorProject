@@ -45,15 +45,16 @@ struct SearchView: View {
                     .cornerRadius(10)
                     .padding(.horizontal)
 
-                    // Categories
-                    if !isSearching {
-                        categorySection
+                    // Categories and Recently Added Sections with Fade Effect
+                    Group {
+                        if !isSearching {
+                            categorySection
+                            recentlyAddedSection
+                        }
                     }
+                    .opacity(isSearching ? 0 : 1)
+                    .transition(.opacity.animation(.easeInOut(duration: 0.5)))
 
-                    // Recently added by friends
-                    if !isSearching {
-                        recentlyAddedSection
-                    }
 
                     // Search results (placeholder, replace with actual logic later)
                     if isSearching {
