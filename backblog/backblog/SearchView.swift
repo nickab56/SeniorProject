@@ -2,12 +2,13 @@ import SwiftUI
 
 struct SearchView: View {
     @State private var searchText = ""
+    @State private var isSearching = false
 
     let categories = ["Action", "Horror", "Sci-Fi", "Fantasy"]
     let movies = [
-        ("The Batman (2022)", "img_placeholder_poster"),
-        ("Everything Everywhere All at Once", "img_placeholder_poster"),
-        ("Spider-Man Across the Spider-Verse", "img_placeholder_poster")
+        ("The Batman (2022)", "img_placeholder_log_batman"),
+        ("Everything Everywhere All at Once", "img_placeholder_log_batman"),
+        ("Spider-Man Across the Spider-Verse", "img_placeholder_log_batman")
     ]
 
     var body: some View {
@@ -19,68 +20,99 @@ struct SearchView: View {
             // Content
             ScrollView {
                 VStack(alignment: .leading) {
-
+                    // Search bar
                     HStack {
                         Image(systemName: "magnifyingglass")
-                            .foregroundColor(.gray) // Magnifying glass color
+                            .foregroundColor(.gray)
 
                         TextField("Search for a movie", text: $searchText)
-                            .font(.system(size: 18, weight: .bold)) // Make the font bigger and bolder
-                            .foregroundColor(.primary) // Make the text color darker
+                            .onChange(of: searchText)
+                            {
+                            if (!searchText.isEmpty)
+                                {
+                                isSearching = true
+                            }
+                            else
+                                {
+                                isSearching = false
+                            }
+                            }
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(.primary)
                     }
                     .padding(12)
                     .background(Color(.systemBackground))
                     .cornerRadius(10)
                     .padding(.horizontal)
 
-                    // Category buttons in a grid with two items per row
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 15) {
-                        ForEach(categories, id: \.self) { category in
-                            Button(action: {
-                                // Category action
-                            }) {
-                                VStack {
-                                    Image("img_placeholder_poster") // Using the specified placeholder image
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(height: 100)
-                                        .clipped()
-                                        .cornerRadius(8)
-                                    Text(category)
-                                        .foregroundColor(.white)
-                                }
-                            }
-                            .frame(height: 150) // Set a fixed height for the buttons
-                        }
+                    // Categories
+                    if !isSearching {
+                        categorySection
                     }
-                    .padding(.horizontal)
 
                     // Recently added by friends
-                    Text("Friends Recently Added")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding(.leading)
-
-                    // Movie posters in a grid with two items per row
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 15) {
-                        ForEach(movies, id: \.0) { movie in
-                            VStack {
-                                Image(movie.1) // Using the specified placeholder image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 300, maxHeight: .infinity, alignment: .top)
-                                    .clipped()
-                                    .cornerRadius(8)
-                                Text(movie.0)
-                                    .foregroundColor(.white)
-                                    .font(.caption)
-                                    .frame(maxWidth: .infinity, alignment: .center)
-                            }
-                        }
+                    if !isSearching {
+                        recentlyAddedSection
                     }
-                    .padding(.horizontal)
+
+                    // Search results (placeholder, replace with actual logic later)
+                    if isSearching {
+                        Text("Search results for \(searchText)")
+                            .foregroundColor(.white)
+                            .padding()
+                    }
                 }
             }
+        }
+    }
+
+    private var categorySection: some View {
+        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 15) {
+            ForEach(categories, id: \.self) { category in
+                Button(action: {
+                    // Category action
+                }) {
+                    VStack {
+                        Image("img_placeholder_poster")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(height: 100)
+                            .clipped()
+                            .cornerRadius(8)
+                        Text(category)
+                            .foregroundColor(.white)
+                    }
+                }
+                .frame(height: 150)
+            }
+        }
+        .padding(.horizontal)
+    }
+
+    private var recentlyAddedSection: some View {
+        VStack(alignment: .leading) {
+            Text("Friends Recently Added")
+                .font(.headline)
+                .foregroundColor(.white)
+                .padding(.leading)
+
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 15) {
+                ForEach(movies, id: \.0) { movie in
+                    VStack {
+                        Image(movie.1)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 300, maxHeight: .infinity, alignment: .top)
+                            .clipped()
+                            .cornerRadius(8)
+                        Text(movie.0)
+                            .foregroundColor(.white)
+                            .font(.caption)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                }
+            }
+            .padding(.horizontal)
         }
     }
 }
