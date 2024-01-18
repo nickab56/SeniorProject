@@ -9,6 +9,8 @@
 //  This file sets up the main window of the application and provides the necessary
 //  environment for managing Core Data.
 
+
+
 import SwiftUI
 
 // The main structure for the BackBlog application.
@@ -16,7 +18,10 @@ import SwiftUI
 struct backblogApp: App {
     // Shared instance of the PersistenceController.
     // This handles all the Core Data stack setup and management.
-    let persistenceController = PersistenceController.shared
+    //let persistenceController = PersistenceController.shared
+    
+    // allows for use in preview content view
+    let persistenceController = PersistenceController.preview
 
     // The body of the App protocol. Defines the content of the application's scenes.
     var body: some Scene {
