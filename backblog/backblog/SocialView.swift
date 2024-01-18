@@ -3,6 +3,7 @@
 //  backblog
 //
 //  Created by Nick Abegg on 12/23/23.
+//  Updated by Josh Altmeyer on 01/18/24.
 //
 //  Description:
 //  SocialView serves as the social interaction hub within the BackBlog app.
@@ -23,30 +24,31 @@ struct SocialView: View {
     var body: some View {
         VStack {
             // Spacer to push content down
-            Spacer(minLength: 20) // Adjust the space as needed
-
+            
             // Profile section
-            HStack(alignment: .center) {
-                Image(systemName: "person.crop.circle") // Using system symbol for profile picture
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 60, height: 60) // Size of the profile picture
-                    .padding(.leading)
+            Image(systemName: "person.crop.circle") // Using system symbol for profile picture
+                .resizable()
+                .scaledToFit()
+                .frame(width: 100, height: 100) // Size of the profile picture
 
-                Text("Username") // Placeholder for user's name
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .padding(.leading)
-
-                Spacer()
-            }
-            .padding(.top, 50) // Additional padding at the top of the profile section
-
+            Text("Username") // Placeholder for user's name
+                .font(.system(size: 40))
+                .foregroundColor(.white)
+                .bold()
+                .padding(.top, -10)
+            
+            Text("# friends") // Placeholder for total friends
+                .font(.system(size: 15))
+                .foregroundColor(.gray)
+                .bold()
+                .padding(.top, -20)
+            
             // Tab View for Logs and Friends
             Picker("Options", selection: $selectedTab) {
                 Text("Logs").tag("Logs")
                 Text("Friends").tag("Friends")
             }
+            
             .pickerStyle(SegmentedPickerStyle())
             .padding()
 
@@ -61,14 +63,131 @@ struct SocialView: View {
                     .padding(.horizontal)
                 }
             } else if selectedTab == "Friends" {
-                ScrollView
-                {
-                    Text("Friends View")
-                        .foregroundColor(.white)
+                ScrollView {
+                    HStack {
+                        
+                        Text("Friends")
+                            .font(.system(size: 30))
+                            .bold()
+                            .foregroundColor(.white)
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            // Code for button to add a friend
+                        }) {
+                            Image(systemName: "person.badge.plus")
+                                .foregroundColor(.white)
+                        }
+                        .frame(width: 80, height: 40)
+                        .background(Color.blue)
+                        .cornerRadius(10)
+                    }.padding()
+                    LazyVStack {
+                        
+                        HStack {
+                            Text("Friend Request")
+                                .foregroundColor(.gray)
+                                .padding(.horizontal, 20) // Adjust padding as needed
+                            Spacer()
+                        }
+                        
+                        ForEach(userFriends, id: \.self) { friendName in FriendRequestList(FriendRequestID: friendName)
+                                .padding(.horizontal)
+                        }
+                        
+                        HStack {
+                            Text("Log Request")
+                                .foregroundColor(.gray)
+                                .padding(.horizontal, 20) // Adjust padding as needed
+                            Spacer()
+                        }
+                        
+                        // need to have to show picture
+                        ForEach(userFriends, id: \.self) { friendName in FriendList(friendName: friendName)
+                                .padding(.horizontal)
+                        }
+                    }
+                    .padding(.horizontal)
                 }
             }
-        }
+        }.padding(.top, 80)
         .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .edgesIgnoringSafeArea(.all)
+        
+        var userFriends: [String] {
+                // TEMP need friends names
+                return ["nick", "jake", "TOM", "John"] // Sample data
+            }
+    }
+}
+
+struct FriendList: View {
+    let friendName: String
+        
+        var body: some View {
+            Button(action: {
+                        // Code for Functionaility
+                    }) {
+                        HStack {
+                            Image(systemName: "person.crop.circle") //TEMP friend PFP
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 40, height: 40)
+                                                        
+                            Text(friendName)
+                                .font(.headline)
+                                .foregroundColor(.white)
+                            
+                            Spacer()
+                        }
+                        .cornerRadius(10)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }
+        }
+
+struct FriendRequestList: View {
+    let FriendRequestID: String
+    
+    var body: some View {
+        HStack {
+            Image(systemName: "person.crop.circle") //TEMP friend PFP
+                .resizable()
+                .scaledToFit()
+                .frame(width: 40, height: 40)
+            
+            Text("FriendRequestName")
+                .font(.headline)
+                .foregroundColor(.white)
+            
+            Spacer()
+            
+            Button(action: {
+                // Code for Functionaility
+            }) {
+                ZStack {
+                    Circle()
+                        .foregroundColor(.blue)
+                        .frame(width: 25, height: 25)
+                    
+                    Image(systemName: "checkmark")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 10, height: 10)
+                        .foregroundColor(.black)
+                }
+            }
+            .padding(.horizontal, 20)
+                        
+            Button(action: {
+                // Functionaility
+            }) {
+                Image(systemName: "xmark.circle")
+                    .frame(width: 25, height: 25)
+                    .foregroundColor(.white)
+            }
+            
+        }
     }
 }
