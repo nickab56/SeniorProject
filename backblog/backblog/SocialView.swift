@@ -60,8 +60,12 @@ struct SocialView: View {
                     }
                     .padding(.horizontal)
                 }
-            } else {
-                Text("Friends View") // Placeholder for friends view
+            } else if selectedTab == "Friends" {
+                ScrollView
+                {
+                    Text("Friends View")
+                        .foregroundColor(.white)
+                }
             }
         }
         .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
