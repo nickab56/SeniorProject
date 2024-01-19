@@ -3,13 +3,8 @@ import SwiftUI
 struct SearchView: View {
     @State private var searchText = ""
     @State private var isSearching = false
-
-    let categories = ["Action", "Horror", "Sci-Fi", "Fantasy"]
-    let movies = [
-        ("The Batman (2022)", "img_placeholder_log_batman"),
-        ("Everything Everywhere All at Once", "img_placeholder_log_batman"),
-        ("Spider-Man Across the Spider-Verse", "img_placeholder_log_batman")
-    ]
+    @State private var movies: [Movie] = []
+    @State private var errorMessage: String?
 
     var body: some View {
         ZStack {
@@ -24,18 +19,11 @@ struct SearchView: View {
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(.gray)
-
+                        
                         TextField("Search for a movie", text: $searchText)
-                            .onChange(of: searchText)
-                            {
-                            if (!searchText.isEmpty)
-                                {
-                                isSearching = true
-                            }
-                            else
-                                {
-                                isSearching = false
-                            }
+                            .onChange(of: searchText) { _ in
+                                isSearching = !searchText.isEmpty
+                                searchMovies(query: searchText)
                             }
                             .font(.system(size: 18, weight: .bold))
                             .foregroundColor(.primary)
@@ -44,76 +32,41 @@ struct SearchView: View {
                     .background(Color(.systemBackground))
                     .cornerRadius(10)
                     .padding(.horizontal)
-
-                    // Categories and Recently Added Sections with Fade Effect
-                    Group {
-                        if !isSearching {
-                            categorySection
-                            recentlyAddedSection
+                    
+                    // Search results
+                    if isSearching {
+                        ForEach(movies, id: \.id) { movie in
+                            Text(movie.title)
+                                .foregroundColor(.white)
+                                .padding()
                         }
                     }
-                    .opacity(isSearching ? 0 : 1)
-                    .transition(.opacity.animation(.easeInOut(duration: 0.5)))
-
-
-                    // Search results (placeholder, replace with actual logic later)
-                    if isSearching {
-                        Text("Search results for \(searchText)")
-                            .foregroundColor(.white)
-                            .padding()
-                    }
                 }
             }
         }
-    }
-
-    private var categorySection: some View {
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 15) {
-            ForEach(categories, id: \.self) { category in
-                Button(action: {
-                    // Category action
-                }) {
-                    VStack {
-                        Image("img_placeholder_poster")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: 100)
-                            .clipped()
-                            .cornerRadius(8)
-                        Text(category)
-                            .foregroundColor(.white)
-                    }
-                }
-                .frame(height: 150)
-            }
+        // Handle any error messages
+        if let errorMessage = errorMessage {
+            Text(errorMessage)
+                .foregroundColor(.red)
         }
-        .padding(.horizontal)
     }
 
-    private var recentlyAddedSection: some View {
-        VStack(alignment: .leading) {
-            Text("Friends Recently Added")
-                .font(.headline)
-                .foregroundColor(.white)
-                .padding(.leading)
-
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 15) {
-                ForEach(movies, id: \.0) { movie in
-                    VStack {
-                        Image(movie.1)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 300, maxHeight: .infinity, alignment: .top)
-                            .clipped()
-                            .cornerRadius(8)
-                        Text(movie.0)
-                            .foregroundColor(.white)
-                            .font(.caption)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    }
+    private func searchMovies(query: String) {
+        guard !query.isEmpty else {
+            movies = []
+            return
+        }
+        NetworkManager.shared.fetchMovies(searchQuery: query) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let fetchedMovies):
+                    self.movies = fetchedMovies
+                    let _ = print("Good")
+                case .failure(let error):
+                    let _ = print(self.errorMessage = error.localizedDescription)
+                    let _ = print("Not Good")
                 }
             }
-            .padding(.horizontal)
         }
     }
 }
