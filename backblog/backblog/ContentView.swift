@@ -36,7 +36,7 @@ struct ContentView: View {
 
                 NavigationView {
                     SearchView()
-                        .navigationTitle("Search")
+
                 }
                 .tabItem {
                     Image(systemName: "magnifyingglass")
@@ -72,6 +72,7 @@ struct ContentView: View {
                 // Display the first log entry if available.
                 if let firstLog = logs.first {
                     LogDisplayView(log: firstLog, geometry: geometry)
+                        .padding(.top, -20)
                 }
 
                 // View for managing and displaying user logs.
@@ -93,14 +94,16 @@ private struct LogDisplayView: View {
         VStack(alignment: .leading) {
             Text("From \(log.logname ?? "Unknown")")
                 .font(.subheadline)
-                .foregroundColor(.white)
+                .foregroundColor(.gray)
+                .bold()
                 .padding(.leading)
 
             // Centering the placeholder image
             Image("img_placeholder_poster")
                 .resizable()
                 .scaledToFit()
-                .frame(width: geometry.size.width * 1, alignment: .center) // Align image to the center
+                .cornerRadius(15)
+                .padding(.horizontal, 10)
 
             // Movie title, age rating, release year, and check button
             HStack {
@@ -108,9 +111,11 @@ private struct LogDisplayView: View {
                     Text("Tenet") // Placeholder movie title
                         .font(.title) // Larger font for the movie title
                         .foregroundColor(.white)
+                        .bold()
 
                     Text("PG-13 · 2020") // Placeholder age rating and release year
                         .font(.subheadline)
+                        .bold()
                         .foregroundColor(.gray)
                 }
                 
