@@ -27,6 +27,7 @@
 		3496CD292B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3496CD272B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift */; };
 		3496CD2A2B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3496CD282B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift */; };
 		34EB6ABB2B5AF14B00F2E7D5 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB6ABA2B5AF14B00F2E7D5 /* API.swift */; };
+		34EB6ABD2B5B254800F2E7D5 /* MovieRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB6ABC2B5B254800F2E7D5 /* MovieRowView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,7 +70,8 @@
 		3469C19D2B312A4700B8EEFB /* backblogUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = backblogUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		3496CD272B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LogEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
 		3496CD282B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LogEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		34EB6ABA2B5AF14B00F2E7D5 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		34EB6ABA2B5AF14B00F2E7D5 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = API.swift; path = Model/API.swift; sourceTree = "<group>"; };
+		34EB6ABC2B5B254800F2E7D5 /* MovieRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieRowView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,7 +102,6 @@
 		3469C16F2B312A4600B8EEFB = {
 			isa = PBXGroup;
 			children = (
-				34EB6ABA2B5AF14B00F2E7D5 /* API.swift */,
 				3469C17A2B312A4600B8EEFB /* backblog */,
 				3469C1902B312A4700B8EEFB /* backblogTests */,
 				3469C19A2B312A4700B8EEFB /* backblogUITests */,
@@ -123,7 +124,9 @@
 			children = (
 				3496CD262B33ADB400D2A848 /* Model */,
 				3469C17B2B312A4600B8EEFB /* backblogApp.swift */,
+				34EB6ABA2B5AF14B00F2E7D5 /* API.swift */,
 				3469C17D2B312A4600B8EEFB /* ContentView.swift */,
+				34EB6ABC2B5B254800F2E7D5 /* MovieRowView.swift */,
 				344BA27F2B489F01002626F1 /* LoginView.swift */,
 				344BA2812B48AC8E002626F1 /* SignupView.swift */,
 				344BA27D2B3788F4002626F1 /* NavConfigUtility.swift */,
@@ -304,6 +307,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34EB6ABD2B5B254800F2E7D5 /* MovieRowView.swift in Sources */,
 				344BA2822B48AC8E002626F1 /* SignupView.swift in Sources */,
 				3469C1852B312A4700B8EEFB /* Persistence.swift in Sources */,
 				344BA27C2B37875D002626F1 /* ExtensionUtility.swift in Sources */,

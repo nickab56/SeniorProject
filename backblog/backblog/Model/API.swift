@@ -16,6 +16,8 @@ struct MovieResponse: Codable {
     let results: [Movie]
 }
 
+// remove no half-sheet, no backdrop
+// sort highest popularity
 struct Movie: Codable, Identifiable {
     let id: Int
     let adult: Bool
