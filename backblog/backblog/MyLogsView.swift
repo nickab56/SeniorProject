@@ -50,15 +50,15 @@ struct MyLogsView: View {
 
             // Scrollable grid view of log entries.
             ScrollView {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
+                LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
                     ForEach(logs, id: \.self) { log in
                         NavigationLink(destination: LogDetailView(log: log)) {
                             LogItemView(log: log)
+                                .cornerRadius(15)
                         }
-                        .padding(10)
                     }
                 }
-                .padding(.horizontal, 20)
+                .padding(10)
             }
         }
         // Presentation of the add log sheet.
@@ -107,6 +107,7 @@ struct AddLogSheetView: View {
 // View for displaying a single log item.
 struct LogItemView: View {
     let log: LogEntity
+    let maxCharacters = 20
 
     var body: some View {
         ZStack {
@@ -114,22 +115,26 @@ struct LogItemView: View {
             Image("img_placeholder_log_batman")
                 .resizable()
                 .scaledToFill()
-                .frame(width: 150, height: 150)
                 .clipped()
-                .cornerRadius(15)
+                .overlay(Color.black.opacity(0.5))
 
             // Text overlay with log information.
             VStack {
-                Text(log.logname ?? "")
+                Text(truncateText(log.logname ?? ""))
                     .font(.title)
                     .bold()
                     .foregroundColor(.white)
             }
-            .frame(width: 150, height: 150)
-            .background(Color.black.opacity(0.7))
-            .cornerRadius(15)
         }
     }
+    
+    private func truncateText(_ text: String) -> String {
+            if text.count > maxCharacters {
+                return String(text.prefix(maxCharacters)) + "..."
+            } else {
+                return text
+            }
+        }
 }
 
 // View for displaying the details of a log.
@@ -161,4 +166,6 @@ struct LogDetailView: View {
             // Error handling for failed deletion.
         }
     }
+    
+    
 }
