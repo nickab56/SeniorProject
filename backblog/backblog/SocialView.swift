@@ -63,48 +63,54 @@ struct SocialView: View {
                     .padding(.horizontal)
                 }
             } else if selectedTab == "Friends" {
-                ScrollView {
-                    HStack {
-                        
-                        Text("Friends")
-                            .font(.system(size: 30))
-                            .bold()
+                HStack {
+                    
+                    Text("Friends")
+                        .font(.system(size: 30))
+                        .bold()
+                        .foregroundColor(.white)
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        // Code for button to add a friend
+                    }) {
+                        Image(systemName: "person.badge.plus")
                             .foregroundColor(.white)
-                        
-                        Spacer()
-                        
-                        Button(action: {
-                            // Code for button to add a friend
-                        }) {
-                            Image(systemName: "person.badge.plus")
-                                .foregroundColor(.white)
-                        }
-                        .frame(width: 80, height: 40)
-                        .background(Color.blue)
-                        .cornerRadius(10)
-                    }.padding()
+                    }
+                    .frame(width: 80, height: 40)
+                    .background(Color.blue)
+                    .cornerRadius(10)
+                }.padding()
+                
+                ScrollView {
                     LazyVStack {
                         
                         HStack {
                             Text("Friend Request")
                                 .foregroundColor(.gray)
-                                .padding(.horizontal, 20) // Adjust padding as needed
+                                .padding(.horizontal, 20)
                             Spacer()
                         }
                         
-                        ForEach(userFriends, id: \.self) { friendName in FriendRequestList(FriendRequestID: friendName)
+                        ForEach(friendRequests, id: \.self) { friendID in FriendRequestList(FriendRequestID: friendID)
                                 .padding(.horizontal)
                         }
                         
                         HStack {
                             Text("Log Request")
                                 .foregroundColor(.gray)
-                                .padding(.horizontal, 20) // Adjust padding as needed
+                                .padding(.horizontal, 20)
                             Spacer()
                         }
                         
-                        // need to have to show picture
-                        ForEach(userFriends, id: \.self) { friendName in FriendList(friendName: friendName)
+                        ForEach(logRequests, id: \.self) { logID in LogRequestList(RequestID: logID)
+                                .padding(.horizontal)
+                        }
+                        
+                        Spacer()
+                        
+                        ForEach(userFriends, id: \.self) { friendID in FriendList(friendName: friendID)
                                 .padding(.horizontal)
                         }
                     }
@@ -116,8 +122,16 @@ struct SocialView: View {
         .edgesIgnoringSafeArea(.all)
         
         var userFriends: [String] {
-                // TEMP need friends names
+                // TEMP need friends ID
                 return ["nick", "jake", "TOM", "John"] // Sample data
+            }
+        var friendRequests: [String] {
+                // TEMP need friends ID
+                return ["nick", "jake", "TOM", "John"] // Sample data
+            }
+        var logRequests: [String] {
+                // TEMP need friends ID
+                return ["Log1", "Log2", "Log3", "Log4"] // Sample data
             }
     }
 }
@@ -160,6 +174,57 @@ struct FriendRequestList: View {
             Text("FriendRequestName")
                 .font(.headline)
                 .foregroundColor(.white)
+            
+            Spacer()
+            
+            Button(action: {
+                // Code for Functionaility
+            }) {
+                ZStack {
+                    Circle()
+                        .foregroundColor(.blue)
+                        .frame(width: 25, height: 25)
+                    
+                    Image(systemName: "checkmark")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 10, height: 10)
+                        .foregroundColor(.black)
+                }
+            }
+            .padding(.horizontal, 20)
+                        
+            Button(action: {
+                // Functionaility
+            }) {
+                Image(systemName: "xmark.circle")
+                    .frame(width: 25, height: 25)
+                    .foregroundColor(.white)
+            }
+            
+        }
+    }
+}
+
+struct LogRequestList: View {
+    let RequestID: String
+    
+    var body: some View {
+        HStack {
+            Image(systemName: "person.crop.circle") //TEMP friend PFP
+                .resizable()
+                .scaledToFit()
+                .frame(width: 40, height: 40)
+            
+            VStack {
+                Text("CreatorName")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                Text(RequestID)
+                    .font(.headline)
+                    .foregroundColor(.gray)
+            }
+            
             
             Spacer()
             
