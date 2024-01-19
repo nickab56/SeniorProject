@@ -37,7 +37,7 @@ struct SocialView: View {
                 .bold()
                 .padding(.top, -10)
             
-            Text("# friends") // Placeholder for total friends
+            Text("\(userFriends.count) friends") // Placeholder for total friends
                 .font(.system(size: 15))
                 .foregroundColor(.gray)
                 .bold()
@@ -85,31 +85,30 @@ struct SocialView: View {
                 
                 ScrollView {
                     LazyVStack {
-                        
-                        HStack {
-                            Text("Friend Request")
-                                .foregroundColor(.gray)
-                                .padding(.horizontal, 20)
-                            Spacer()
+                        if friendRequests.isEmpty == false {
+                            HStack {
+                                Text("Friend Request")
+                                    .foregroundColor(.gray)
+                                    .padding(.horizontal, 20)
+                                Spacer()
+                            }
+                            
+                            ForEach(friendRequests, id: \.self) { friendID in FriendRequestList(FriendRequestID: friendID)
+                                    .padding(.horizontal)
+                            }
                         }
-                        
-                        ForEach(friendRequests, id: \.self) { friendID in FriendRequestList(FriendRequestID: friendID)
-                                .padding(.horizontal)
+                        if logRequests.isEmpty == false {
+                            HStack {
+                                Text("Log Request")
+                                    .foregroundColor(.gray)
+                                    .padding(.horizontal, 20)
+                                Spacer()
+                            }
+                            
+                            ForEach(logRequests, id: \.self) { logID in LogRequestList(RequestID: logID)
+                                    .padding(.horizontal)
+                            }
                         }
-                        
-                        HStack {
-                            Text("Log Request")
-                                .foregroundColor(.gray)
-                                .padding(.horizontal, 20)
-                            Spacer()
-                        }
-                        
-                        ForEach(logRequests, id: \.self) { logID in LogRequestList(RequestID: logID)
-                                .padding(.horizontal)
-                        }
-                        
-                        Spacer()
-                        
                         ForEach(userFriends, id: \.self) { friendID in FriendList(friendName: friendID)
                                 .padding(.horizontal)
                         }
@@ -249,7 +248,7 @@ struct LogRequestList: View {
                 // Functionaility
             }) {
                 Image(systemName: "xmark.circle")
-                    .frame(width: 25, height: 25)
+                    .frame(width: 30, height: 30)
                     .foregroundColor(.white)
             }
             
