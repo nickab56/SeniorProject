@@ -28,6 +28,10 @@
 		3496CD2A2B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3496CD282B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift */; };
 		34D011DE2B5B661B004FA0B5 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34D011DD2B5B661B004FA0B5 /* API.swift */; };
 		34EB6ABD2B5B254800F2E7D5 /* MovieRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB6ABC2B5B254800F2E7D5 /* MovieRowView.swift */; };
+		9777C8C42B5D8ACD000F40EA /* FriendRequestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9777C8C32B5D8ACD000F40EA /* FriendRequestData.swift */; };
+		9777C8C62B5D8CD9000F40EA /* LogData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9777C8C52B5D8CD9000F40EA /* LogData.swift */; };
+		9777C8C82B5D8F83000F40EA /* LogRequestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9777C8C72B5D8F83000F40EA /* LogRequestData.swift */; };
+		9777C8CA2B5D90F9000F40EA /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9777C8C92B5D90F9000F40EA /* UserData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +76,10 @@
 		3496CD282B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LogEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		34D011DD2B5B661B004FA0B5 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = API.swift; path = ../API.swift; sourceTree = "<group>"; };
 		34EB6ABC2B5B254800F2E7D5 /* MovieRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieRowView.swift; sourceTree = "<group>"; };
+		9777C8C32B5D8ACD000F40EA /* FriendRequestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestData.swift; sourceTree = "<group>"; };
+		9777C8C52B5D8CD9000F40EA /* LogData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogData.swift; sourceTree = "<group>"; };
+		9777C8C72B5D8F83000F40EA /* LogRequestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogRequestData.swift; sourceTree = "<group>"; };
+		9777C8C92B5D90F9000F40EA /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +130,7 @@
 		3469C17A2B312A4600B8EEFB /* backblog */ = {
 			isa = PBXGroup;
 			children = (
+				9777C8C22B5D8A90000F40EA /* Models */,
 				3496CD262B33ADB400D2A848 /* Model */,
 				3469C17B2B312A4600B8EEFB /* backblogApp.swift */,
 				34D011DD2B5B661B004FA0B5 /* API.swift */,
@@ -175,6 +184,17 @@
 				3496CD282B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		9777C8C22B5D8A90000F40EA /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				9777C8C32B5D8ACD000F40EA /* FriendRequestData.swift */,
+				9777C8C52B5D8CD9000F40EA /* LogData.swift */,
+				9777C8C72B5D8F83000F40EA /* LogRequestData.swift */,
+				9777C8C92B5D90F9000F40EA /* UserData.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -313,6 +333,9 @@
 				344BA27C2B37875D002626F1 /* ExtensionUtility.swift in Sources */,
 				344BA27A2B378713002626F1 /* SocialView.swift in Sources */,
 				344BA2782B378709002626F1 /* SearchView.swift in Sources */,
+				9777C8C62B5D8CD9000F40EA /* LogData.swift in Sources */,
+				9777C8C42B5D8ACD000F40EA /* FriendRequestData.swift in Sources */,
+				9777C8C82B5D8F83000F40EA /* LogRequestData.swift in Sources */,
 				344BA27E2B3788F4002626F1 /* NavConfigUtility.swift in Sources */,
 				344BA2762B37862E002626F1 /* MyLogsView.swift in Sources */,
 				3469C17E2B312A4600B8EEFB /* ContentView.swift in Sources */,
@@ -322,6 +345,7 @@
 				344BA2802B489F01002626F1 /* LoginView.swift in Sources */,
 				3496CD292B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift in Sources */,
 				34D011DE2B5B661B004FA0B5 /* API.swift in Sources */,
+				9777C8CA2B5D90F9000F40EA /* UserData.swift in Sources */,
 				3496CD2A2B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -486,7 +510,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"backblog/Preview Content\"";
-				DEVELOPMENT_TEAM = 66UZZ32TWM;
+				DEVELOPMENT_TEAM = MZQ2UAMB86;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -514,7 +538,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"backblog/Preview Content\"";
-				DEVELOPMENT_TEAM = 66UZZ32TWM;
+				DEVELOPMENT_TEAM = MZQ2UAMB86;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
