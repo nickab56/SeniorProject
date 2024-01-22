@@ -51,6 +51,7 @@ struct SocialView: View {
             
             .pickerStyle(SegmentedPickerStyle())
             .padding()
+            .accessibility(identifier: "logsFriendsTabPicker")
 
             // Grid display based on selected tab
             if selectedTab == "Logs" {
@@ -58,6 +59,7 @@ struct SocialView: View {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
                         ForEach(logs, id: \.self) { log in
                             LogItemView(log: log)
+                                .accessibility(identifier: "logItem_\(log.logid)")
                         }
                     }
                     .padding(.horizontal)

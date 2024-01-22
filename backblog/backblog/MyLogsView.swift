@@ -45,6 +45,7 @@ struct MyLogsView: View {
                 .padding(8)
                 .background(Color(hex: "#3891e1"))
                 .cornerRadius(8)
+                .accessibility(identifier: "addLogButton")
             }
             .padding([.top, .leading, .trailing])
 
@@ -56,6 +57,7 @@ struct MyLogsView: View {
                             LogItemView(log: log)
                                 .cornerRadius(15)
                         }
+                        .accessibility(identifier: "logEntry_\(log.logid)")
                     }
                 }
                 .padding(10)
@@ -78,15 +80,18 @@ struct AddLogSheetView: View {
         NavigationView {
             Form {
                 TextField("Log Name", text: $newLogName)
+                    .accessibility(identifier: "newLogNameTextField")
                 Button("Add Log") {
                     addNewLog()
                     isPresented = false
                 }
+                .accessibility(identifier: "addLogButton")
             }
             .navigationBarTitle("Add New Log", displayMode: .inline)
             .navigationBarItems(trailing: Button("Cancel") {
                 isPresented = false
-            })
+            }
+                .accessibility(identifier: "cancelAddLogButton"))
         }
     }
 
@@ -146,12 +151,14 @@ struct LogDetailView: View {
     var body: some View {
         VStack {
             Text("Details for Log \(log.logname ?? "Unknown")")
+                .accessibility(identifier: "logDetailsText")
 
             // Button to delete the log entry.
             Button("Delete Log") {
                 deleteLog()
             }
             .foregroundColor(.red)
+            .accessibility(identifier: "deleteLogButton")
         }
     }
 

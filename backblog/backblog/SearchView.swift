@@ -32,6 +32,7 @@ struct SearchView: View {
                             }
                             .font(.system(size: 18, weight: .bold))
                             .foregroundColor(.primary)
+                            .accessibility(identifier: "movieSearchTextField")
                     }
                     .padding(12)
                     .background(Color(.systemBackground))
@@ -44,6 +45,7 @@ struct SearchView: View {
                             Text(movie.title)
                                 .foregroundColor(.white)
                                 .padding()
+                                .accessibility(identifier: "searchResult_\(movie.id)")
                         }
                     }
                 }
