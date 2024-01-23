@@ -27,8 +27,46 @@ final class backblogUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
 
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        
+        }
+    
+    func testAddingLog() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        app.buttons["addLogButton"].tap()
+
+        let addLogPopup = app.collectionViews
+
+        let logNameTextField = addLogPopup.textFields["newLogNameTextField"]
+        XCTAssertTrue(logNameTextField.exists)
+        logNameTextField.tap()
+        logNameTextField.typeText("Log 1")
+
+        let addButton = addLogPopup.buttons["addLogButton"]
+        XCTAssertTrue(addButton.exists)
+        addButton.tap()
+
+        // Verify that the new log appears in the main content
+        let tempLog = app.scrollViews.otherElements.scrollViews.otherElements.staticTexts["Log 1"]
+        XCTAssertTrue(tempLog.exists)
     }
+    
+    func testCancelAddingLog() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        app.buttons["addLogButton"].tap()
+
+        let addLogPopup = app.collectionViews
+
+        let canceladdlogbutton = app.navigationBars["Add New Log"]/*@START_MENU_TOKEN@*/.buttons["cancelAddLogButton"]/*[[".otherElements[\"Cancel\"]",".buttons[\"Cancel\"]",".buttons[\"cancelAddLogButton\"]",".otherElements[\"cancelAddLogButton\"]"],[[[-1,2],[-1,1],[-1,3,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/
+        XCTAssertTrue(canceladdlogbutton.exists)
+        canceladdlogbutton.tap()
+        
+        
+    }
+
 
     func testLaunchPerformance() throws {
         if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
