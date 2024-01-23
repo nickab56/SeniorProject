@@ -11,14 +11,13 @@ import CoreData
 
 
 extension LogEntity {
-
     @nonobjc public class func fetchRequest() -> NSFetchRequest<LogEntity> {
         return NSFetchRequest<LogEntity>(entityName: "LogEntity")
     }
 
     @NSManaged public var logname: String?
     @NSManaged public var logid: Int64
-
+    @NSManaged public var orderIndex: Int32
 }
 
 extension LogEntity : Identifiable {

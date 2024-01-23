@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		340183482B5DF6BF009D7818 /* LoginViewUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340183452B5DF688009D7818 /* LoginViewUITests.swift */; };
 		3401834A2B5DFE1D009D7818 /* LogDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340183492B5DFE1D009D7818 /* LogDisplayView.swift */; };
 		344BA2742B3785ED002626F1 /* CustomTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2732B3785ED002626F1 /* CustomTitleView.swift */; };
 		344BA2762B37862E002626F1 /* MyLogsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2752B37862E002626F1 /* MyLogsView.swift */; };
@@ -30,6 +29,7 @@
 		3496CD2A2B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3496CD282B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift */; };
 		34D011DE2B5B661B004FA0B5 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34D011DD2B5B661B004FA0B5 /* API.swift */; };
 		34EB6ABD2B5B254800F2E7D5 /* MovieRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB6ABC2B5B254800F2E7D5 /* MovieRowView.swift */; };
+		34F035A82B606B1B00EB35C7 /* LogDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035A72B606B1B00EB35C7 /* LogDetailsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,7 +50,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		340183452B5DF688009D7818 /* LoginViewUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewUITests.swift; sourceTree = "<group>"; };
 		340183492B5DFE1D009D7818 /* LogDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDisplayView.swift; sourceTree = "<group>"; };
 		344BA2732B3785ED002626F1 /* CustomTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTitleView.swift; sourceTree = "<group>"; };
 		344BA2752B37862E002626F1 /* MyLogsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLogsView.swift; sourceTree = "<group>"; };
@@ -76,6 +75,7 @@
 		3496CD282B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LogEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		34D011DD2B5B661B004FA0B5 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = API.swift; path = ../API.swift; sourceTree = "<group>"; };
 		34EB6ABC2B5B254800F2E7D5 /* MovieRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieRowView.swift; sourceTree = "<group>"; };
+		34F035A72B606B1B00EB35C7 /* LogDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDetailsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +140,7 @@
 				344BA2792B378713002626F1 /* SocialView.swift */,
 				344BA2732B3785ED002626F1 /* CustomTitleView.swift */,
 				344BA2752B37862E002626F1 /* MyLogsView.swift */,
+				34F035A72B606B1B00EB35C7 /* LogDetailsView.swift */,
 				3469C17F2B312A4700B8EEFB /* Assets.xcassets */,
 				3469C1842B312A4700B8EEFB /* Persistence.swift */,
 				3469C1862B312A4700B8EEFB /* backblog.xcdatamodeld */,
@@ -169,7 +170,6 @@
 			children = (
 				3469C19B2B312A4700B8EEFB /* backblogUITests.swift */,
 				3469C19D2B312A4700B8EEFB /* backblogUITestsLaunchTests.swift */,
-				340183452B5DF688009D7818 /* LoginViewUITests.swift */,
 			);
 			path = backblogUITests;
 			sourceTree = "<group>";
@@ -321,6 +321,7 @@
 				344BA2782B378709002626F1 /* SearchView.swift in Sources */,
 				344BA27E2B3788F4002626F1 /* NavConfigUtility.swift in Sources */,
 				344BA2762B37862E002626F1 /* MyLogsView.swift in Sources */,
+				34F035A82B606B1B00EB35C7 /* LogDetailsView.swift in Sources */,
 				3469C17E2B312A4600B8EEFB /* ContentView.swift in Sources */,
 				3401834A2B5DFE1D009D7818 /* LogDisplayView.swift in Sources */,
 				344BA2742B3785ED002626F1 /* CustomTitleView.swift in Sources */,
@@ -347,7 +348,6 @@
 			files = (
 				3469C19E2B312A4700B8EEFB /* backblogUITestsLaunchTests.swift in Sources */,
 				3469C19C2B312A4700B8EEFB /* backblogUITests.swift in Sources */,
-				340183482B5DF6BF009D7818 /* LoginViewUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

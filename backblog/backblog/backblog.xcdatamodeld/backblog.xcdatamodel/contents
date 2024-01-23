@@ -6,5 +6,6 @@
     <entity name="LogEntity" representedClassName="LogEntity" syncable="YES">
         <attribute name="logid" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="logname" optional="YES" attributeType="String"/>
+        <attribute name="orderIndex" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
 </model>

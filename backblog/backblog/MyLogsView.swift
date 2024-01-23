@@ -14,6 +14,8 @@ import CoreData
 // The view for displaying and managing user logs.
 struct MyLogsView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    
+    @State private var draggedLog: LogEntity?
 
     // Fetch request to retrieve and sort log entries.
     @FetchRequest(
@@ -51,23 +53,80 @@ struct MyLogsView: View {
 
             // Scrollable grid view of log entries.
             ScrollView {
-                LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
-                    ForEach(logs, id: \.self) { log in
-                        NavigationLink(destination: LogDetailView(log: log)) {
-                            LogItemView(log: log)
-                                .cornerRadius(15)
+                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                            ForEach(logs.sorted(by: { $0.orderIndex < $1.orderIndex }), id: \.self) { log in
+                                LogItemView(log: log)
+                                    .cornerRadius(15)
+                                    .overlay(
+                                        Rectangle()
+                                        .opacity(draggedLog == log ? 0.5 : 0)
+                                    )
+                                    .onDrag {
+                                        self.draggedLog = log
+                                        return NSItemProvider()
+                                    }
+                                    .onDrop(of: [.plainText], delegate: DropViewDelegate(droppedLog: log, logs: logs, draggedLog: $draggedLog, viewContext: viewContext))
+                            }
                         }
-                        .accessibility(identifier: "logEntry_\(log.logid)")
                     }
-                }
-                .padding(10)
-            }
         }
         // Presentation of the add log sheet.
         .sheet(isPresented: $showingAddLogSheet) {
             AddLogSheetView(isPresented: $showingAddLogSheet)
         }
     }
+    
+    struct DropViewDelegate: DropDelegate {
+        let droppedLog: LogEntity
+        let logs: FetchedResults<LogEntity>
+        @Binding var draggedLog: LogEntity?
+        let viewContext: NSManagedObjectContext
+
+        func performDrop(info: DropInfo) -> Bool {
+            guard let draggedLog = draggedLog else { return false }
+
+            // Calculate the new order index
+            if let targetIndex = logs.firstIndex(of: droppedLog),
+               let sourceIndex = logs.firstIndex(of: draggedLog) {
+                var newLogs = logs.map { $0 }
+                newLogs.remove(at: sourceIndex)
+                newLogs.insert(draggedLog, at: targetIndex)
+
+                for (index, log) in newLogs.enumerated() {
+                    log.orderIndex = Int32(index)
+                }
+
+                do {
+                    try viewContext.save()
+                } catch {
+                    print("Failed to save context: \(error)")
+                }
+            }
+
+            self.draggedLog = nil
+            return true
+        }
+        
+        func dropEntered(info: DropInfo) {
+            guard let draggedLog = draggedLog,
+                  draggedLog != droppedLog,
+                  let from = logs.firstIndex(of: draggedLog),
+                  let to = logs.firstIndex(of: droppedLog)
+            else { return }
+
+            if from < to {
+                for index in from..<to {
+                    logs[index].orderIndex -= 1
+                }
+            } else {
+                for index in (to + 1)...from {
+                    logs[index].orderIndex += 1
+                }
+            }
+            draggedLog.orderIndex = droppedLog.orderIndex
+        }
+    }
+
 }
 
 // View for adding a new log entry.
@@ -173,6 +232,4 @@ struct LogDetailView: View {
             // Error handling for failed deletion.
         }
     }
-    
-    
 }
