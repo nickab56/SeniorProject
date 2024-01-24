@@ -42,12 +42,31 @@ struct SearchView: View {
                     // Search results
                     if isSearching {
                         ForEach(movies, id: \.id) { movie in
-                            Text(movie.title)
-                                .foregroundColor(.white)
-                                .padding()
-                                .accessibility(identifier: "searchResult_\(movie.id)")
+                            HStack {
+                                // Combine the base URL with the half-sheet path
+                                if let halfSheetPath = movie.half_sheet, let url = URL(string: "https://image.tmdb.org/t/p/w500" + halfSheetPath) {
+                                    AsyncImage(url: url) { image in
+                                        image.resizable()
+                                    } placeholder: {
+                                        Color.gray
+                                    }
+                                    .frame(width: 50, height: 75)
+                                    .cornerRadius(8)
+                                } else {
+                                    // Placeholder in case there is no image URL
+                                    Rectangle()
+                                        .fill(Color.gray)
+                                        .frame(width: 50, height: 75)
+                                        .cornerRadius(8)
+                                }
+
+                                Text(movie.title)
+                                    .foregroundColor(.white)
+                                    .padding()
+                            }
                         }
                     }
+
                 }
             }
         }
