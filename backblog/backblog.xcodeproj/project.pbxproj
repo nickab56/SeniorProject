@@ -28,8 +28,9 @@
 		3496CD292B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3496CD272B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift */; };
 		3496CD2A2B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3496CD282B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift */; };
 		34D011DE2B5B661B004FA0B5 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34D011DD2B5B661B004FA0B5 /* API.swift */; };
-		34EB6ABD2B5B254800F2E7D5 /* MovieRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB6ABC2B5B254800F2E7D5 /* MovieRowView.swift */; };
 		34F035A82B606B1B00EB35C7 /* LogDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035A72B606B1B00EB35C7 /* LogDetailsView.swift */; };
+		34F035AA2B60A93900EB35C7 /* AddLogSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035A92B60A93900EB35C7 /* AddLogSheetView.swift */; };
+		34F035AC2B60A95500EB35C7 /* LogItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035AB2B60A95500EB35C7 /* LogItemView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,8 +75,9 @@
 		3496CD272B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LogEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
 		3496CD282B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LogEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		34D011DD2B5B661B004FA0B5 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = API.swift; path = ../API.swift; sourceTree = "<group>"; };
-		34EB6ABC2B5B254800F2E7D5 /* MovieRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieRowView.swift; sourceTree = "<group>"; };
 		34F035A72B606B1B00EB35C7 /* LogDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDetailsView.swift; sourceTree = "<group>"; };
+		34F035A92B60A93900EB35C7 /* AddLogSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLogSheetView.swift; sourceTree = "<group>"; };
+		34F035AB2B60A95500EB35C7 /* LogItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogItemView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,11 +133,12 @@
 				34D011DD2B5B661B004FA0B5 /* API.swift */,
 				3469C17D2B312A4600B8EEFB /* ContentView.swift */,
 				340183492B5DFE1D009D7818 /* LogDisplayView.swift */,
-				34EB6ABC2B5B254800F2E7D5 /* MovieRowView.swift */,
 				344BA27F2B489F01002626F1 /* LoginView.swift */,
 				344BA2812B48AC8E002626F1 /* SignupView.swift */,
 				344BA27D2B3788F4002626F1 /* NavConfigUtility.swift */,
 				344BA27B2B37875D002626F1 /* ExtensionUtility.swift */,
+				34F035A92B60A93900EB35C7 /* AddLogSheetView.swift */,
+				34F035AB2B60A95500EB35C7 /* LogItemView.swift */,
 				344BA2772B378709002626F1 /* SearchView.swift */,
 				344BA2792B378713002626F1 /* SocialView.swift */,
 				344BA2732B3785ED002626F1 /* CustomTitleView.swift */,
@@ -313,8 +316,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				34EB6ABD2B5B254800F2E7D5 /* MovieRowView.swift in Sources */,
+				34F035AC2B60A95500EB35C7 /* LogItemView.swift in Sources */,
 				344BA2822B48AC8E002626F1 /* SignupView.swift in Sources */,
+				34F035AA2B60A93900EB35C7 /* AddLogSheetView.swift in Sources */,
 				3469C1852B312A4700B8EEFB /* Persistence.swift in Sources */,
 				344BA27C2B37875D002626F1 /* ExtensionUtility.swift in Sources */,
 				344BA27A2B378713002626F1 /* SocialView.swift in Sources */,
