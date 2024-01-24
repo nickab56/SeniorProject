@@ -50,14 +50,16 @@ struct SearchView: View {
                                     } placeholder: {
                                         Color.gray
                                     }
-                                    .frame(width: 50, height: 75)
+                                    .frame(width: 110, height: 75)
                                     .cornerRadius(8)
+                                    .padding(.leading)
                                 } else {
                                     // Placeholder in case there is no image URL
                                     Rectangle()
                                         .fill(Color.gray)
-                                        .frame(width: 50, height: 75)
+                                        .frame(width: 110, height: 75)
                                         .cornerRadius(8)
+                                        .padding(.leading)
                                 }
 
                                 Text(movie.title)
