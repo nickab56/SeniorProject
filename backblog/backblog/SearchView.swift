@@ -7,68 +7,72 @@ struct SearchView: View {
     @State private var errorMessage: String?
 
     var body: some View {
-        ZStack {
-            // Background
-            LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
-                .edgesIgnoringSafeArea(.all)
-            
-            // Content
-            ScrollView {
-                VStack(alignment: .leading) {
-                    Text("Search")
-                        .font(.system(size: 32))
-                        .bold()
-                        .foregroundColor(.white)
-                        .padding()
-                    // Search bar
-                    HStack {
-                        Image(systemName: "magnifyingglass")
-                            .foregroundColor(.gray)
-                        
-                        TextField("Search for a movie", text: $searchText)
-                            .onChange(of: searchText) {
-                                isSearching = !searchText.isEmpty
-                                searchMovies(query: searchText)
-                            }
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.primary)
-                            .accessibility(identifier: "movieSearchTextField")
-                    }
-                    .padding(12)
-                    .background(Color(.systemBackground))
-                    .cornerRadius(10)
-                    .padding(.horizontal)
-                    
-                    // Search results
-                    if isSearching {
-                        ForEach(movies, id: \.id) { movie in
-                            HStack {
-                                // Combine the base URL with the half-sheet path
-                                if let halfSheetPath = movie.half_sheet, let url = URL(string: "https://image.tmdb.org/t/p/w500" + halfSheetPath) {
-                                    AsyncImage(url: url) { image in
-                                        image.resizable()
-                                    } placeholder: {
-                                        Color.gray
-                                    }
-                                    .frame(width: 110, height: 75)
-                                    .cornerRadius(8)
-                                    .padding(.leading)
-                                } else {
-                                    // Placeholder in case there is no image URL
-                                    Rectangle()
-                                        .fill(Color.gray)
-                                        .frame(width: 110, height: 75)
-                                        .cornerRadius(8)
-                                        .padding(.leading)
-                                }
+        NavigationView {
+            ZStack {
+                // Background
+                LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                    .edgesIgnoringSafeArea(.all)
+                
+                // Content
+                ScrollView {
+                    VStack(alignment: .leading) {
+                        Text("Search")
+                            .font(.system(size: 32))
+                            .bold()
+                            .foregroundColor(.white)
+                            .padding()
 
-                                Text(movie.title)
-                                    .foregroundColor(.white)
-                                    .padding()
+                        // Search bar
+                        HStack {
+                            Image(systemName: "magnifyingglass")
+                                .foregroundColor(.gray)
+                            
+                            TextField("Search for a movie", text: $searchText)
+                                .onChange(of: searchText) {
+                                    isSearching = !searchText.isEmpty
+                                    searchMovies(query: searchText)
+                                }
+                                .font(.system(size: 18, weight: .bold))
+                                .foregroundColor(.primary)
+                                .accessibility(identifier: "movieSearchTextField")
+                        }
+                        .padding(12)
+                        .background(Color(.systemBackground))
+                        .cornerRadius(10)
+                        .padding(.horizontal)
+                        
+                        // Search results with navigation links
+                        if isSearching {
+                            ForEach(movies, id: \.id) { movie in
+                                NavigationLink(destination: MovieDetailsView(movie: movie)) {
+                                    HStack {
+                                        // Display the half-sheet image
+                                        if let halfSheetPath = movie.half_sheet, let url = URL(string: "https://image.tmdb.org/t/p/w500" + halfSheetPath) {
+                                            AsyncImage(url: url) { image in
+                                                image.resizable()
+                                            } placeholder: {
+                                                Color.gray
+                                            }
+                                            .frame(width: 145, height: 90)
+                                            .cornerRadius(8)
+                                            .padding(.leading)
+                                        } else {
+                                            // Placeholder in case there is no image URL
+                                            Rectangle()
+                                                .fill(Color.gray)
+                                                .frame(width: 145, height: 90)
+                                                .cornerRadius(8)
+                                                .padding(.leading)
+                                        }
+
+                                        Text(movie.title)
+                                            .foregroundColor(.white)
+                                            .padding()
+                                    }
+                                }
                             }
                         }
                     }
-
                 }
             }
         }
@@ -78,6 +82,7 @@ struct SearchView: View {
                 .foregroundColor(.red)
         }
     }
+
 
     private func searchMovies(query: String) {
         guard !query.isEmpty else {

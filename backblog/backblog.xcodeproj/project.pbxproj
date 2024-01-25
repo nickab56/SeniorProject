@@ -16,6 +16,7 @@
 		344BA27E2B3788F4002626F1 /* NavConfigUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA27D2B3788F4002626F1 /* NavConfigUtility.swift */; };
 		344BA2802B489F01002626F1 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA27F2B489F01002626F1 /* LoginView.swift */; };
 		344BA2822B48AC8E002626F1 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2812B48AC8E002626F1 /* SignupView.swift */; };
+		3466FF2D2B61EA610028034C /* MovieDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3466FF2C2B61EA610028034C /* MovieDetailsView.swift */; };
 		3469C17C2B312A4600B8EEFB /* backblogApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C17B2B312A4600B8EEFB /* backblogApp.swift */; };
 		3469C17E2B312A4600B8EEFB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C17D2B312A4600B8EEFB /* ContentView.swift */; };
 		3469C1802B312A4700B8EEFB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3469C17F2B312A4700B8EEFB /* Assets.xcassets */; };
@@ -60,6 +61,7 @@
 		344BA27D2B3788F4002626F1 /* NavConfigUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavConfigUtility.swift; sourceTree = "<group>"; };
 		344BA27F2B489F01002626F1 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		344BA2812B48AC8E002626F1 /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
+		3466FF2C2B61EA610028034C /* MovieDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsView.swift; sourceTree = "<group>"; };
 		3469C1782B312A4600B8EEFB /* backblog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = backblog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3469C17B2B312A4600B8EEFB /* backblogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = backblogApp.swift; sourceTree = "<group>"; };
 		3469C17D2B312A4600B8EEFB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 				34F035A92B60A93900EB35C7 /* AddLogSheetView.swift */,
 				34F035AB2B60A95500EB35C7 /* LogItemView.swift */,
 				344BA2772B378709002626F1 /* SearchView.swift */,
+				3466FF2C2B61EA610028034C /* MovieDetailsView.swift */,
 				344BA2792B378713002626F1 /* SocialView.swift */,
 				344BA2732B3785ED002626F1 /* CustomTitleView.swift */,
 				344BA2752B37862E002626F1 /* MyLogsView.swift */,
@@ -330,6 +333,7 @@
 				3401834A2B5DFE1D009D7818 /* LogDisplayView.swift in Sources */,
 				344BA2742B3785ED002626F1 /* CustomTitleView.swift in Sources */,
 				3469C1882B312A4700B8EEFB /* backblog.xcdatamodeld in Sources */,
+				3466FF2D2B61EA610028034C /* MovieDetailsView.swift in Sources */,
 				3469C17C2B312A4600B8EEFB /* backblogApp.swift in Sources */,
 				344BA2802B489F01002626F1 /* LoginView.swift in Sources */,
 				3496CD292B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift in Sources */,
@@ -510,7 +514,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.TABKA.backblog;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TABKA.backblog1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -538,7 +542,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.TABKA.backblog;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TABKA.backblog1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
