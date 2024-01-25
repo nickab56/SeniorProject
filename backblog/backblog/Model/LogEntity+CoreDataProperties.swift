@@ -18,7 +18,9 @@ extension LogEntity {
     @NSManaged public var logname: String?
     @NSManaged public var logid: Int64
     @NSManaged public var orderIndex: Int32
+    @NSManaged public var movieIds: String?  // New property to store movie IDs
 }
+
 
 extension LogEntity : Identifiable {
 

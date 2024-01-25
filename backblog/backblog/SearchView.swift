@@ -5,6 +5,8 @@ struct SearchView: View {
     @State private var isSearching = false
     @State private var movies: [Movie] = []
     @State private var errorMessage: String?
+    @State private var showingActionSheet = false
+    @State private var selectedMovie: Movie?
 
     var body: some View {
         NavigationView {
@@ -44,42 +46,56 @@ struct SearchView: View {
                         // Search results with navigation links
                         if isSearching {
                             ForEach(movies, id: \.id) { movie in
-                                NavigationLink(destination: MovieDetailsView(movie: movie)) {
-                                    HStack {
-                                        // Display the half-sheet image
-                                        if let halfSheetPath = movie.half_sheet, let url = URL(string: "https://image.tmdb.org/t/p/w500" + halfSheetPath) {
-                                            AsyncImage(url: url) { image in
-                                                image.resizable()
-                                            } placeholder: {
-                                                Color.gray
-                                            }
+                                HStack {
+                                    // Display the half-sheet image
+                                    if let halfSheetPath = movie.half_sheet, let url = URL(string: "https://image.tmdb.org/t/p/w500" + halfSheetPath) {
+                                        AsyncImage(url: url) { image in
+                                            image.resizable()
+                                        } placeholder: {
+                                            Color.gray
+                                        }
+                                        .frame(width: 145, height: 90)
+                                        .cornerRadius(8)
+                                        .padding(.leading)
+                                    } else {
+                                        // Placeholder in case there is no image URL
+                                        Rectangle()
+                                            .fill(Color.gray)
                                             .frame(width: 145, height: 90)
                                             .cornerRadius(8)
                                             .padding(.leading)
-                                        } else {
-                                            // Placeholder in case there is no image URL
-                                            Rectangle()
-                                                .fill(Color.gray)
-                                                .frame(width: 145, height: 90)
-                                                .cornerRadius(8)
-                                                .padding(.leading)
-                                        }
-
-                                        Text(movie.title)
-                                            .foregroundColor(.white)
-                                            .padding()
                                     }
+
+                                    Text(movie.title)
+                                        .foregroundColor(.white)
+                                        .padding()
+
+                                    Spacer()
+
+                                    // Add button
+                                    Button(action: {
+                                        self.selectedMovie = movie
+                                        self.showingActionSheet = true
+                                    }) {
+                                        Image(systemName: "plus.circle")
+                                            .foregroundColor(Color(hex: "#3891e1"))
+                                            .imageScale(.large)
+                                    }
+                                    .padding()
                                 }
                             }
                         }
                     }
                 }
             }
-        }
-        // Handle any error messages
-        if let errorMessage = errorMessage {
-            Text(errorMessage)
-                .foregroundColor(.red)
+            .actionSheet(isPresented: $showingActionSheet) {
+                ActionSheet(title: Text("Add \(selectedMovie?.title ?? "") to log"), buttons: [
+                    .default(Text("Log 1")) { /* Add action for Log 1 */ },
+                    .default(Text("Log 2")) { /* Add action for Log 2 */ },
+                    // Add more logs as needed
+                    .cancel()
+                ])
+            }
         }
     }
 
