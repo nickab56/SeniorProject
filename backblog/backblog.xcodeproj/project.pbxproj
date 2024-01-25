@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3401834A2B5DFE1D009D7818 /* LogDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340183492B5DFE1D009D7818 /* LogDisplayView.swift */; };
+		340746AE2B62B5EB007711C8 /* LogSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340746AD2B62B5EB007711C8 /* LogSelectionView.swift */; };
 		344BA2742B3785ED002626F1 /* CustomTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2732B3785ED002626F1 /* CustomTitleView.swift */; };
 		344BA2762B37862E002626F1 /* MyLogsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2752B37862E002626F1 /* MyLogsView.swift */; };
 		344BA2782B378709002626F1 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2772B378709002626F1 /* SearchView.swift */; };
@@ -53,6 +54,7 @@
 
 /* Begin PBXFileReference section */
 		340183492B5DFE1D009D7818 /* LogDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDisplayView.swift; sourceTree = "<group>"; };
+		340746AD2B62B5EB007711C8 /* LogSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogSelectionView.swift; sourceTree = "<group>"; };
 		344BA2732B3785ED002626F1 /* CustomTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTitleView.swift; sourceTree = "<group>"; };
 		344BA2752B37862E002626F1 /* MyLogsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLogsView.swift; sourceTree = "<group>"; };
 		344BA2772B378709002626F1 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 				344BA27B2B37875D002626F1 /* ExtensionUtility.swift */,
 				34F035A92B60A93900EB35C7 /* AddLogSheetView.swift */,
 				34F035AB2B60A95500EB35C7 /* LogItemView.swift */,
+				340746AD2B62B5EB007711C8 /* LogSelectionView.swift */,
 				344BA2772B378709002626F1 /* SearchView.swift */,
 				3466FF2C2B61EA610028034C /* MovieDetailsView.swift */,
 				344BA2792B378713002626F1 /* SocialView.swift */,
@@ -327,6 +330,7 @@
 				344BA27A2B378713002626F1 /* SocialView.swift in Sources */,
 				344BA2782B378709002626F1 /* SearchView.swift in Sources */,
 				344BA27E2B3788F4002626F1 /* NavConfigUtility.swift in Sources */,
+				340746AE2B62B5EB007711C8 /* LogSelectionView.swift in Sources */,
 				344BA2762B37862E002626F1 /* MyLogsView.swift in Sources */,
 				34F035A82B606B1B00EB35C7 /* LogDetailsView.swift in Sources */,
 				3469C17E2B312A4600B8EEFB /* ContentView.swift in Sources */,

@@ -62,7 +62,7 @@ struct MyLogsView: View {
             AddLogSheetView(isPresented: $showingAddLogSheet)
         }
         .sheet(item: $selectedLogForDetails) { log in
-            LogDetailView(log: log)
+            LogDetailsView(log: log)
         }
     }
     

@@ -5,8 +5,13 @@ struct SearchView: View {
     @State private var isSearching = false
     @State private var movies: [Movie] = []
     @State private var errorMessage: String?
+    
     @State private var showingActionSheet = false
     @State private var selectedMovie: Movie?
+    
+    @State private var showingLogSelection = false
+    @State private var selectedLog: LogEntity?
+
 
     var body: some View {
         NavigationView {
@@ -72,10 +77,9 @@ struct SearchView: View {
 
                                     Spacer()
 
-                                    // Add button
                                     Button(action: {
                                         self.selectedMovie = movie
-                                        self.showingActionSheet = true
+                                        self.showingLogSelection = true
                                     }) {
                                         Image(systemName: "plus.circle")
                                             .foregroundColor(Color(hex: "#3891e1"))
@@ -88,13 +92,10 @@ struct SearchView: View {
                     }
                 }
             }
-            .actionSheet(isPresented: $showingActionSheet) {
-                ActionSheet(title: Text("Add \(selectedMovie?.title ?? "") to log"), buttons: [
-                    .default(Text("Log 1")) { /* Add action for Log 1 */ },
-                    .default(Text("Log 2")) { /* Add action for Log 2 */ },
-                    // Add more logs as needed
-                    .cancel()
-                ])
+            .sheet(isPresented: $showingLogSelection) {
+                if let selectedMovie = selectedMovie {
+                    LogSelectionView(selectedMovieId: selectedMovie.id, showingSheet: $showingLogSelection)
+                }
             }
         }
     }
