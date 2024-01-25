@@ -1,19 +1,16 @@
 import SwiftUI
 import CoreData
 
-// The view for displaying and managing user logs.
 struct MyLogsView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @State private var draggedLog: LogEntity?
+    @State private var selectedLogForDetails: LogEntity?
+    @State private var showingAddLogSheet = false
 
-    // Fetch request to retrieve and sort log entries.
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \LogEntity.logid, ascending: true)],
         animation: .default)
     private var logs: FetchedResults<LogEntity>
-
-    // State variable to control the presentation of the add log sheet.
-    @State private var showingAddLogSheet = false
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -41,17 +38,22 @@ struct MyLogsView: View {
             ScrollView {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                     ForEach(logs.sorted(by: { $0.orderIndex < $1.orderIndex }), id: \.self) { log in
-                        LogItemView(log: log)
-                            .cornerRadius(15)
-                            .overlay(
-                                Rectangle()
-                                .opacity(draggedLog == log ? 0.5 : 0)
-                            )
-                            .onDrag {
-                                self.draggedLog = log
-                                return NSItemProvider()
-                            }
-                            .onDrop(of: [.plainText], delegate: DropViewDelegate(droppedLog: log, logs: logs, draggedLog: $draggedLog, viewContext: viewContext))
+                        Group {
+                            LogItemView(log: log)
+                                .cornerRadius(15)
+                                .overlay(
+                                    Rectangle()
+                                    .opacity(draggedLog == log ? 0.5 : 0)
+                                )
+                                .onDrag {
+                                    self.draggedLog = log
+                                    return NSItemProvider()
+                                }
+                                .onDrop(of: [.plainText], delegate: DropViewDelegate(droppedLog: log, logs: logs, draggedLog: $draggedLog, viewContext: viewContext))
+                                .simultaneousGesture(TapGesture().onEnded {
+                                    self.selectedLogForDetails = log
+                                })
+                        }
                     }
                 }
             }
@@ -59,8 +61,11 @@ struct MyLogsView: View {
         .sheet(isPresented: $showingAddLogSheet) {
             AddLogSheetView(isPresented: $showingAddLogSheet)
         }
+        .sheet(item: $selectedLogForDetails) { log in
+            LogDetailView(log: log)
+        }
     }
-
+    
     struct DropViewDelegate: DropDelegate {
         let droppedLog: LogEntity
         let logs: FetchedResults<LogEntity>
