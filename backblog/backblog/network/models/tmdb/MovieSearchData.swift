@@ -7,7 +7,7 @@
 
 import Foundation
 
-class MovieSearchData: Codable {
+struct MovieSearchData: Codable {
     var page: Int?
     var results: [MovieSearchResult]?
     var totalPages: Int?
@@ -19,7 +19,7 @@ class MovieSearchData: Codable {
         case totalResults = "total_results"
     }
     
-    class MovieSearchResult: Codable {
+    struct MovieSearchResult: Codable {
         var adult: Bool?
         var backdropPath: String?
         var genreIds: [Int]?

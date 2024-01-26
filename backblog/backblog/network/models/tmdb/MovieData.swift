@@ -7,7 +7,7 @@
 
 import Foundation
 
-class MovieData: Codable {
+struct MovieData: Codable {
     var adult: Bool?
     var backdropPath: String?
     var belongsToCollection: Collection?
@@ -56,7 +56,7 @@ class MovieData: Codable {
         case watchProviders = "watch_providers"
     }
     
-    class Collection: Codable {
+    struct Collection: Codable {
         var id: Int?
         var name: String?
         var posterPath: String?
@@ -69,12 +69,12 @@ class MovieData: Codable {
         }
     }
     
-    class Genre: Codable {
+    struct Genre: Codable {
         var id: Int?
         var name: String?
     }
     
-    class ProductionCompany: Codable {
+    struct ProductionCompany: Codable {
         var id: Int?
         var logoPath: String?
         var name: String?
@@ -88,12 +88,12 @@ class MovieData: Codable {
         }
     }
     
-    class MovieImages: Codable {
+    struct MovieImages: Codable {
         var backdrops: [Image]?
         var logos: [Image]?
         var posters: [Image]?
         
-        class Image: Codable {
+        struct Image: Codable {
             var aspectRatio: Double?
             var height: Int?
             var iso6391: String?
@@ -113,10 +113,10 @@ class MovieData: Codable {
         }
     }
     
-    class ReleaseDates: Codable {
+    struct ReleaseDates: Codable {
         var results: [ReleaseDate]?
         
-        class ReleaseDate: Codable {
+        struct ReleaseDate: Codable {
             var iso31661: String?
             var releaseDates: [ReleaseDateItem]?
             
@@ -125,7 +125,7 @@ class MovieData: Codable {
                 case releaseDates = "release_dates"
             }
             
-            class ReleaseDateItem: Codable {
+            struct ReleaseDateItem: Codable {
                 var certification: String?
                 var descriptors: [String?]?
                 var iso6391: String?
@@ -142,14 +142,14 @@ class MovieData: Codable {
         }
     }
     
-    class WatchProviders: Codable {
+    struct WatchProviders: Codable {
         var results: Dictionary<String?, WatchProviderResults>?
         
-        class WatchProviderResults: Codable {
+        struct WatchProviderResults: Codable {
             var link: String
             var flatrate: [Flatrate]?
             
-            class Flatrate: Codable {
+            struct Flatrate: Codable {
                 var logoPath: String?
                 var providerId: Int?
                 var providerName: String?
@@ -165,10 +165,10 @@ class MovieData: Codable {
         }
     }
     
-    class Credits: Codable {
+    struct Credits: Codable {
         var cast: [Cast]?
         
-        class Cast: Codable {
+        struct Cast: Codable {
             var adult: Bool?
             var gender: Int?
             var id: Int?

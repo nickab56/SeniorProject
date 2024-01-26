@@ -7,7 +7,7 @@
 
 import Foundation
 
-class UserData: Codable, Equatable {
+struct UserData: Codable, Equatable {
     static func == (lhs: UserData, rhs: UserData) -> Bool {
         return lhs.userId == rhs.userId
     }
@@ -20,11 +20,9 @@ class UserData: Codable, Equatable {
     var blocked: Dictionary<String, Bool>?
     
     enum CodingKeys: String, CodingKey {
+        case username, friends, blocked
         case userId = "log_id"
-        case username
         case joinDate = "join_date"
         case avatarPreset = "avatar_preset"
-        case friends
-        case blocked
     }
 }
