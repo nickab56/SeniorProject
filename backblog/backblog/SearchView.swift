@@ -10,69 +10,65 @@ struct SearchView: View {
     @State private var selectedMovieForLog: Movie?
 
     var body: some View {
-        NavigationView {
-            ZStack {
-                LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
-                    .edgesIgnoringSafeArea(.all)
+        ZStack {
+            LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                .edgesIgnoringSafeArea(.all)
 
-                ScrollView {
-                    VStack(alignment: .leading) {
-                        HStack {
-                            Image(systemName: "magnifyingglass").foregroundColor(.gray)
-                            TextField("Search for a movie", text: $searchText)
-                                .onChange(of: searchText) {
-                                    isSearching = !searchText.isEmpty
-                                    searchMovies(query: searchText)
+            ScrollView {
+                VStack(alignment: .leading) {
+                    HStack {
+                        Image(systemName: "magnifyingglass").foregroundColor(.gray)
+                        TextField("Search for a movie", text: $searchText)
+                            .onChange(of: searchText) {
+                                isSearching = !searchText.isEmpty
+                                searchMovies(query: searchText)
+                            }
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(.primary)
+                    }
+                    .padding(12)
+                    .background(Color(.systemBackground))
+                    .cornerRadius(10)
+                    .padding(.horizontal)
+
+                    if isSearching {
+                        ForEach(movies, id: \.id) { movie in
+                            HStack {
+                                if let halfSheetPath = movie.half_sheet, let url = URL(string: "https://image.tmdb.org/t/p/w500" + halfSheetPath) {
+                                    AsyncImage(url: url) { image in
+                                        image.resizable()
+                                    } placeholder: {
+                                        Color.gray
+                                    }
+                                    .frame(width: 145, height: 90)
+                                    .cornerRadius(8)
+                                    .padding(.leading)
                                 }
-                                .font(.system(size: 18, weight: .bold))
-                                .foregroundColor(.primary)
-                        }
-                        .padding(12)
-                        .background(Color(.systemBackground))
-                        .cornerRadius(10)
-                        .padding(.horizontal)
 
-                        if isSearching {
-                            ForEach(movies, id: \.id) { movie in
-                                HStack {
-                                    if let halfSheetPath = movie.half_sheet, let url = URL(string: "https://image.tmdb.org/t/p/w500" + halfSheetPath) {
-                                        AsyncImage(url: url) { image in
-                                            image.resizable()
-                                        } placeholder: {
-                                            Color.gray
-                                        }
-                                        .frame(width: 145, height: 90)
-                                        .cornerRadius(8)
-                                        .padding(.leading)
-                                    }
+                                // Use NavigationLink only if you are within a NavigationStack or NavigationView
+                                Text(movie.title)
+                                    .foregroundColor(.white)
 
-                                    NavigationLink(destination: MovieDetailsView(movie: movie)) {
-                                        Text(movie.title)
-                                            .foregroundColor(.white)
-                                    }
-                                    .buttonStyle(PlainButtonStyle())
+                                Spacer()
 
-                                    Spacer()
-
-                                    Button(action: {
-                                        self.selectedMovieForLog = movie
-                                        self.showingLogSelection = true
-                                    }) {
-                                        Image(systemName: "plus.circle")
-                                            .foregroundColor(Color(hex: "#3891e1"))
-                                            .imageScale(.large)
-                                    }
-                                    .padding()
+                                Button(action: {
+                                    self.selectedMovieForLog = movie
+                                    self.showingLogSelection = true
+                                }) {
+                                    Image(systemName: "plus.circle")
+                                        .foregroundColor(Color(hex: "#3891e1"))
+                                        .imageScale(.large)
                                 }
+                                .padding()
                             }
                         }
                     }
                 }
             }
-            .sheet(isPresented: $showingLogSelection) {
-                if let selectedMovie = selectedMovieForLog {
-                    LogSelectionView(selectedMovieId: selectedMovie.id, showingSheet: $showingLogSelection)
-                }
+        }
+        .sheet(isPresented: $showingLogSelection) {
+            if let selectedMovie = selectedMovieForLog {
+                LogSelectionView(selectedMovieId: selectedMovie.id, showingSheet: $showingLogSelection)
             }
         }
         .navigationTitle(searchText.isEmpty ? "Search" : "Results")
