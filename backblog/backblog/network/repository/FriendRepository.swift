@@ -31,10 +31,9 @@ class FriendRepository {
         }
     }
 
-    static func getFriends(userId: String) async -> Result<UserData, Error> {
+    static func getFriends(userId: String) async -> Result<[UserData], Error> {
         do {
-            let q = FirebaseService.shared.db.collection("users").document(userId)
-            let result = try await FirebaseService.shared.get(type: UserData(), docRef: q).get()
+            let result = try await FirebaseService.shared.get(type: UserData(), docId: userId, collection: "users").get()
             
             // Successful. Continue by iterating through all the friends
             guard let friendsMap = result.friends else {
@@ -45,10 +44,9 @@ class FriendRepository {
 
             let friendData: [UserData] = try await withThrowingTaskGroup(of: UserData.self) { group in
                 for friend in friendIds {
-                    let q = FirebaseService.shared.db.collection("users").document(friend)
                     group.addTask {
                         do {
-                            return try await FirebaseService.shared.get(type: UserData(), docRef: q).get()
+                            return try await FirebaseService.shared.get(type: UserData(), docId: friend, collection: "users").get()
                         } catch {
                             throw error
                         }
@@ -64,9 +62,105 @@ class FriendRepository {
                 return resultArr
             }
             
+            return .success(friendData)
+        } catch {
+            return .failure(error)
+        }
+    }
+    
+    static func updateFriendRequest(friendRequestId: String, isAccepted: Bool) async -> Result<Bool, Error> {
+        do {
+            var updates: [String: Any] = ["is_complete": true]
+            
+            if (isAccepted) {
+                let friendRequestData = try await FirebaseService.shared.get(type: FriendRequestData(), docId: friendRequestId, collection: "friend_requests").get()
+                if (friendRequestData.senderId == nil || friendRequestData.targetId == nil) {
+                    return .failure(FirebaseError.nullProperty)
+                }
+                
+                // Sender Id and Target Id are not nil, continue
+                let result = await withThrowingTaskGroup(of: Bool.self) { group in
+                    // Update senderId's friends map
+                    group.addTask {
+                        do {
+                            var update = ["friends.\(friendRequestData.targetId!)": true]
+                            return try await FirebaseService.shared.put(updates: update, docId: friendRequestData.senderId!, collection: "users").get()
+                        } catch {
+                            throw error
+                        }
+                    }
+                    
+                    // Update targetId's friends map
+                    group.addTask {
+                        do {
+                            var update = ["friends.\(friendRequestData.senderId!)": true]
+                            return try await FirebaseService.shared.put(updates: update, docId: friendRequestData.targetId!, collection: "users").get()
+                        } catch {
+                            throw error
+                        }
+                    }
+                    
+                    
+                    return group
+                }
+                
+            }
+            
+            let result = try await FirebaseService.shared.put(updates: updates, docId: friendRequestId, collection: "friend_requests").get()
+            
             return .success(result)
         } catch {
             return .failure(error)
         }
     }
+    
+    static func updateLogRequest(logRequestId: String, isAccepted: Bool) async -> Result<Bool, Error> {
+        do {
+            var updates: [String: Any] = ["is_complete": true]
+            
+            if (isAccepted) {
+                let logRequestData = try await FirebaseService.shared.get(type: LogRequestData(), docId: logRequestId, collection: "log_requests").get()
+                if (logRequestData.logId == nil || logRequestData.targetId == nil) {
+                    return .failure(FirebaseError.nullProperty)
+                }
+                
+                // Add collaborator
+                let newCollaborator = ["collaborators.\(logRequestData.targetId!)": true]
+                let result = try await FirebaseService.shared.put(updates: newCollaborator, docId: logRequestData.logId!, collection: "logs").get()
+            }
+            
+            let result = try await FirebaseService.shared.put(updates: updates, docId: logRequestId, collection: "log_requests").get()
+            
+            return .success(result)
+        } catch {
+            return .failure(error)
+        }
+    }
+    
+    /*static func removeFriend(userId: String, friendId: String) async -> Result<Bool, Error> {
+        let result = await withThrowingTaskGroup(of: Bool.self) { group in
+            // Update userId's friends map
+            group.addTask {
+                let updateUser = ["friends.\(friendId)": FieldValue.delete()]
+                do {
+                    return try await FirebaseService.shared.put(updates: updateUser, docId: userId, collection: "users").get()
+                } catch {
+                    throw error
+                }
+            }
+                
+            // Update friendId's friends map
+            group.addTask {
+                let updateFriend = ["friends.\(userId)": FieldValue.delete()]
+                do {
+                    return try await FirebaseService.shared.put(updates: updateFriend, docId: userId, collection: "users").get()
+                } catch {
+                    throw error
+                }
+            }
+                
+            return group
+        }
+        return .success(true)
+    }*/
 }
