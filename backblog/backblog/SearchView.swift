@@ -75,10 +75,9 @@ struct SearchView: View {
                 }
             }
         }
-        .navigationTitle("Search")
+        .navigationTitle(searchText.isEmpty ? "Search" : "Results")
         .navigationBarTitleDisplayMode(.large)
     }
-
 
     private func searchMovies(query: String) {
         guard !query.isEmpty else {
@@ -86,18 +85,14 @@ struct SearchView: View {
             return
         }
         NetworkManager.shared.fetchMovies(searchQuery: query) { result in
-                    DispatchQueue.main.async {
-                        switch result {
-                        case .success(let fetchedMovies):
-                            // Filter out movies without a backdrop or a half-sheet
-                            // and sort them by popularity in descending order
-                            self.movies = fetchedMovies
-                                .filter { $0.backdrop_path != nil && $0.half_sheet != nil }
-                                .sorted { $0.popularity > $1.popularity }
-                            let _ = print("Good")
-                        case .failure(let error):
-                            self.errorMessage = error.localizedDescription
-                            let _ = print("Not Good")
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let fetchedMovies):
+                    self.movies = fetchedMovies
+                        .filter { $0.backdrop_path != nil && $0.half_sheet != nil }
+                        .sorted { $0.popularity > $1.popularity }
+                case .failure(let error):
+                    self.errorMessage = error.localizedDescription
                 }
             }
         }
