@@ -19,9 +19,8 @@ struct SearchView: View {
                     HStack {
                         Image(systemName: "magnifyingglass").foregroundColor(.gray)
                         TextField("Search for a movie", text: $searchText)
-                            .onChange(of: searchText) {
-                                isSearching = !searchText.isEmpty
-                                searchMovies(query: searchText)
+                            .onChange(of: searchText) { newValue in
+                                searchMovies(query: newValue)
                             }
                             .font(.system(size: 18, weight: .bold))
                             .foregroundColor(.primary)
@@ -31,8 +30,8 @@ struct SearchView: View {
                     .cornerRadius(10)
                     .padding(.horizontal)
 
-                    if isSearching {
-                        ForEach(movies, id: \.id) { movie in
+                    ForEach(movies, id: \.id) { movie in
+                        NavigationLink(destination: MovieDetailsView(movie: movie)) {
                             HStack {
                                 if let halfSheetPath = movie.half_sheet, let url = URL(string: "https://image.tmdb.org/t/p/w500" + halfSheetPath) {
                                     AsyncImage(url: url) { image in
@@ -45,9 +44,14 @@ struct SearchView: View {
                                     .padding(.leading)
                                 }
 
-                                // Use NavigationLink only if you are within a NavigationStack or NavigationView
-                                Text(movie.title)
-                                    .foregroundColor(.white)
+                                VStack(alignment: .leading) {
+                                    Text(movie.title)
+                                        .foregroundColor(.white)
+                                        .bold()
+                                    Text(movie.release_date)
+                                        .foregroundColor(.gray)
+                                        .font(.footnote)
+                                }
 
                                 Spacer()
 
@@ -62,6 +66,7 @@ struct SearchView: View {
                                 .padding()
                             }
                         }
+                        .buttonStyle(PlainButtonStyle())
                     }
                 }
             }
