@@ -17,12 +17,6 @@ struct SearchView: View {
 
                 ScrollView {
                     VStack(alignment: .leading) {
-                        Text("Search")
-                            .font(.system(size: 32))
-                            .bold()
-                            .foregroundColor(.white)
-                            .padding()
-
                         HStack {
                             Image(systemName: "magnifyingglass").foregroundColor(.gray)
                             TextField("Search for a movie", text: $searchText)
@@ -81,6 +75,8 @@ struct SearchView: View {
                 }
             }
         }
+        .navigationTitle("Search")
+        .navigationBarTitleDisplayMode(.large)
     }
 
 
