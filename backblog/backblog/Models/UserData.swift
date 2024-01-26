@@ -18,4 +18,13 @@ class UserData: Codable, Equatable {
     var avatarPreset: Int?
     var friends: Dictionary<String, Bool>?
     var blocked: Dictionary<String, Bool>?
+    
+    enum CodingKeys: String, CodingKey {
+        case userId = "log_id"
+        case username
+        case joinDate = "join_date"
+        case avatarPreset = "avatar_preset"
+        case friends
+        case blocked
+    }
 }
