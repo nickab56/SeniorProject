@@ -26,6 +26,8 @@ struct ContentView: View {
             NavigationView {
                 SearchView()
             }
+            .navigationTitle("Search")
+            .navigationBarTitleDisplayMode(.inline)
             .tabItem {
                 Image(systemName: "magnifyingglass")
             }
