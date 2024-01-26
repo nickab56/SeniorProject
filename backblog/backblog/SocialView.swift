@@ -23,34 +23,41 @@ struct SocialView: View {
 
     var body: some View {
         VStack {
+            HStack {
+                Spacer()
+                
+                NavigationLink(destination: SettingsView()) {
+                    Image(systemName: "gear")
+                        .font(.title)
+                        .foregroundColor(.gray)
+                }
+                .frame(width: 50, height: 50)
+                .cornerRadius(25)
+                .padding(.horizontal, 30)
+            }
             // Spacer to push content down
-            
-            // Profile section
-            Image(systemName: "person.crop.circle") // Using system symbol for profile picture
-                .resizable()
-                .scaledToFit()
-                .frame(width: 100, height: 100) // Size of the profile picture
-
-            Text("Username") // Placeholder for user's name
-                .font(.system(size: 40))
-                .foregroundColor(.white)
-                .bold()
-                .padding(.top, -10)
-            
-            Text("\(userFriends.count) friends") // Placeholder for total friends
-                .font(.system(size: 15))
-                .foregroundColor(.gray)
-                .bold()
+            HStack {
+                // Profile section
+                Image(systemName: "person.crop.circle") // Using system symbol for profile picture
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 60, height: 60) // Size of the profile picture
+                
+                Text("Username") // Placeholder for user's name
+                    .font(.system(size: 40))
+                    .foregroundColor(.white)
+                    .bold()
+                    .padding()
+                
+                Spacer()
+            }.padding(.leading)
                 .padding(.top, -20)
             
-            // Tab View for Logs and Friends
             Picker("Options", selection: $selectedTab) {
                 Text("Logs").tag("Logs")
                 Text("Friends").tag("Friends")
             }
-            
             .pickerStyle(SegmentedPickerStyle())
-            .padding()
             .accessibility(identifier: "logsFriendsTabPicker")
 
             // Grid display based on selected tab

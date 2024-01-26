@@ -34,6 +34,7 @@
 		34F035AA2B60A93900EB35C7 /* AddLogSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035A92B60A93900EB35C7 /* AddLogSheetView.swift */; };
 		34F035AC2B60A95500EB35C7 /* LogItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035AB2B60A95500EB35C7 /* LogItemView.swift */; };
 		817960B12B6445AB00D94EF4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 817960B02B6445AB00D94EF4 /* GoogleService-Info.plist */; };
+		817960B32B6454BD00D94EF4 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817960B22B6454BD00D94EF4 /* SettingsView.swift */; };
 		9777C8C42B5D8ACD000F40EA /* FriendRequestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9777C8C32B5D8ACD000F40EA /* FriendRequestData.swift */; };
 		9777C8C62B5D8CD9000F40EA /* LogData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9777C8C52B5D8CD9000F40EA /* LogData.swift */; };
 		9777C8C82B5D8F83000F40EA /* LogRequestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9777C8C72B5D8F83000F40EA /* LogRequestData.swift */; };
@@ -98,6 +99,7 @@
 		34F035A92B60A93900EB35C7 /* AddLogSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLogSheetView.swift; sourceTree = "<group>"; };
 		34F035AB2B60A95500EB35C7 /* LogItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogItemView.swift; sourceTree = "<group>"; };
 		817960B02B6445AB00D94EF4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		817960B22B6454BD00D94EF4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		9777C8C32B5D8ACD000F40EA /* FriendRequestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestData.swift; sourceTree = "<group>"; };
 		9777C8C52B5D8CD9000F40EA /* LogData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogData.swift; sourceTree = "<group>"; };
 		9777C8C72B5D8F83000F40EA /* LogRequestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogRequestData.swift; sourceTree = "<group>"; };
@@ -241,6 +243,7 @@
 				344BA2792B378713002626F1 /* SocialView.swift */,
 				344BA2812B48AC8E002626F1 /* SignupView.swift */,
 				344BA27F2B489F01002626F1 /* LoginView.swift */,
+				817960B22B6454BD00D94EF4 /* SettingsView.swift */,
 			);
 			name = Social;
 			sourceTree = "<group>";
@@ -466,6 +469,7 @@
 				97FCFC762B63767900F5BFCB /* FirebaseService.swift in Sources */,
 				344BA2822B48AC8E002626F1 /* SignupView.swift in Sources */,
 				34F035AA2B60A93900EB35C7 /* AddLogSheetView.swift in Sources */,
+				817960B32B6454BD00D94EF4 /* SettingsView.swift in Sources */,
 				3469C1852B312A4700B8EEFB /* Persistence.swift in Sources */,
 				344BA27C2B37875D002626F1 /* ExtensionUtility.swift in Sources */,
 				344BA27A2B378713002626F1 /* SocialView.swift in Sources */,
