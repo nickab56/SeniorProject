@@ -15,7 +15,7 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            NavigationView {
+            NavigationStack {
                 mainContentView()
             }
             .tabItem {
@@ -23,7 +23,7 @@ struct ContentView: View {
             }
             .accessibility(identifier: "mainContentViewTab")
 
-            NavigationView {
+            NavigationStack {
                 SearchView()
             }
             .tabItem {
@@ -31,7 +31,7 @@ struct ContentView: View {
             }
             .accessibility(identifier: "searchViewTab")
 
-            NavigationView {
+            NavigationStack {
                 if isLoggedInToSocial {
                     SocialView()
                 } else {
