@@ -1,0 +1,48 @@
+# Xcode
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
+!default.xcworkspace
+!default.xccheckout
+!default.xccodesignprefs
+*.moved-aside
+DerivedData/
+.idea/
+*.hmap
+*.ipa
+*.xcworkspace
+!default.xcworkspace
+*.xcuserstate
+
+# Swift PM
+.build/
+
+# CocoaPods
+Pods/
+
+# Carthage
+Carthage/Build
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# OS X
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
