@@ -33,6 +33,7 @@
 		34F035A82B606B1B00EB35C7 /* LogDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035A72B606B1B00EB35C7 /* LogDetailsView.swift */; };
 		34F035AA2B60A93900EB35C7 /* AddLogSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035A92B60A93900EB35C7 /* AddLogSheetView.swift */; };
 		34F035AC2B60A95500EB35C7 /* LogItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035AB2B60A95500EB35C7 /* LogItemView.swift */; };
+		817960B12B6445AB00D94EF4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 817960B02B6445AB00D94EF4 /* GoogleService-Info.plist */; };
 		9777C8C42B5D8ACD000F40EA /* FriendRequestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9777C8C32B5D8ACD000F40EA /* FriendRequestData.swift */; };
 		9777C8C62B5D8CD9000F40EA /* LogData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9777C8C52B5D8CD9000F40EA /* LogData.swift */; };
 		9777C8C82B5D8F83000F40EA /* LogRequestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9777C8C72B5D8F83000F40EA /* LogRequestData.swift */; };
@@ -43,7 +44,6 @@
 		97FCFC682B6369CD00F5BFCB /* LogRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FCFC672B6369CD00F5BFCB /* LogRepository.swift */; };
 		97FCFC6A2B6369DC00F5BFCB /* MovieRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FCFC692B6369DC00F5BFCB /* MovieRepository.swift */; };
 		97FCFC6C2B6369E900F5BFCB /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FCFC6B2B6369E900F5BFCB /* UserRepository.swift */; };
-		97FCFC6E2B636BF700F5BFCB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 97FCFC6D2B636BF700F5BFCB /* GoogleService-Info.plist */; };
 		97FCFC712B636DE200F5BFCB /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 97FCFC702B636DE200F5BFCB /* FirebaseAuth */; };
 		97FCFC732B636DE200F5BFCB /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 97FCFC722B636DE200F5BFCB /* FirebaseFirestoreSwift */; };
 		97FCFC762B63767900F5BFCB /* FirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FCFC752B63767900F5BFCB /* FirebaseService.swift */; };
@@ -97,6 +97,7 @@
 		34F035A72B606B1B00EB35C7 /* LogDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDetailsView.swift; sourceTree = "<group>"; };
 		34F035A92B60A93900EB35C7 /* AddLogSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLogSheetView.swift; sourceTree = "<group>"; };
 		34F035AB2B60A95500EB35C7 /* LogItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogItemView.swift; sourceTree = "<group>"; };
+		817960B02B6445AB00D94EF4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		9777C8C32B5D8ACD000F40EA /* FriendRequestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestData.swift; sourceTree = "<group>"; };
 		9777C8C52B5D8CD9000F40EA /* LogData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogData.swift; sourceTree = "<group>"; };
 		9777C8C72B5D8F83000F40EA /* LogRequestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogRequestData.swift; sourceTree = "<group>"; };
@@ -107,7 +108,6 @@
 		97FCFC672B6369CD00F5BFCB /* LogRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogRepository.swift; sourceTree = "<group>"; };
 		97FCFC692B6369DC00F5BFCB /* MovieRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieRepository.swift; sourceTree = "<group>"; };
 		97FCFC6B2B6369E900F5BFCB /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
-		97FCFC6D2B636BF700F5BFCB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		97FCFC752B63767900F5BFCB /* FirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseService.swift; sourceTree = "<group>"; };
 		97FCFC7A2B6389CB00F5BFCB /* FirebaseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -162,7 +162,7 @@
 		3469C17A2B312A4600B8EEFB /* backblog */ = {
 			isa = PBXGroup;
 			children = (
-				97FCFC6D2B636BF700F5BFCB /* GoogleService-Info.plist */,
+				817960B02B6445AB00D94EF4 /* GoogleService-Info.plist */,
 				3469C17F2B312A4700B8EEFB /* Assets.xcassets */,
 				3469C1862B312A4700B8EEFB /* backblog.xcdatamodeld */,
 				3469C17B2B312A4600B8EEFB /* backblogApp.swift */,
@@ -436,7 +436,7 @@
 			files = (
 				3469C1832B312A4700B8EEFB /* Preview Assets.xcassets in Resources */,
 				3469C1802B312A4700B8EEFB /* Assets.xcassets in Resources */,
-				97FCFC6E2B636BF700F5BFCB /* GoogleService-Info.plist in Resources */,
+				817960B12B6445AB00D94EF4 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
