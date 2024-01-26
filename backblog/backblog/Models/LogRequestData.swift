@@ -17,4 +17,13 @@ class LogRequestData: Codable, Equatable {
     var logId: String?
     var requestDate: String?
     var isComplete: Bool?
+    
+    enum CodingKeys: String, CodingKey {
+        case senderId = "sender_id"
+        case targetId = "target_id"
+        case logId = "log_id"
+        case requestDate = "request_date"
+        case isComplete = "is_complete"
+    }
+    
 }

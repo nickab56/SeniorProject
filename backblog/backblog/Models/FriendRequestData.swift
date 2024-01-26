@@ -16,6 +16,13 @@ class FriendRequestData: Codable, Equatable {
     var targetId: String?
     var requestDate: String?
     var isComplete: Bool?
+    
+    enum CodingKeys: String, CodingKey {
+        case senderId = "sender_id"
+        case targetId = "target_id"
+        case requestDate = "request_date"
+        case isComplete = "is_complete"
+    }
 }
 
 
