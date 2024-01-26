@@ -44,17 +44,20 @@ struct SignupView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
                     .autocapitalization(.none)
+                    .accessibility(identifier: "signupUsernameTextField")
 
                 // Password input field
                 SecureField("Password", text: $password)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
-                
+                    .accessibility(identifier: "signupPasswordSecureField")
+
                 // Display Name input field
                 TextField("Display Name", text: $displayName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
                     .autocapitalization(.none)
+                    .accessibility(identifier: "signupDisplayNameTextField")
 
                 // Continue button
                 Button("Continue") {
@@ -66,7 +69,7 @@ struct SignupView: View {
                 .foregroundColor(.white)
                 .cornerRadius(10)
                 .padding()
-                
+                .accessibility(identifier: "signupContinueButton")
                 Spacer()
             }
             .padding()

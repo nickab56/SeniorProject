@@ -42,11 +42,13 @@ struct LoginView: View {
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding(.horizontal)
                         .autocapitalization(.none)
+                        .accessibility(identifier: "usernameTextField")
 
                     // Password input field
                     SecureField("Password", text: $password)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding(.horizontal)
+                        .accessibility(identifier: "passwordSecureField")
 
                     // Login button
                     Button("Log In") {
@@ -58,6 +60,7 @@ struct LoginView: View {
                     .foregroundColor(.white)
                     .cornerRadius(10)
                     .padding()
+                    .accessibility(identifier: "loginButton")
 
                     // Signup redirection link
                     NavigationLink(destination: SignupView(isLoggedInToSocial: $isLoggedInToSocial)) {

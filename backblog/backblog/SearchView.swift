@@ -5,56 +5,84 @@ struct SearchView: View {
     @State private var isSearching = false
     @State private var movies: [Movie] = []
     @State private var errorMessage: String?
+    
+    @State private var showingLogSelection = false
+    @State private var selectedMovieForLog: Movie?
 
     var body: some View {
-        ZStack {
-            // Background
-            LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
-                .edgesIgnoringSafeArea(.all)
-            
-            // Content
-            ScrollView {
-                VStack(alignment: .leading) {
-                    Text("Search")
-                        .font(.system(size: 32))
-                        .bold()
-                        .foregroundColor(.white)
-                        .padding()
-                    // Search bar
-                    HStack {
-                        Image(systemName: "magnifyingglass")
-                            .foregroundColor(.gray)
-                        
-                        TextField("Search for a movie", text: $searchText)
-                            .onChange(of: searchText) {
-                                isSearching = !searchText.isEmpty
-                                searchMovies(query: searchText)
+        NavigationView {
+            ZStack {
+                LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                    .edgesIgnoringSafeArea(.all)
+
+                ScrollView {
+                    VStack(alignment: .leading) {
+                        Text("Search")
+                            .font(.system(size: 32))
+                            .bold()
+                            .foregroundColor(.white)
+                            .padding()
+
+                        HStack {
+                            Image(systemName: "magnifyingglass").foregroundColor(.gray)
+                            TextField("Search for a movie", text: $searchText)
+                                .onChange(of: searchText) {
+                                    isSearching = !searchText.isEmpty
+                                    searchMovies(query: searchText)
+                                }
+                                .font(.system(size: 18, weight: .bold))
+                                .foregroundColor(.primary)
+                        }
+                        .padding(12)
+                        .background(Color(.systemBackground))
+                        .cornerRadius(10)
+                        .padding(.horizontal)
+
+                        if isSearching {
+                            ForEach(movies, id: \.id) { movie in
+                                HStack {
+                                    if let halfSheetPath = movie.half_sheet, let url = URL(string: "https://image.tmdb.org/t/p/w500" + halfSheetPath) {
+                                        AsyncImage(url: url) { image in
+                                            image.resizable()
+                                        } placeholder: {
+                                            Color.gray
+                                        }
+                                        .frame(width: 145, height: 90)
+                                        .cornerRadius(8)
+                                        .padding(.leading)
+                                    }
+
+                                    NavigationLink(destination: MovieDetailsView(movie: movie)) {
+                                        Text(movie.title)
+                                            .foregroundColor(.white)
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+
+                                    Spacer()
+
+                                    Button(action: {
+                                        self.selectedMovieForLog = movie
+                                        self.showingLogSelection = true
+                                    }) {
+                                        Image(systemName: "plus.circle")
+                                            .foregroundColor(Color(hex: "#3891e1"))
+                                            .imageScale(.large)
+                                    }
+                                    .padding()
+                                }
                             }
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.primary)
-                    }
-                    .padding(12)
-                    .background(Color(.systemBackground))
-                    .cornerRadius(10)
-                    .padding(.horizontal)
-                    
-                    // Search results
-                    if isSearching {
-                        ForEach(movies, id: \.id) { movie in
-                            Text(movie.title)
-                                .foregroundColor(.white)
-                                .padding()
                         }
                     }
                 }
             }
-        }
-        // Handle any error messages
-        if let errorMessage = errorMessage {
-            Text(errorMessage)
-                .foregroundColor(.red)
+            .sheet(isPresented: $showingLogSelection) {
+                if let selectedMovie = selectedMovieForLog {
+                    LogSelectionView(selectedMovieId: selectedMovie.id, showingSheet: $showingLogSelection)
+                }
+            }
         }
     }
+
 
     private func searchMovies(query: String) {
         guard !query.isEmpty else {

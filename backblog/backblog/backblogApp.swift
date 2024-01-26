@@ -18,10 +18,10 @@ import SwiftUI
 struct backblogApp: App {
     // Shared instance of the PersistenceController.
     // This handles all the Core Data stack setup and management.
-    //let persistenceController = PersistenceController.shared
+    let persistenceController = PersistenceController.shared
     
     // allows for use in preview content view
-    let persistenceController = PersistenceController.preview
+    //let persistenceController = PersistenceController.preview
 
     // The body of the App protocol. Defines the content of the application's scenes.
     var body: some Scene {
