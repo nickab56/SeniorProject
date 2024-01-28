@@ -32,7 +32,7 @@ struct SearchView: View {
                     .padding(.horizontal)
 
                     ForEach(movies, id: \.id) { movie in
-                        NavigationLink(destination: MovieDetailsView(movie: movie)) {
+                        NavigationLink(destination: MovieDetailsView(movieId: String(movie.id))) {
                             HStack {
                                 if let halfSheetPath = movie.half_sheet, let url = URL(string: "https://image.tmdb.org/t/p/w500" + halfSheetPath) {
                                     AsyncImage(url: url) { image in
