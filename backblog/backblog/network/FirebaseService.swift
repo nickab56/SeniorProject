@@ -34,8 +34,9 @@ class FirebaseService {
     }
     
     // From doc ref
-    func get<T: Decodable>(type: T, docRef : DocumentReference) async -> Result<T, Error> {
+    func get<T: Decodable>(type: T, docId: String, collection: String) async -> Result<T, Error> {
         do {
+            let docRef =  db.collection(collection).document(docId)
             let doc = try await docRef.getDocument()
             
             if (doc.exists) {
@@ -83,12 +84,26 @@ class FirebaseService {
         }
     }
     
+    // Update entire document
     func put<T: Codable>(doc: T, docId: String, collection: String) async -> Result<T, Error> {
         let docRef = db.collection(collection).document(docId)
         
         do {
             try docRef.setData(from: doc)
             return .success(doc) // Updated document
+        } catch {
+            print("Error: \(error)")
+            return .failure(error)
+        }
+    }
+    
+    // Update specific properties
+    func put(updates: [String: Any], docId: String, collection: String) async -> Result<Bool, Error> {
+        let docRef = db.collection(collection).document(docId)
+        
+        do {
+            try await docRef.updateData(updates)
+            return .success(true) // Updated document
         } catch {
             print("Error: \(error)")
             return .failure(error)
