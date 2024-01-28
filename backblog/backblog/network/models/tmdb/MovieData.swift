@@ -202,7 +202,7 @@ struct MovieData: Codable {
             var originalName: String?
             var popularity: Double?
             var profilePath: String?
-            var creditId: Int?
+            var creditId: String?
             var department: String?
             var job: String?
             
