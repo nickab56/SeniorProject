@@ -13,17 +13,32 @@ struct AddLogSheetView: View {
                 TextField("Log Name", text: $newLogName)
                     .accessibility(identifier: "newLogNameTextField")
 
-                Button("Add Log") {
+                Button(action: {
                     addNewLog()
                     isPresented = false
+                }) {
+                    Text("Add Log")
+                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
                 }
                 .accessibility(identifier: "addLogButton")
+                
+                Button(action: {
+                    isPresented = false
+                }) {
+                    Text("Cancel")
+                        .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.red)
+                }
+                .accessibility(identifier: "cancelAddLogButton")
             }
-            .navigationBarTitle("Add New Log", displayMode: .inline)
-            .navigationBarItems(trailing: Button("Cancel") {
-                isPresented = false
-            }
-            .accessibility(identifier: "cancelAddLogButton"))
+            .navigationBarTitle("New Log", displayMode: .inline)
+            
+//            .navigationBarItems(trailing: Button("Cancel") {
+//                isPresented = false
+//            }
+//            .accessibility(identifier: "cancelAddLogButton"))
         }
     }
 

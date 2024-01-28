@@ -15,7 +15,7 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            NavigationView {
+            NavigationStack {
                 mainContentView()
             }
             .tabItem {
@@ -23,17 +23,15 @@ struct ContentView: View {
             }
             .accessibility(identifier: "mainContentViewTab")
 
-            NavigationView {
+            NavigationStack {
                 SearchView()
             }
-            .navigationTitle("Search")
-            .navigationBarTitleDisplayMode(.inline)
             .tabItem {
                 Image(systemName: "magnifyingglass")
             }
             .accessibility(identifier: "searchViewTab")
 
-            NavigationView {
+            NavigationStack {
                 if isLoggedInToSocial {
                     SocialView()
                 } else {

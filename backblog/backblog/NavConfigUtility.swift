@@ -18,13 +18,16 @@ class NavConfigUtility {
     static func configureNavigationBar() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor.clear
+        appearance.backgroundColor = .clear // Ensure no additional padding is added
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
         appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-
-        // Apply the appearance settings to all navigation bars.
+        
+        // Setting compactAppearance for smaller navigation bars in scroll or detail views
+        UINavigationBar.appearance().compactAppearance = appearance
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
+
 
     // Configures the appearance of the tab bar.
     // This method sets a dark background color for the tab bar.

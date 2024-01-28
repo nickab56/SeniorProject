@@ -48,3 +48,4 @@ fastlane/test_output
 .VolumeIcon.icns
 
 api/
+GoogleService-Info.plist
