@@ -137,30 +137,53 @@ class FriendRepository {
         }
     }
     
-    /*static func removeFriend(userId: String, friendId: String) async -> Result<Bool, Error> {
-        let result = await withThrowingTaskGroup(of: Bool.self) { group in
-            // Update userId's friends map
-            group.addTask {
-                let updateUser = ["friends.\(friendId)": FieldValue.delete()]
-                do {
-                    return try await FirebaseService.shared.put(updates: updateUser, docId: userId, collection: "users").get()
-                } catch {
-                    throw error
+    static func removeFriend(userId: String, friendId: String) async -> Result<Bool, Error> {
+        do {
+            let result = try await withThrowingTaskGroup(of: Bool.self) { group in
+                // Update userId's friends map
+                group.addTask {
+                    let updateUser = ["friends.\(friendId)": FieldValue.delete()]
+                    do {
+                        return try await FirebaseService.shared.put(updates: updateUser, docId: userId, collection: "users").get()
+                    } catch {
+                        throw error
+                    }
                 }
-            }
-                
-            // Update friendId's friends map
-            group.addTask {
-                let updateFriend = ["friends.\(userId)": FieldValue.delete()]
-                do {
-                    return try await FirebaseService.shared.put(updates: updateFriend, docId: userId, collection: "users").get()
-                } catch {
-                    throw error
+                    
+                // Update friendId's friends map
+                group.addTask {
+                    let updateFriend = ["friends.\(userId)": FieldValue.delete()]
+                    do {
+                        return try await FirebaseService.shared.put(updates: updateFriend, docId: userId, collection: "users").get()
+                    } catch {
+                        throw error
+                    }
                 }
-            }
                 
-            return group
+                for try await result in group {
+                    if (!result) {
+                        throw FirebaseError.failedTransaction
+                    }
+                }
+                    
+                return true
+            }
+            return .success(result)
+        } catch {
+            return .failure(error)
         }
-        return .success(true)
-    }*/
+    }
+    
+    // TODO Ensure blocker is removed from friends list, logs involving this user (excluding one he owns)
+    // Blocked user must also be removed from the logs that the user above owns
+    static func blockUser(userId: String, blockedId: String) async -> Result<Bool, Error> {
+        do {
+            let updates = ["blocked.\(blockedId)": true]
+            let result = try await FirebaseService.shared.put(updates: updates, docId: userId, collection: "users").get()
+            
+            return .success(result)
+        } catch {
+            return .failure(error)
+        }
+    }
 }

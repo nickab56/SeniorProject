@@ -20,26 +20,25 @@ struct LogData: Codable, Equatable {
     var owner: Owner?
     var movieIds: Dictionary<String, Bool>?
     var watchedIds: Dictionary<String, Bool>?
-    var collaborators: Dictionary<String, Dictionary<String, Int>>
-    
-    class Owner: Codable {
-        var userId: String?
-        var priority: Int?
-        
-        private enum CodingKeys: String, CodingKey {
-            case userId = "user_id"
-            case priority
-        }
-    }
+    var collaborators: Dictionary<String, Dictionary<String, Int>>?
     
     enum CodingKeys: String, CodingKey {
+        case name, collaborators, owner
         case logId = "log_id"
-        case name
         case creationDate = "creation_date"
         case lastModifiedDate = "last_modified_date"
         case isVisible = "is_visible"
         case movieIds = "movie_ids"
         case watchedIds = "watched_ids"
-        case collaborators
+    }
+}
+
+struct Owner: Codable {
+    var userId: String?
+    var priority: Int?
+    
+    private enum CodingKeys: String, CodingKey {
+        case userId = "user_id"
+        case priority
     }
 }
