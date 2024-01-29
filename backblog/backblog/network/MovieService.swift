@@ -14,6 +14,7 @@ struct MovieService {
     enum MovieError: Error {
         case networkError
         case decodingError
+        case emptyFieldError
     }
    
     func searchMovie(query: String, includeAdult: Bool, language: String, page: Int) async -> Result<MovieSearchData, Error> {
@@ -54,5 +55,28 @@ struct MovieService {
          } catch {
              return .failure(error)
          }
+    }
+    
+    func getMovieHalfSheet(movieId: String) async -> Result<String, Error> {
+        let endpointExt = "movie/\(movieId)/images?include_image_language=en"
+        let url = URL(string: baseURL + endpointExt)!
+        
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(MovieAccess.shared.MOVIE_SECRET)", forHTTPHeaderField: "Authorization")
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
+            if let imageResults = try? JSONDecoder().decode(MovieImageData.self, from: data) {
+                guard let halfsheet = imageResults.backdrops?[0].filePath else {
+                    return .failure(MovieError.emptyFieldError)
+                }
+                return .success(halfsheet)
+            } else {
+                return .failure(MovieError.decodingError)
+            }
+        } catch {
+            return .failure(error)
+        }
     }
 }
