@@ -10,7 +10,6 @@
 		3401834A2B5DFE1D009D7818 /* LogDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340183492B5DFE1D009D7818 /* LogDisplayView.swift */; };
 		340746AE2B62B5EB007711C8 /* LogSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340746AD2B62B5EB007711C8 /* LogSelectionView.swift */; };
 		340D4DBA2B672EC60044F101 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340D4DB92B672EC60044F101 /* API.swift */; };
-		343EA2662B65AD9000A44A7D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 343EA2652B65AD9000A44A7D /* GoogleService-Info.plist */; };
 		344BA2742B3785ED002626F1 /* CustomTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2732B3785ED002626F1 /* CustomTitleView.swift */; };
 		344BA2762B37862E002626F1 /* MyLogsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2752B37862E002626F1 /* MyLogsView.swift */; };
 		344BA2782B378709002626F1 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2772B378709002626F1 /* SearchView.swift */; };
@@ -21,7 +20,7 @@
 		344BA2822B48AC8E002626F1 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2812B48AC8E002626F1 /* SignupView.swift */; };
 		3466FF2D2B61EA610028034C /* MovieDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3466FF2C2B61EA610028034C /* MovieDetailsView.swift */; };
 		3469C17C2B312A4600B8EEFB /* backblogApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C17B2B312A4600B8EEFB /* backblogApp.swift */; };
-		3469C17E2B312A4600B8EEFB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C17D2B312A4600B8EEFB /* ContentView.swift */; };
+		3469C17E2B312A4600B8EEFB /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C17D2B312A4600B8EEFB /* LandingView.swift */; };
 		3469C1802B312A4700B8EEFB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3469C17F2B312A4700B8EEFB /* Assets.xcassets */; };
 		3469C1832B312A4700B8EEFB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3469C1822B312A4700B8EEFB /* Preview Assets.xcassets */; };
 		3469C1852B312A4700B8EEFB /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C1842B312A4700B8EEFB /* Persistence.swift */; };
@@ -87,7 +86,7 @@
 		3466FF2C2B61EA610028034C /* MovieDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsView.swift; sourceTree = "<group>"; };
 		3469C1782B312A4600B8EEFB /* backblog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = backblog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3469C17B2B312A4600B8EEFB /* backblogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = backblogApp.swift; sourceTree = "<group>"; };
-		3469C17D2B312A4600B8EEFB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		3469C17D2B312A4600B8EEFB /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 		3469C17F2B312A4700B8EEFB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3469C1822B312A4700B8EEFB /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		3469C1842B312A4700B8EEFB /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
@@ -228,7 +227,7 @@
 			isa = PBXGroup;
 			children = (
 				34F035A92B60A93900EB35C7 /* AddLogSheetView.swift */,
-				3469C17D2B312A4600B8EEFB /* ContentView.swift */,
+				3469C17D2B312A4600B8EEFB /* LandingView.swift */,
 			);
 			name = "Landing Page";
 			sourceTree = "<group>";
@@ -507,7 +506,7 @@
 				340746AE2B62B5EB007711C8 /* LogSelectionView.swift in Sources */,
 				344BA2762B37862E002626F1 /* MyLogsView.swift in Sources */,
 				34F035A82B606B1B00EB35C7 /* LogDetailsView.swift in Sources */,
-				3469C17E2B312A4600B8EEFB /* ContentView.swift in Sources */,
+				3469C17E2B312A4600B8EEFB /* LandingView.swift in Sources */,
 				3401834A2B5DFE1D009D7818 /* LogDisplayView.swift in Sources */,
 				344BA2742B3785ED002626F1 /* CustomTitleView.swift in Sources */,
 				3469C1882B312A4700B8EEFB /* backblog.xcdatamodeld in Sources */,
