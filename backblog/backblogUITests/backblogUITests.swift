@@ -71,9 +71,11 @@ final class backblogUITests: XCTestCase {
 
         app.buttons["addLogButton"].tap()
 
-        let canceladdlogbutton = app.navigationBars["Add New Log"]/*@START_MENU_TOKEN@*/.buttons["cancelAddLogButton"]/*[[".otherElements[\"Cancel\"]",".buttons[\"Cancel\"]",".buttons[\"cancelAddLogButton\"]",".otherElements[\"cancelAddLogButton\"]"],[[[-1,2],[-1,1],[-1,3,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/
-        XCTAssertTrue(canceladdlogbutton.exists)
-        canceladdlogbutton.tap()
+        let cancelAddLogButton = app.buttons["cancelAddLogButton"]
+
+        XCTAssertTrue(cancelAddLogButton.exists, "The cancel button does not exist.")
+
+        cancelAddLogButton.tap()
     }
 
 

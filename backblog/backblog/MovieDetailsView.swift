@@ -1,3 +1,12 @@
+//
+//  MovieDetailsView.swift
+//  backblog
+//
+//  Created by Nick Abegg
+//
+//  Description: Details page for movies. Utilizes Repository functions found in network file.
+//  Fetches and displays all the info for a movie
+
 import SwiftUI
 
 struct MovieDetailsView: View {
@@ -18,7 +27,7 @@ struct MovieDetailsView: View {
             } else if let movie = movieData {
                 ScrollView {
                     VStack {
-                        // Movie Image
+                        // Movie Image *needs to be changed to half sheet
                         if let posterPath = movie.posterPath, let url = URL(string: "https://image.tmdb.org/t/p/w500" + posterPath) {
                             AsyncImage(url: url) { image in
                                 image.resizable()
@@ -96,6 +105,7 @@ struct MovieDetailsView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
+    // fetches the movie details using the id using repo function.
     private func fetchMovieDetails() {
         isLoading = true
         Task {

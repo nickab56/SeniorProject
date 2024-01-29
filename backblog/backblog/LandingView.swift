@@ -21,7 +21,7 @@ struct LandingView: View {
             .tabItem {
                 Image(systemName: "square.stack.3d.up")
             }
-            .accessibility(identifier: "mainContentViewTab")
+            .accessibility(identifier: "landingViewTab")
 
             NavigationStack {
                 SearchView()
@@ -74,9 +74,11 @@ struct LandingView: View {
 }
 
 
-// Preview provider for ContentView.
-struct LandingView_Previews: PreviewProvider {
-    static var previews: some View {
-        LandingView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-    }
-}
+/*
+ // Preview provider for ContentView.
+ struct LandingView_Previews: PreviewProvider {
+ static var previews: some View {
+ LandingView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+ }
+ }
+ */
