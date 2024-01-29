@@ -3,11 +3,11 @@ import SwiftUI
 struct SearchView: View {
     @State private var searchText = ""
     @State private var isSearching = false
-    @State private var movies: [Movie] = []
+    @State private var movies: [MovieSearchData.MovieSearchResult] = []
     @State private var errorMessage: String?
     
     @State private var showingLogSelection = false
-    @State private var selectedMovieForLog: Movie?
+    @State private var selectedMovieForLog: MovieSearchData.MovieSearchResult?
 
     var body: some View {
         ZStack {
@@ -32,9 +32,9 @@ struct SearchView: View {
                     .padding(.horizontal)
 
                     ForEach(movies, id: \.id) { movie in
-                        NavigationLink(destination: MovieDetailsView(movieId: String(movie.id))) {
+                        NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0))) {
                             HStack {
-                                if let halfSheetPath = movie.half_sheet, let url = URL(string: "https://image.tmdb.org/t/p/w500" + halfSheetPath) {
+                                if let posterPath = movie.posterPath, let url = URL(string: "https://image.tmdb.org/t/p/w500" + posterPath) {
                                     AsyncImage(url: url) { image in
                                         image.resizable()
                                     } placeholder: {
@@ -46,10 +46,10 @@ struct SearchView: View {
                                 }
 
                                 VStack(alignment: .leading) {
-                                    Text(movie.title)
+                                    Text(movie.title ?? "N/A")
                                         .foregroundColor(.white)
                                         .bold()
-                                    Text(movie.release_date)
+                                    Text(movie.releaseDate ?? "Unknown release date")
                                         .foregroundColor(.gray)
                                         .font(.footnote)
                                 }
@@ -74,7 +74,7 @@ struct SearchView: View {
         }
         .sheet(isPresented: $showingLogSelection) {
             if let selectedMovie = selectedMovieForLog {
-                LogSelectionView(selectedMovieId: selectedMovie.id, showingSheet: $showingLogSelection)
+                LogSelectionView(selectedMovieId: selectedMovie.id ?? 0, showingSheet: $showingLogSelection)
             }
         }
         .navigationTitle(searchText.isEmpty ? "Search" : "Results")
@@ -86,13 +86,12 @@ struct SearchView: View {
             movies = []
             return
         }
-        NetworkManager.shared.fetchMovies(searchQuery: query) { result in
+        Task {
+            let result = await MovieRepository.searchMovie(query: query, page: 1)
             DispatchQueue.main.async {
                 switch result {
-                case .success(let fetchedMovies):
-                    self.movies = fetchedMovies
-                        .filter { $0.backdrop_path != nil && $0.half_sheet != nil }
-                        .sorted { $0.popularity > $1.popularity }
+                case .success(let movieSearchData):
+                    self.movies = movieSearchData.results ?? []
                 case .failure(let error):
                     self.errorMessage = error.localizedDescription
                 }
