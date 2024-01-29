@@ -42,6 +42,7 @@ struct LogDetailsView: View {
                 .background(Color.red)
                 .cornerRadius(10)
                 .padding(.bottom, 20)
+                .accessibility(identifier: "Delete Log")
             }
         }
         .onAppear {

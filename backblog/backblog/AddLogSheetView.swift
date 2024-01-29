@@ -21,7 +21,7 @@ struct AddLogSheetView: View {
                         .frame(maxWidth: .infinity)
                         .multilineTextAlignment(.center)
                 }
-                .accessibility(identifier: "addLogButton")
+                .accessibility(identifier: "createLogButton")
                 
                 Button(action: {
                     isPresented = false
