@@ -28,6 +28,7 @@ struct LandingView: View {
             }
             .tabItem {
                 Image(systemName: "magnifyingglass")
+                    .accessibilityElement(children: .ignore)
             }
             .accessibility(identifier: "searchViewTab")
 

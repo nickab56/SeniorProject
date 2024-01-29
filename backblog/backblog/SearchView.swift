@@ -25,6 +25,7 @@ struct SearchView: View {
                            }
                             .font(.system(size: 18, weight: .bold))
                             .foregroundColor(.primary)
+                            .accessibility(identifier: "movieSearchField")
                     }
                     .padding(12)
                     .background(Color(.systemBackground))
@@ -49,6 +50,7 @@ struct SearchView: View {
                                     Text(movie.title ?? "N/A")
                                         .foregroundColor(.white)
                                         .bold()
+                                        .accessibility(label: Text(movie.title ?? "Unknown Movie"))
                                     Text(movie.releaseDate ?? "Unknown release date")
                                         .foregroundColor(.gray)
                                         .font(.footnote)
@@ -65,6 +67,7 @@ struct SearchView: View {
                                         .imageScale(.large)
                                 }
                                 .padding()
+                                .accessibilityLabel("Add to Log")
                             }
                         }
                         .buttonStyle(PlainButtonStyle())
