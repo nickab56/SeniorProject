@@ -39,7 +39,7 @@ struct backblogApp: App {
             // The managed object context from the PersistenceController is injected
             // into the ContentView's environment, allowing Core Data to be used within
             // the application's views.
-            ContentView()
+            LandingView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }

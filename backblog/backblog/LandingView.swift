@@ -1,7 +1,7 @@
 import SwiftUI
 import CoreData
 
-struct ContentView: View {
+struct LandingView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \LogEntity.logid, ascending: true)], animation: .default)
     private var logs: FetchedResults<LogEntity>
@@ -16,7 +16,7 @@ struct ContentView: View {
     var body: some View {
         TabView {
             NavigationStack {
-                mainContentView()
+                mainLandingView()
             }
             .tabItem {
                 Image(systemName: "square.stack.3d.up")
@@ -49,8 +49,7 @@ struct ContentView: View {
         }
     }
 
-    // Helper function to create the main content view without GeometryReader.
-    private func mainContentView() -> some View {
+    private func mainLandingView() -> some View {
         ScrollView {
             VStack {
                 // Custom title for the main content area.
@@ -76,8 +75,8 @@ struct ContentView: View {
 
 
 // Preview provider for ContentView.
-struct ContentView_Previews: PreviewProvider {
+struct LandingView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        LandingView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }
