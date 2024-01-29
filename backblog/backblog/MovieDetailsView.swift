@@ -79,7 +79,7 @@ struct MovieDetailsView: View {
                         }
 
                         // Director
-                        if let crew = movie.credits?.cast, let director = crew.first(where: { $0.knownForDepartment == "Directing" }) {
+                        if let crew = movie.credits?.crew, let director = crew.first(where: { $0.job == "Director" }) {
                             Text("Director: \(director.name ?? "N/A")")
                                 .foregroundColor(.white)
                                 .padding(.bottom, 15)

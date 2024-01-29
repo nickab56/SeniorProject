@@ -167,6 +167,7 @@ struct MovieData: Codable {
     
     struct Credits: Codable {
         var cast: [Cast]?
+        var crew: [Crew]?
         
         struct Cast: Codable {
             var adult: Bool?
@@ -188,6 +189,28 @@ struct MovieData: Codable {
                 case originalName = "original_name"
                 case profilePath = "profile_path"
                 case castId = "cast_id"
+                case creditId = "credit_id"
+            }
+        }
+        
+        struct Crew: Codable {
+            var adult: Bool?
+            var gender: Int?
+            var id: Int?
+            var knownForDepartment: String?
+            var name: String?
+            var originalName: String?
+            var popularity: Double?
+            var profilePath: String?
+            var creditId: String?
+            var department: String?
+            var job: String?
+            
+            enum CodingKeys: String, CodingKey {
+                case adult, gender, id, name, popularity, department, job
+                case knownForDepartment = "known_for_department"
+                case originalName = "original_name"
+                case profilePath = "profile_path"
                 case creditId = "credit_id"
             }
         }

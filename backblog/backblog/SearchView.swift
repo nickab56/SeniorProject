@@ -34,7 +34,7 @@ struct SearchView: View {
                     ForEach(movies, id: \.id) { movie in
                         NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0))) {
                             HStack {
-                                if let posterPath = movie.posterPath, let url = URL(string: "https://image.tmdb.org/t/p/w500" + posterPath) {
+                                if let backdropPath = movie.backdropPath, let url = URL(string: "https://image.tmdb.org/t/p/w500" + backdropPath) {
                                     AsyncImage(url: url) { image in
                                         image.resizable()
                                     } placeholder: {
