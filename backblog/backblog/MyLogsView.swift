@@ -52,8 +52,7 @@ struct MyLogsView: View {
                                 .onDrop(of: [.plainText], delegate: DropViewDelegate(droppedLog: log, logs: logs, draggedLog: $draggedLog, viewContext: viewContext))
                                 .simultaneousGesture(TapGesture().onEnded {
                                     self.selectedLogForDetails = log
-                                })
-                        }
+                                })                        }
                     }
                 }
             }
