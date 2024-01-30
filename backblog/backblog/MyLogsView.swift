@@ -38,22 +38,6 @@ struct MyLogsView: View {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                     ForEach(logs.sorted(by: { $0.orderIndex < $1.orderIndex }), id: \.self) { log in
                         Group {
-<<<<<<< HEAD
-                            LogItemView(log: log)
-                                .cornerRadius(15)
-                                .overlay(
-                                    Rectangle()
-                                    .opacity(draggedLog == log ? 0.5 : 0)
-                                )
-                                .onDrag {
-                                    self.draggedLog = log
-                                    return NSItemProvider()
-                                }
-                                .onDrop(of: [.plainText], delegate: DropViewDelegate(droppedLog: log, logs: logs, draggedLog: $draggedLog, viewContext: viewContext))
-                                .simultaneousGesture(TapGesture().onEnded {
-                                    self.selectedLogForDetails = log
-                                })                        }
-=======
                             NavigationLink(destination: LogDetailsView(log: log)) {
                                 LogItemView(log: log)
                                     .cornerRadius(15)
@@ -68,7 +52,6 @@ struct MyLogsView: View {
                             }
                             .onDrop(of: [.plainText], delegate: DropViewDelegate(droppedLog: log, logs: logs, draggedLog: $draggedLog, viewContext: viewContext))
                         }
->>>>>>> 420420f76432126b94e42e216e955bdb5c526210
                     }
                 }
             }
