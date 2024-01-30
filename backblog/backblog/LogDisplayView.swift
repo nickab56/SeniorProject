@@ -1,5 +1,5 @@
 import SwiftUI
-import CoreData // Include this only if LogEntity is a Core Data entity.
+import CoreData
 
 struct LogDisplayView: View {
     let log: LogEntity
@@ -46,7 +46,7 @@ struct LogDisplayView: View {
                 .padding(.trailing, 20)
                 .accessibility(identifier: "checkButton")
             }
-            .padding(.horizontal) // Standard horizontal padding
+            .padding(.horizontal)
         }
     }
 }

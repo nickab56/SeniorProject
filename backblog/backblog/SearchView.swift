@@ -50,7 +50,6 @@ struct SearchView: View {
                                     Text(movie.title ?? "N/A")
                                         .foregroundColor(.white)
                                         .bold()
-                                        .accessibility(label: Text(movie.title ?? "Unknown Movie"))
                                     Text(movie.releaseDate ?? "Unknown release date")
                                         .foregroundColor(.gray)
                                         .font(.footnote)

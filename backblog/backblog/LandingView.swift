@@ -73,13 +73,3 @@ struct LandingView: View {
         .edgesIgnoringSafeArea(.all)
     }
 }
-
-
-/*
- // Preview provider for ContentView.
- struct LandingView_Previews: PreviewProvider {
- static var previews: some View {
- LandingView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
- }
- }
- */

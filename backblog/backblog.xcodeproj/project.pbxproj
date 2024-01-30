@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		3401834A2B5DFE1D009D7818 /* LogDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340183492B5DFE1D009D7818 /* LogDisplayView.swift */; };
 		340746AE2B62B5EB007711C8 /* LogSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340746AD2B62B5EB007711C8 /* LogSelectionView.swift */; };
-		340D4DBA2B672EC60044F101 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340D4DB92B672EC60044F101 /* API.swift */; };
 		344BA2742B3785ED002626F1 /* CustomTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2732B3785ED002626F1 /* CustomTitleView.swift */; };
 		344BA2762B37862E002626F1 /* MyLogsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2752B37862E002626F1 /* MyLogsView.swift */; };
 		344BA2782B378709002626F1 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2772B378709002626F1 /* SearchView.swift */; };
@@ -75,7 +74,6 @@
 /* Begin PBXFileReference section */
 		340183492B5DFE1D009D7818 /* LogDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDisplayView.swift; sourceTree = "<group>"; };
 		340746AD2B62B5EB007711C8 /* LogSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogSelectionView.swift; sourceTree = "<group>"; };
-		340D4DB92B672EC60044F101 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = API.swift; path = backblog/API.swift; sourceTree = SOURCE_ROOT; };
 		344BA2732B3785ED002626F1 /* CustomTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTitleView.swift; sourceTree = "<group>"; };
 		344BA2752B37862E002626F1 /* MyLogsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLogsView.swift; sourceTree = "<group>"; };
 		344BA2772B378709002626F1 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
@@ -279,7 +277,6 @@
 		34F796C72B640A7F0024FD15 /* API */ = {
 			isa = PBXGroup;
 			children = (
-				340D4DB92B672EC60044F101 /* API.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -492,7 +489,6 @@
 				817960B32B6454BD00D94EF4 /* SettingsView.swift in Sources */,
 				3469C1852B312A4700B8EEFB /* Persistence.swift in Sources */,
 				344BA27C2B37875D002626F1 /* ExtensionUtility.swift in Sources */,
-				340D4DBA2B672EC60044F101 /* API.swift in Sources */,
 				344BA27A2B378713002626F1 /* SocialView.swift in Sources */,
 				97FCFC682B6369CD00F5BFCB /* LogRepository.swift in Sources */,
 				97D1CA1F2B66CDC600F45E5F /* CurrentTimeInMS.swift in Sources */,

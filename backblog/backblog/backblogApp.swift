@@ -33,10 +33,7 @@ struct backblogApp: App {
     // The body of the App protocol. Defines the content of the application's scenes.
     var body: some Scene {
         WindowGroup {
-            // The root view of the app is ContentView.
-            // The managed object context from the PersistenceController is injected
-            // into the ContentView's environment, allowing Core Data to be used within
-            // the application's views.
+            // The root view of the app is LandingView.
             LandingView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }

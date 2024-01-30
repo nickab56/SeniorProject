@@ -35,15 +35,13 @@ struct SocialView: View {
                 .cornerRadius(25)
                 .padding(.horizontal, 30)
             }
-            // Spacer to push content down
             HStack {
-                // Profile section
-                Image(systemName: "person.crop.circle") // Using system symbol for profile picture
+                Image(systemName: "person.crop.circle")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 60, height: 60) // Size of the profile picture
+                    .frame(width: 60, height: 60)
                 
-                Text("Username") // Placeholder for user's name
+                Text("Username")
                     .font(.system(size: 40))
                     .foregroundColor(.white)
                     .bold()
@@ -60,7 +58,7 @@ struct SocialView: View {
             .pickerStyle(SegmentedPickerStyle())
             .accessibility(identifier: "logsFriendsTabPicker")
 
-            // Grid display based on selected tab
+            
             if selectedTab == "Logs" {
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
@@ -131,15 +129,15 @@ struct SocialView: View {
         
         var userFriends: [String] {
                 // TEMP need friends ID
-                return ["nick", "jake", "TOM", "John"] // Sample data
+                return ["nick", "jake", "TOM", "John"]
             }
         var friendRequests: [String] {
                 // TEMP need friends ID
-                return ["nick", "jake", "TOM", "John"] // Sample data
+                return ["nick", "jake", "TOM", "John"]
             }
         var logRequests: [String] {
                 // TEMP need friends ID
-                return ["Log1", "Log2", "Log3", "Log4"] // Sample data
+                return ["Log1", "Log2", "Log3", "Log4"]
             }
     }
 }
