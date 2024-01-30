@@ -7,12 +7,14 @@
 
 import Firebase
 import FirebaseFirestoreSwift
+import FirebaseAuth
 import Foundation
 import SwiftUI
 
 class FirebaseService {
     static let shared = FirebaseService()
     let db = Firestore.firestore()
+    let auth = FirebaseAuth.Auth.auth()
     
     // From query
     func get<T: Decodable>(type: T, query: Query) async -> Result<T, Error> {
@@ -118,6 +120,28 @@ class FirebaseService {
             return .success(true)
         } catch {
             print("Error: \(error)")
+            return .failure(error)
+        }
+    }
+    
+    func register(email: String, password: String) async -> Result<Bool, Error> {
+        do {
+            let result = try await auth.createUser(withEmail: email, password: password)
+            
+            return .success(true)
+        } catch {
+            print("Error registering user: \(error)")
+            return .failure(error)
+        }
+    }
+    
+    func login(email: String, password: String) async -> Result<Bool, Error> {
+        do {
+            let result = try await auth.signIn(withEmail: email, password: password)
+            
+            return .success(true)
+        } catch {
+            print("Error logging in: \(error)")
             return .failure(error)
         }
     }

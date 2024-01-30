@@ -52,7 +52,8 @@ struct LoginView: View {
 
                     // Login button
                     Button("Log In") {
-                        self.isLoggedInToSocial = true
+                        //self.isLoggedInToSocial = true
+                        attemptLogin(email: username, password: password)
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
@@ -76,5 +77,14 @@ struct LoginView: View {
                 .padding()
             }
         }
+    }
+    
+    private func attemptLogin(email: String, password: String) {
+        // Check if email and password are not empty and formatted correctly
+            // Email format
+            // Password at least 6 chars long
+        // Call login func
+            // Check to see if it was successful
+        // Return success
     }
 }
