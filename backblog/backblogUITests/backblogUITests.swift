@@ -12,10 +12,7 @@ final class backblogUITests: XCTestCase {
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         
-        // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
-        
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
     }
     
     override func tearDownWithError() throws {
@@ -36,7 +33,7 @@ final class backblogUITests: XCTestCase {
         logNameTextField.typeText(logName)
 
         // Save the new log
-        let addLogButton = app.buttons["createLogButton"] // Assuming the button to confirm adding a log has this identifier
+        let addLogButton = app.buttons["createLogButton"]
         addLogButton.tap()
 
         // Find the newly created log in the list of logs
@@ -47,7 +44,7 @@ final class backblogUITests: XCTestCase {
         newLogEntry.tap()
 
         // Delete the newly created log
-        let deleteLogButton = app.buttons["Delete Log"] // Assuming the button to delete a log has this identifier
+        let deleteLogButton = app.buttons["Delete Log"]
         deleteLogButton.tap()
 
         // After performing the delete operation
@@ -65,51 +62,47 @@ final class backblogUITests: XCTestCase {
         app.launch()
         
         // Create "Favorite Movies" log
-        app.buttons["addLogButton"].tap() // Adjust based on the actual identifier for the add log button
+        app.buttons["addLogButton"].tap()
 
-        let logNameTextField = app.textFields["newLogNameTextField"] // Adjust based on the actual identifier for the log name text field
+        let logNameTextField = app.textFields["newLogNameTextField"]
         XCTAssertTrue(logNameTextField.exists, "Log name text field is not found")
         logNameTextField.tap()
         logNameTextField.typeText("Favorite Movies")
 
-        let createLogButton = app.buttons["createLogButton"] // Adjust based on the actual identifier for the create log button
+        let createLogButton = app.buttons["createLogButton"]
         XCTAssertTrue(createLogButton.exists, "Create log button is not found")
         createLogButton.tap()
 
         // Navigate to the search view
-        app.tabBars.buttons["Search"].tap() // Using the label or system image name to tap the search tab
+        app.tabBars.buttons["Search"].tap()
 
         // Enter a search query in the search bar
-        let searchField = app.textFields["movieSearchField"] // Accessibility identifier for the search field
+        let searchField = app.textFields["movieSearchField"]
         searchField.tap()
-        searchField.typeText("Inception\n") // Simulate tapping the search button on the keyboard
+        searchField.typeText("Inception\n")
 
         // Wait for search results to appear
-        let movieResult = app.staticTexts["Inception"] // Assuming "Inception" will appear in the search results
+        let movieResult = app.staticTexts["Inception"]
         let exists = NSPredicate(format: "exists == true")
         let expectation = XCTNSPredicateExpectation(predicate: exists, object: movieResult)
-        let result = XCTWaiter.wait(for: [expectation], timeout: 5.0) // Adjust timeout as needed
+        let result = XCTWaiter.wait(for: [expectation], timeout: 5.0)
         XCTAssertEqual(result, .completed, "Movie result did not appear in time.")
 
-        let addToLogButton = app.buttons["Add to Log"].firstMatch // Using firstMatch to select the first button
+        let addToLogButton = app.buttons["Add to Log"].firstMatch
         XCTAssertTrue(addToLogButton.exists, "Add to Log button is not found")
         addToLogButton.tap()
 
         // Select a log to add the movie to
-        // This step requires knowing the identifier or label for the log list item
-        // Assuming there's a log named "Favorite Movies" and it's visible without scrolling
-        let favoriteMoviesLog = app.staticTexts["Favorite Movies"] // Adjust based on your actual UI
+        let favoriteMoviesLog = app.staticTexts["Favorite Movies"]
         XCTAssertTrue(favoriteMoviesLog.exists, "Favorite Movies log is not found")
         favoriteMoviesLog.tap()
 
         // Verify the movie has been added to the log
-        // Navigate back to the log details to check if the movie is listed
-        // This step might need adjustments based on how your app navigates and displays added movies in logs
-        app.tabBars.buttons["landingViewTab"].tap() // Adjust based on your actual UI
-        let favoriteMoviesLogInList = app.staticTexts["Favorite Movies"] // Adjust based on your actual UI
+        app.tabBars.buttons["landingViewTab"].tap()
+        let favoriteMoviesLogInList = app.staticTexts["Favorite Movies"]
         favoriteMoviesLogInList.tap()
         
-        let movieInLog = app.staticTexts["Inception"] // Adjust based on your actual UI
+        let movieInLog = app.staticTexts["Inception"]
         XCTAssertTrue(movieInLog.exists, "Movie should be listed in the log")
     }
 
@@ -136,15 +129,15 @@ final class backblogUITests: XCTestCase {
         // Enter a search query in the search bar
         let searchField = app.textFields["movieSearchField"]
         searchField.tap()
-        searchField.typeText("Inception\n") // Adding '\n' to simulate tapping the search button on the keyboard
+        searchField.typeText("Inception\n")
 
         // Check for the existence of search results
-        let searchResult = app.staticTexts["Inception"] // Assuming "Inception" will be part of the search results
+        let searchResult = app.staticTexts["Inception"]
         let exists = NSPredicate(format: "exists == true")
         let expectation = XCTNSPredicateExpectation(predicate: exists, object: searchResult)
 
         // Wait for search results to appear
-        let result = XCTWaiter.wait(for: [expectation], timeout: 5.0) // Adjust timeout as needed
+        let result = XCTWaiter.wait(for: [expectation], timeout: 5.0)
         XCTAssertEqual(result, .completed, "Search results did not appear in time.")
     }
 
@@ -197,7 +190,7 @@ final class backblogUITests: XCTestCase {
 
     func testLaunchPerformance() throws {
         if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-            // This measures how long it takes to launch your application.
+            // This measures how long it takes to launch the app.
             measure(metrics: [XCTApplicationLaunchMetric()]) {
                 XCUIApplication().launch()
             }

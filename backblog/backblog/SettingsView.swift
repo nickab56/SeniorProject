@@ -31,7 +31,7 @@ struct SettingsView: View {
                 }
                 
                 HStack(spacing: 50){
-                    Image(systemName: "person.crop.circle") // Using system symbol for profile picture
+                    Image(systemName: "person.crop.circle")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 120, height: 120)

@@ -13,16 +13,14 @@ import SwiftUI
 
 // A custom view for displaying titles.
 struct CustomTitleView: View {
-    // The title text to be displayed.
     var title: String
 
-    // The body of the CustomTitleView.
     var body: some View {
         Text(title)
-            .font(.largeTitle) // Uses a large title font style.
-            .foregroundColor(.white) // Sets the text color to white.
-            .padding() // Adds padding around the text.
-            .frame(maxWidth: .infinity, alignment: .leading) // Aligns text to the leading edge.
-            .background(Color.clear) // Sets a transparent background.
+            .font(.largeTitle)
+            .foregroundColor(.white)
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color.clear)
     }
 }

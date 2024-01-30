@@ -13,12 +13,10 @@ import UIKit
 
 // NavConfigUtility class with static methods for UI configuration.
 class NavConfigUtility {
-    // Configures the appearance of the navigation bar.
-    // This method sets up a transparent background and white text for large titles.
     static func configureNavigationBar() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .clear // Ensure no additional padding is added
+        appearance.backgroundColor = .clear
         appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
         appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         
