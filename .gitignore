@@ -46,3 +46,6 @@ fastlane/test_output
 .TemporaryItems
 .Trashes
 .VolumeIcon.icns
+
+api/
+GoogleService-Info.plist

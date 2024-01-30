@@ -10,4 +10,5 @@ import Foundation
 enum FirebaseError: Error {
     case notFound
     case nullProperty
+    case failedTransaction
 }

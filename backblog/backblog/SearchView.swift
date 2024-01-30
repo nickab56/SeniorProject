@@ -3,11 +3,11 @@ import SwiftUI
 struct SearchView: View {
     @State private var searchText = ""
     @State private var isSearching = false
-    @State private var movies: [Movie] = []
+    @State private var movies: [MovieSearchData.MovieSearchResult] = []
     @State private var errorMessage: String?
     
     @State private var showingLogSelection = false
-    @State private var selectedMovieForLog: Movie?
+    @State private var selectedMovieForLog: MovieSearchData.MovieSearchResult?
 
     var body: some View {
         ZStack {
@@ -19,22 +19,23 @@ struct SearchView: View {
                     HStack {
                         Image(systemName: "magnifyingglass").foregroundColor(.gray)
                         TextField("Search for a movie", text: $searchText)
-                            .onChange(of: searchText) {
-                                isSearching = !searchText.isEmpty
-                                searchMovies(query: searchText)
-                            }
+                           .onChange(of: searchText) {
+                               isSearching = !searchText.isEmpty
+                               searchMovies(query: searchText)
+                           }
                             .font(.system(size: 18, weight: .bold))
                             .foregroundColor(.primary)
+                            .accessibility(identifier: "movieSearchField")
                     }
                     .padding(12)
                     .background(Color(.systemBackground))
                     .cornerRadius(10)
                     .padding(.horizontal)
 
-                    if isSearching {
-                        ForEach(movies, id: \.id) { movie in
+                    ForEach(movies, id: \.id) { movie in
+                        NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0))) {
                             HStack {
-                                if let halfSheetPath = movie.half_sheet, let url = URL(string: "https://image.tmdb.org/t/p/w500" + halfSheetPath) {
+                                if let backdropPath = movie.backdropPath, let url = URL(string: "https://image.tmdb.org/t/p/w500" + backdropPath) {
                                     AsyncImage(url: url) { image in
                                         image.resizable()
                                     } placeholder: {
@@ -45,9 +46,15 @@ struct SearchView: View {
                                     .padding(.leading)
                                 }
 
-                                // Use NavigationLink only if you are within a NavigationStack or NavigationView
-                                Text(movie.title)
-                                    .foregroundColor(.white)
+                                VStack(alignment: .leading) {
+                                    Text(movie.title ?? "N/A")
+                                        .foregroundColor(.white)
+                                        .bold()
+                                        .accessibility(label: Text(movie.title ?? "Unknown Movie"))
+                                    Text(movie.releaseDate ?? "Unknown release date")
+                                        .foregroundColor(.gray)
+                                        .font(.footnote)
+                                }
 
                                 Spacer()
 
@@ -55,20 +62,22 @@ struct SearchView: View {
                                     self.selectedMovieForLog = movie
                                     self.showingLogSelection = true
                                 }) {
-                                    Image(systemName: "plus.circle")
+                                    Image(systemName: "plus.circle.fill")
                                         .foregroundColor(Color(hex: "#3891e1"))
                                         .imageScale(.large)
                                 }
                                 .padding()
+                                .accessibilityLabel("Add to Log")
                             }
                         }
+                        .buttonStyle(PlainButtonStyle())
                     }
                 }
             }
         }
         .sheet(isPresented: $showingLogSelection) {
             if let selectedMovie = selectedMovieForLog {
-                LogSelectionView(selectedMovieId: selectedMovie.id, showingSheet: $showingLogSelection)
+                LogSelectionView(selectedMovieId: selectedMovie.id ?? 0, showingSheet: $showingLogSelection)
             }
         }
         .navigationTitle(searchText.isEmpty ? "Search" : "Results")
@@ -80,13 +89,12 @@ struct SearchView: View {
             movies = []
             return
         }
-        NetworkManager.shared.fetchMovies(searchQuery: query) { result in
+        Task {
+            let result = await MovieRepository.searchMovie(query: query, page: 1)
             DispatchQueue.main.async {
                 switch result {
-                case .success(let fetchedMovies):
-                    self.movies = fetchedMovies
-                        .filter { $0.backdrop_path != nil && $0.half_sheet != nil }
-                        .sorted { $0.popularity > $1.popularity }
+                case .success(let movieSearchData):
+                    self.movies = movieSearchData.results ?? []
                 case .failure(let error):
                     self.errorMessage = error.localizedDescription
                 }
