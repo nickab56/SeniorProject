@@ -196,7 +196,7 @@ struct FriendRequestList: View {
                         .scaledToFit()
                         .frame(width: 10, height: 10)
                         .foregroundColor(.black)
-                }
+                }.accessibility(identifier: "Accept Friend Request")
             }
             .padding(.horizontal, 20)
                         
@@ -206,7 +206,7 @@ struct FriendRequestList: View {
                 Image(systemName: "xmark.circle")
                     .frame(width: 25, height: 25)
                     .foregroundColor(.white)
-            }
+            }.accessibility(identifier: "Remove Friend Request")
             
         }
     }
@@ -248,7 +248,7 @@ struct LogRequestList: View {
                         .frame(width: 10, height: 10)
                         .foregroundColor(.black)
                 }
-            }
+            }.accessibility(identifier: "Accept Log Request")
             .padding(.horizontal, 20)
                         
             Button(action: {
@@ -257,7 +257,7 @@ struct LogRequestList: View {
                 Image(systemName: "xmark.circle")
                     .frame(width: 30, height: 30)
                     .foregroundColor(.white)
-            }
+            }.accessibility(identifier: "Remove Log Request")
             
         }
     }
