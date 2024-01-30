@@ -9,6 +9,8 @@ struct SearchView: View {
 
     @State private var showingLogSelection = false
     @State private var selectedMovieForLog: MovieSearchData.MovieSearchResult?
+    
+    @State private var tappedMovieId: Int?
 
     var body: some View {
         ZStack {
@@ -103,15 +105,28 @@ struct SearchView: View {
 
     private func addButton(for movie: MovieSearchData.MovieSearchResult) -> some View {
         Button(action: {
-            self.selectedMovieForLog = movie
-            self.showingLogSelection = true
+            self.tappedMovieId = movie.id // Set the tappedMovieId to this movie's ID
+            withAnimation(.easeInOut(duration: 0.2)) {
+                self.selectedMovieForLog = movie
+                self.showingLogSelection = true
+            }
         }) {
             Image(systemName: "plus.circle.fill")
                 .foregroundColor(Color(hex: "#3891e1"))
                 .imageScale(.large)
+                .scaleEffect(tappedMovieId == movie.id ? 1.2 : 1.0) // Scale up the tapped button
+                .opacity(tappedMovieId == movie.id ? 0.5 : 1.0) // Reduce opacity when tapped
         }
         .padding()
         .accessibilityLabel("Add to Log")
+        .onChange(of: tappedMovieId) { _ in
+            // Reset the animation after a delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                withAnimation(.easeInOut) {
+                    self.tappedMovieId = nil
+                }
+            }
+        }
     }
 
     private func searchMovies(query: String) {
