@@ -19,7 +19,11 @@ struct MovieSearchData: Codable {
         case totalResults = "total_results"
     }
     
-    struct MovieSearchResult: Codable {
+    struct MovieSearchResult: Codable, Equatable {
+        static func == (lhs: MovieSearchResult, rhs: MovieSearchResult) -> Bool {
+            return lhs.id == rhs.id
+        }
+        
         var adult: Bool?
         var backdropPath: String?
         var genreIds: [Int]?
