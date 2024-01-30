@@ -68,8 +68,12 @@ struct MovieService {
         do {
             let (data, _) = try await URLSession.shared.data(for: request)
             if let imageResults = try? JSONDecoder().decode(MovieImageData.self, from: data) {
+                if (imageResults.backdrops == nil || imageResults.backdrops!.count == 0) {
+                    return .success("")
+                }
+                
                 guard let halfsheet = imageResults.backdrops?[0].filePath else {
-                    return .failure(MovieError.emptyFieldError)
+                    return .success("")
                 }
                 return .success(halfsheet)
             } else {
