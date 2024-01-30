@@ -68,4 +68,15 @@ struct SignupView: View {
         }
         .navigationBarTitle("Signup", displayMode: .large)
     }
+    
+    private func attemptLogin(email: String, password: String) {
+        // Check if email and password are not empty and formatted correctly
+            // Email format
+            // Password at least 6 chars long
+        // Call register func
+            // Check to see if it was successful
+        // Call UserRepository.addUser(userId: <#T##String#>, username: <#T##String#>, avatarPreset: <#T##Int#>)
+            // Check to see if it was successful
+        // Return success
+    }
 }
