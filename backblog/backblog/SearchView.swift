@@ -74,6 +74,7 @@ struct SearchView: View {
                 }
             }
         }
+        .onChange(of: selectedMovieForLog) { _ in }
         .sheet(isPresented: $showingLogSelection) {
             if let selectedMovie = selectedMovieForLog {
                 LogSelectionView(selectedMovieId: selectedMovie.id ?? 0, showingSheet: $showingLogSelection)

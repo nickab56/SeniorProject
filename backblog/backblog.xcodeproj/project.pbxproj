@@ -175,7 +175,6 @@
 				3469C1862B312A4700B8EEFB /* backblog.xcdatamodeld */,
 				3469C17B2B312A4600B8EEFB /* backblogApp.swift */,
 				3466FF2C2B61EA610028034C /* MovieDetailsView.swift */,
-				34F796C72B640A7F0024FD15 /* API */,
 				34F796C12B6409530024FD15 /* Landing Page */,
 				34F796C62B640A460024FD15 /* Log Displaying */,
 				3496CD262B33ADB400D2A848 /* Model */,
@@ -272,13 +271,6 @@
 				34F035AB2B60A95500EB35C7 /* LogItemView.swift */,
 			);
 			name = "Log Displaying";
-			sourceTree = "<group>";
-		};
-		34F796C72B640A7F0024FD15 /* API */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = API;
 			sourceTree = "<group>";
 		};
 		9777C8C22B5D8A90000F40EA /* models */ = {
