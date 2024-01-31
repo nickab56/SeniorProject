@@ -27,8 +27,6 @@
 		3469C1922B312A4700B8EEFB /* backblogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C1912B312A4700B8EEFB /* backblogTests.swift */; };
 		3469C19C2B312A4700B8EEFB /* backblogUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C19B2B312A4700B8EEFB /* backblogUITests.swift */; };
 		3469C19E2B312A4700B8EEFB /* backblogUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C19D2B312A4700B8EEFB /* backblogUITestsLaunchTests.swift */; };
-		3496CD292B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3496CD272B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift */; };
-		3496CD2A2B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3496CD282B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift */; };
 		34F035A82B606B1B00EB35C7 /* LogDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035A72B606B1B00EB35C7 /* LogDetailsView.swift */; };
 		34F035AA2B60A93900EB35C7 /* AddLogSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035A92B60A93900EB35C7 /* AddLogSheetView.swift */; };
 		34F035AC2B60A95500EB35C7 /* LogItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035AB2B60A95500EB35C7 /* LogItemView.swift */; };
@@ -95,8 +93,6 @@
 		3469C1972B312A4700B8EEFB /* backblogUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = backblogUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3469C19B2B312A4700B8EEFB /* backblogUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = backblogUITests.swift; sourceTree = "<group>"; };
 		3469C19D2B312A4700B8EEFB /* backblogUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = backblogUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		3496CD272B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LogEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
-		3496CD282B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LogEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		34F035A72B606B1B00EB35C7 /* LogDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDetailsView.swift; sourceTree = "<group>"; };
 		34F035A92B60A93900EB35C7 /* AddLogSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLogSheetView.swift; sourceTree = "<group>"; };
 		34F035AB2B60A95500EB35C7 /* LogItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogItemView.swift; sourceTree = "<group>"; };
@@ -177,7 +173,6 @@
 				3466FF2C2B61EA610028034C /* MovieDetailsView.swift */,
 				34F796C12B6409530024FD15 /* Landing Page */,
 				34F796C62B640A460024FD15 /* Log Displaying */,
-				3496CD262B33ADB400D2A848 /* Model */,
 				97FCFC642B63697900F5BFCB /* network */,
 				3469C1812B312A4700B8EEFB /* Preview Content */,
 				34F796C52B6409B70024FD15 /* Search */,
@@ -211,15 +206,6 @@
 				3469C19D2B312A4700B8EEFB /* backblogUITestsLaunchTests.swift */,
 			);
 			path = backblogUITests;
-			sourceTree = "<group>";
-		};
-		3496CD262B33ADB400D2A848 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				3496CD272B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift */,
-				3496CD282B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift */,
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		34F796C12B6409530024FD15 /* Landing Page */ = {
@@ -506,9 +492,7 @@
 				3469C17C2B312A4600B8EEFB /* backblogApp.swift in Sources */,
 				97FCFC7B2B6389CB00F5BFCB /* FirebaseError.swift in Sources */,
 				344BA2802B489F01002626F1 /* LoginView.swift in Sources */,
-				3496CD292B33ADCB00D2A848 /* LogEntity+CoreDataClass.swift in Sources */,
 				9777C8CA2B5D90F9000F40EA /* UserData.swift in Sources */,
-				3496CD2A2B33ADCB00D2A848 /* LogEntity+CoreDataProperties.swift in Sources */,
 				97A8F9502B646C22000A0096 /* MovieService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

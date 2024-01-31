@@ -2,7 +2,7 @@ import SwiftUI
 import CoreData
 
 struct LogDetailsView: View {
-    let log: LogEntity
+    let log: LocalLogData
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) var presentationMode
     @State private var movies: [MovieData] = []
@@ -15,7 +15,7 @@ struct LogDetailsView: View {
             VStack {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
-                        Text("Details for Log: \(log.logname ?? "Unknown")")
+                        Text("Details for Log: \(log.name ?? "Unknown")")
                             .font(.title)
                             .fontWeight(.bold)
                             .foregroundColor(.white)
@@ -51,14 +51,18 @@ struct LogDetailsView: View {
     }
 
     private func fetchMovies() {
-        guard let movieIdsString = log.movieIds, !movieIdsString.isEmpty else { return }
-        let movieIds = movieIdsString.split(separator: ",").map { String($0) }
+        guard let movieIds = log.movie_ids as? Set<LocalMovieData>, !(movieIds.count == 0) else { return }
+        
+        let movieIdArr = movieIds.map { $0.movie_id }
 
         movies = [] // Reset movies list
 
-        for idString in movieIds {
+        for movieId in movieIdArr {
+            guard let movie = movieId else {
+                continue
+            }
             Task {
-                let result = await MovieRepository.getMovieById(movieId: idString)
+                let result = await MovieRepository.getMovieById(movieId: movie)
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let movieData):

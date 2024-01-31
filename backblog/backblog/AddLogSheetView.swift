@@ -44,9 +44,9 @@ struct AddLogSheetView: View {
 
     // Function to handle the creation of a new log.
     private func addNewLog() {
-        let newLog = LogEntity(context: viewContext)
-        newLog.logname = newLogName
-        newLog.logid = Int64(UUID().hashValue)
+        let newLog = LocalLogData(context: viewContext)
+        newLog.name = newLogName
+        newLog.log_id = Int64(UUID().hashValue)
 
         do {
             try viewContext.save()

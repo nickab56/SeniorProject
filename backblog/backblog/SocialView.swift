@@ -15,9 +15,9 @@ import CoreData
 
 struct SocialView: View {
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \LogEntity.logid, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \LocalLogData.log_id, ascending: true)],
         animation: .default)
-    private var logs: FetchedResults<LogEntity>
+    private var logs: FetchedResults<LocalLogData>
 
     @State private var selectedTab = "Logs"
 
@@ -64,7 +64,7 @@ struct SocialView: View {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
                         ForEach(logs, id: \.self) { log in
                             LogItemView(log: log)
-                                .accessibility(identifier: "logItem_\(log.logid)")
+                                .accessibility(identifier: "logItem_\(log.log_id)")
                         }
                     }
                     .padding(.horizontal)

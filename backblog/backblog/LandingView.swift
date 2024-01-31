@@ -3,8 +3,8 @@ import CoreData
 
 struct LandingView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \LogEntity.logid, ascending: true)], animation: .default)
-    private var logs: FetchedResults<LogEntity>
+    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \LocalLogData.log_id, ascending: true)], animation: .default)
+    private var logs: FetchedResults<LocalLogData>
 
     @State private var isLoggedInToSocial = false
 
