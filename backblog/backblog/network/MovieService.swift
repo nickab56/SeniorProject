@@ -83,4 +83,31 @@ struct MovieService {
             return .failure(error)
         }
     }
+    
+    func getMoviePoster(movieId: String) async -> Result<String, Error> {
+        let endpointExt = "movie/\(movieId)/images?include_image_language=en"
+        let url = URL(string: baseURL + endpointExt)!
+        
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(MovieAccess.shared.MOVIE_SECRET)", forHTTPHeaderField: "Authorization")
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
+            if let imageResults = try? JSONDecoder().decode(MovieImageData.self, from: data) {
+                if (imageResults.posters == nil || imageResults.posters!.count == 0) {
+                    return .success("")
+                }
+                
+                guard let halfsheet = imageResults.posters?[0].filePath else {
+                    return .success("")
+                }
+                return .success(halfsheet)
+            } else {
+                return .failure(MovieError.decodingError)
+            }
+        } catch {
+            return .failure(error)
+        }
+    }
 }
