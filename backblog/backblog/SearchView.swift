@@ -85,12 +85,12 @@ struct SearchView: View {
                 } placeholder: {
                     Color.gray
                 }
-                .frame(width: 145, height: 90)
+                .frame(width: 180, height: 100)
                 .cornerRadius(8)
                 .padding(.leading)
             } else {
                 Color.gray
-                    .frame(width: 145, height: 90)
+                    .frame(width: 180, height: 100)
                     .cornerRadius(8)
                     .padding(.leading)
                     .onAppear {
