@@ -2,11 +2,11 @@ import SwiftUI
 import CoreData
 
 struct LogDisplayView: View {
-    let log: LogEntity
+    let log: LocalLogData
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text("From \(log.logname ?? "Unknown")")
+            Text("From \(log.name ?? "Unknown")")
                 .font(.subheadline)
                 .foregroundColor(.gray)
                 .bold()

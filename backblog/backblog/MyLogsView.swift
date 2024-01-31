@@ -3,13 +3,13 @@ import CoreData
 
 struct MyLogsView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @State private var draggedLog: LogEntity?
+    @State private var draggedLog: LocalLogData?
     @State private var showingAddLogSheet = false
 
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \LogEntity.logid, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \LocalLogData.log_id, ascending: true)],
         animation: .default)
-    private var logs: FetchedResults<LogEntity>
+    private var logs: FetchedResults<LocalLogData>
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -62,9 +62,9 @@ struct MyLogsView: View {
     }
 
     struct DropViewDelegate: DropDelegate {
-        let droppedLog: LogEntity
-        let logs: FetchedResults<LogEntity>
-        @Binding var draggedLog: LogEntity?
+        let droppedLog: LocalLogData
+        let logs: FetchedResults<LocalLogData>
+        @Binding var draggedLog: LocalLogData?
         let viewContext: NSManagedObjectContext
 
         func performDrop(info: DropInfo) -> Bool {

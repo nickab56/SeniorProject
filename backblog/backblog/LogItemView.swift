@@ -10,7 +10,7 @@ import CoreData
 
 // View for displaying a single log item.
 struct LogItemView: View {
-    let log: LogEntity
+    let log: LocalLogData
     let maxCharacters = 20
 
     var body: some View {
@@ -22,7 +22,7 @@ struct LogItemView: View {
                 .overlay(Color.black.opacity(0.5))
 
             VStack {
-                Text(truncateText(log.logname ?? ""))
+                Text(truncateText(log.name ?? ""))
                     .font(.title)
                     .bold()
                     .foregroundColor(.white)
