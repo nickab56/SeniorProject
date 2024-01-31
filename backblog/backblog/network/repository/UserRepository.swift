@@ -19,7 +19,7 @@ class UserRepository {
                 blocked: [:]
             )
             
-            let result = try await FirebaseService.shared.post(data: userData, collection: "users").get()
+            let result = try await FirebaseService.shared.put(doc: userData, docId: userId, collection: "users").get()
             
             return .success(result)
         } catch {

@@ -6,12 +6,14 @@
 //
 
 import Firebase
+import FirebaseCore
 import FirebaseFirestoreSwift
 import FirebaseAuth
 import Foundation
 import SwiftUI
 
 class FirebaseService {
+    let fbConfig: Void = FirebaseApp.configure()
     static let shared = FirebaseService()
     let db = Firestore.firestore()
     let auth = FirebaseAuth.Auth.auth()
@@ -75,7 +77,7 @@ class FirebaseService {
     
     func post<T: Codable>(data: T, collection: String) async -> Result<T, Error> {
         let docRef = db.collection(collection).document()
-        var newData: T = data
+        let newData: T = data
         
         do {
             try docRef.setData(from: newData)
@@ -124,11 +126,15 @@ class FirebaseService {
         }
     }
     
-    func register(email: String, password: String) async -> Result<Bool, Error> {
+    func register(email: String, password: String) async -> Result<String, Error> {
         do {
-            let result = try await auth.createUser(withEmail: email, password: password)
+            _ = try await auth.createUser(withEmail: email, password: password)
             
-            return .success(true)
+            guard let userId = auth.currentUser?.uid else {
+                return .failure(FirebaseError.failedTransaction)
+            }
+            
+            return .success(userId)
         } catch {
             print("Error registering user: \(error)")
             return .failure(error)
@@ -137,7 +143,7 @@ class FirebaseService {
     
     func login(email: String, password: String) async -> Result<Bool, Error> {
         do {
-            let result = try await auth.signIn(withEmail: email, password: password)
+            _ = try await auth.signIn(withEmail: email, password: password)
             
             return .success(true)
         } catch {
