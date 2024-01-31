@@ -152,7 +152,7 @@ class LogRepository {
         do {
             var collabs: [String: [String: Int]] = [:]
             for collaborator in collaborators {
-                collabs["collaborators.\(collaborators)"] = ["priority": 0]
+                collabs["collaborators.\(collaborator)"] = ["priority": 0]
             }
             
             let result = try await FirebaseService.shared.put(updates: collabs, docId: logId, collection: "logs").get()
@@ -167,7 +167,7 @@ class LogRepository {
         do {
             var collabs: [String: Any] = [:]
             for collaborator in collaborators {
-                collabs["collaborators.\(collaborators)"] = FieldValue.delete()
+                collabs["collaborators.\(collaborator)"] = FieldValue.delete()
             }
             
             let result = try await FirebaseService.shared.put(updates: collabs, docId: logId, collection: "logs").get()

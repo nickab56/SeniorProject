@@ -70,7 +70,7 @@ class FriendRepository {
     
     static func updateFriendRequest(friendRequestId: String, isAccepted: Bool) async -> Result<Bool, Error> {
         do {
-            var updates: [String: Any] = ["is_complete": true]
+            let updates: [String: Any] = ["is_complete": true]
             
             if (isAccepted) {
                 let friendRequestData = try await FirebaseService.shared.get(type: FriendRequestData(), docId: friendRequestId, collection: "friend_requests").get()
@@ -79,11 +79,11 @@ class FriendRepository {
                 }
                 
                 // Sender Id and Target Id are not nil, continue
-                let result = await withThrowingTaskGroup(of: Bool.self) { group in
+                _ = await withThrowingTaskGroup(of: Bool.self) { group in
                     // Update senderId's friends map
                     group.addTask {
                         do {
-                            var update = ["friends.\(friendRequestData.targetId!)": true]
+                            let update = ["friends.\(friendRequestData.targetId!)": true]
                             return try await FirebaseService.shared.put(updates: update, docId: friendRequestData.senderId!, collection: "users").get()
                         } catch {
                             throw error
@@ -93,7 +93,7 @@ class FriendRepository {
                     // Update targetId's friends map
                     group.addTask {
                         do {
-                            var update = ["friends.\(friendRequestData.senderId!)": true]
+                            let update = ["friends.\(friendRequestData.senderId!)": true]
                             return try await FirebaseService.shared.put(updates: update, docId: friendRequestData.targetId!, collection: "users").get()
                         } catch {
                             throw error
@@ -116,7 +116,7 @@ class FriendRepository {
     
     static func updateLogRequest(logRequestId: String, isAccepted: Bool) async -> Result<Bool, Error> {
         do {
-            var updates: [String: Any] = ["is_complete": true]
+            let updates: [String: Any] = ["is_complete": true]
             
             if (isAccepted) {
                 let logRequestData = try await FirebaseService.shared.get(type: LogRequestData(), docId: logRequestId, collection: "log_requests").get()
@@ -126,7 +126,7 @@ class FriendRepository {
                 
                 // Add collaborator
                 let newCollaborator = ["collaborators.\(logRequestData.targetId!)": true]
-                let result = try await FirebaseService.shared.put(updates: newCollaborator, docId: logRequestData.logId!, collection: "logs").get()
+                _ = try await FirebaseService.shared.put(updates: newCollaborator, docId: logRequestData.logId!, collection: "logs").get()
             }
             
             let result = try await FirebaseService.shared.put(updates: updates, docId: logRequestId, collection: "log_requests").get()
