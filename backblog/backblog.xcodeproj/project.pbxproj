@@ -39,6 +39,7 @@
 		97993F112B67284700CBBCCC /* MovieImageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97993F102B67284700CBBCCC /* MovieImageData.swift */; };
 		97A8F9502B646C22000A0096 /* MovieService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A8F94F2B646C22000A0096 /* MovieService.swift */; };
 		97A8F9542B647323000A0096 /* MovieAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A8F9532B647323000A0096 /* MovieAccess.swift */; };
+		97BF9EEA2B6B0B4300EE9ABB /* AvatarPresetMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BF9EE92B6B0B4300EE9ABB /* AvatarPresetMapper.swift */; };
 		97D1CA1F2B66CDC600F45E5F /* CurrentTimeInMS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D1CA1E2B66CDC600F45E5F /* CurrentTimeInMS.swift */; };
 		97FCFC602B63591F00F5BFCB /* MovieData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FCFC5F2B63591F00F5BFCB /* MovieData.swift */; };
 		97FCFC622B63659800F5BFCB /* MovieSearchData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FCFC612B63659800F5BFCB /* MovieSearchData.swift */; };
@@ -105,6 +106,7 @@
 		97993F102B67284700CBBCCC /* MovieImageData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieImageData.swift; sourceTree = "<group>"; };
 		97A8F94F2B646C22000A0096 /* MovieService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieService.swift; sourceTree = "<group>"; };
 		97A8F9532B647323000A0096 /* MovieAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieAccess.swift; sourceTree = "<group>"; };
+		97BF9EE92B6B0B4300EE9ABB /* AvatarPresetMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarPresetMapper.swift; sourceTree = "<group>"; };
 		97D1CA1E2B66CDC600F45E5F /* CurrentTimeInMS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentTimeInMS.swift; sourceTree = "<group>"; };
 		97FCFC5F2B63591F00F5BFCB /* MovieData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieData.swift; sourceTree = "<group>"; };
 		97FCFC612B63659800F5BFCB /* MovieSearchData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieSearchData.swift; sourceTree = "<group>"; };
@@ -317,6 +319,7 @@
 			children = (
 				97FCFC7A2B6389CB00F5BFCB /* FirebaseError.swift */,
 				97D1CA1E2B66CDC600F45E5F /* CurrentTimeInMS.swift */,
+				97BF9EE92B6B0B4300EE9ABB /* AvatarPresetMapper.swift */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -485,6 +488,7 @@
 				344BA2762B37862E002626F1 /* MyLogsView.swift in Sources */,
 				34F035A82B606B1B00EB35C7 /* LogDetailsView.swift in Sources */,
 				3469C17E2B312A4600B8EEFB /* LandingView.swift in Sources */,
+				97BF9EEA2B6B0B4300EE9ABB /* AvatarPresetMapper.swift in Sources */,
 				3401834A2B5DFE1D009D7818 /* LogDisplayView.swift in Sources */,
 				344BA2742B3785ED002626F1 /* CustomTitleView.swift in Sources */,
 				3469C1882B312A4700B8EEFB /* backblog.xcdatamodeld in Sources */,

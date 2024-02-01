@@ -39,7 +39,7 @@ struct MyLogsView: View {
                     ForEach(logs.sorted(by: { $0.orderIndex < $1.orderIndex }), id: \.self) { log in
                         Group {
                             NavigationLink(destination: LogDetailsView(log: log)) {
-                                LogItemView(log: log)
+                                LogItemView(log: LogType.localLog(log))
                                     .cornerRadius(15)
                             }
                             .overlay(

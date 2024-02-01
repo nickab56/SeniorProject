@@ -1,7 +1,12 @@
 import SwiftUI
 
+enum LogType {
+    case localLog(LocalLogData)
+    case log(LogData)
+}
+
 struct LogItemView: View {
-    let log: LocalLogData
+    let log: LogType
     let maxCharacters = 20
 
     @State private var posterURL: URL?
@@ -40,7 +45,13 @@ struct LogItemView: View {
             }
 
             VStack {
-                Text(truncateText(log.name ?? ""))
+                let txt = switch log {
+                case .localLog(let local):
+                    local.name ?? ""
+                case .log(let log):
+                    log.name ?? ""
+                }
+                Text(truncateText(txt))
                     .font(.title)
                     .bold()
                     .foregroundColor(.white)
@@ -53,7 +64,17 @@ struct LogItemView: View {
     }
 
     private func fetchMoviePoster() {
-        guard logContainsMovies(), let firstMovie = log.movie_ids?.allObjects.first as? LocalMovieData, let movieId = firstMovie.movie_id else {
+        if (!logContainsMovies()) {
+            isLoading = false
+            return
+        }
+        
+        guard let movieId: String = switch log {
+        case .localLog(let local):
+            (local.movie_ids?.allObjects.first as? LocalMovieData)?.movie_id
+        case .log(let log):
+            (log.movieIds?.keys.first)
+        } else {
             isLoading = false
             return
         }
@@ -75,7 +96,12 @@ struct LogItemView: View {
     }
 
     private func logContainsMovies() -> Bool {
-        return log.movie_ids?.count ?? 0 > 0
+        return switch log {
+        case .localLog(let local):
+            local.movie_ids?.count ?? 0 > 0
+        case .log(let log):
+            log.movieIds?.keys.count ?? 0 > 0
+        }
     }
 
     private func truncateText(_ text: String) -> String {
