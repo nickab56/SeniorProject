@@ -12,7 +12,7 @@ struct SettingsView: View {
     @State private var usernameText = ""
     @State private var oldPasswordText = ""
     @State private var newPasswordText = ""
-    
+    @State private var userData: UserData?
     
     var body: some View {
         ZStack {
@@ -49,16 +49,17 @@ struct SettingsView: View {
                     .padding(.top, 50)
                 }
                 HStack{
-                    Text("New display Name")
+                    Text("Username")
                         .padding(.leading)
                         .foregroundColor(.white)
                         .bold()
                         .font(.system(size: 20))
                     Spacer()
                 }.padding(.top, 10)
-                TextField("TEMP USERNAME", text: $usernameText)
+                
+                TextField(userData?.username ?? "Username", text: $usernameText)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
+                    .padding(15)
                 
                 HStack {
                     Text("Old Password")
@@ -68,9 +69,9 @@ struct SettingsView: View {
                         .font(.system(size: 20))
                     Spacer()
                 }
-                TextField("Enter Old Password", text: $oldPasswordText)
+                SecureField("Enter Old Password", text: $oldPasswordText)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
+                    .padding(15)
                 
                 HStack {
                     Text("New Password")
@@ -81,9 +82,9 @@ struct SettingsView: View {
 
                     Spacer()
                 }
-                TextField("Enter New Password", text: $newPasswordText)
+                SecureField("Enter New Password", text: $newPasswordText)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
+                    .padding(15)
                 
                 Button(action: {
                     // Code for button to add a friend

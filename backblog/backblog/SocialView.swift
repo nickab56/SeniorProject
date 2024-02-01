@@ -11,18 +11,31 @@
 //  a grid display of the user's logs.
 
 import SwiftUI
+import FirebaseAuth
 import CoreData
 
 struct SocialView: View {
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \LocalLogData.log_id, ascending: true)],
-        animation: .default)
-    private var logs: FetchedResults<LocalLogData>
-
+    @State private var logs: [LogData] = []
     @State private var selectedTab = "Logs"
+    @State private var userData: UserData?
+    @State private var friends: [UserData] = []
+    @State private var friendRequests: [FriendRequestData] = []
+    @State private var logRequests: [LogRequestData] = []
 
     var body: some View {
-        VStack {
+        fetchUserData()
+        fetchLogs()
+        fetchFriends()
+        var friendRequests: [String] {
+                // TEMP need friends ID
+                return ["nick", "jake", "TOM", "John"]
+            }
+        var logRequests: [String] {
+                // TEMP need friends ID
+                return ["Log1", "Log2", "Log3", "Log4"]
+            }
+        
+        return VStack {
             HStack {
                 Spacer()
                 
@@ -36,12 +49,16 @@ struct SocialView: View {
                 .padding(.horizontal, 30)
             }
             HStack {
-                Image(systemName: "person.crop.circle")
+                // Display user's avatar
+                let avatarPreset = userData?.avatarPreset ?? 1
+                let preset = getAvatarId(avatarPreset: avatarPreset)
+                
+                Image(uiImage: UIImage(named: preset) ?? UIImage())
                     .resizable()
                     .scaledToFit()
                     .frame(width: 60, height: 60)
                 
-                Text("Username")
+                Text(userData?.username ?? "")
                     .font(.system(size: 40))
                     .foregroundColor(.white)
                     .bold()
@@ -62,9 +79,9 @@ struct SocialView: View {
             if selectedTab == "Logs" {
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-                        ForEach(logs, id: \.self) { log in
-                            LogItemView(log: log)
-                                .accessibility(identifier: "logItem_\(log.log_id)")
+                        ForEach(logs) { log in
+                            LogItemView(log: LogType.log(log))
+                                .accessibility(identifier: "logItem_\(log.logId ?? "")")
                         }
                     }
                     .padding(.horizontal)
@@ -116,7 +133,7 @@ struct SocialView: View {
                                     .padding(.horizontal)
                             }
                         }
-                        ForEach(userFriends, id: \.self) { friendID in FriendList(friendName: friendID)
+                        ForEach(friends) { friendID in FriendList(friendName: friendID.username ?? "")
                                 .padding(.horizontal)
                         }
                     }
@@ -126,19 +143,52 @@ struct SocialView: View {
         }.padding(.top, 80)
         .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .edgesIgnoringSafeArea(.all)
-        
-        var userFriends: [String] {
-                // TEMP need friends ID
-                return ["nick", "jake", "TOM", "John"]
+    }
+    
+    private func fetchUserData() {
+        DispatchQueue.main.async {
+            Task {
+                guard let userId = FirebaseService.shared.auth.currentUser?.uid else {
+                    return
+                }
+                do {
+                    let result = try await UserRepository.getUser(userId:userId).get()
+                    userData = result
+                } catch {
+                    print("Error fetching user: \(error.localizedDescription)")
+                }
             }
-        var friendRequests: [String] {
-                // TEMP need friends ID
-                return ["nick", "jake", "TOM", "John"]
+        }
+    }
+    private func fetchLogs() {
+        DispatchQueue.main.async {
+            Task {
+                guard let userId = FirebaseService.shared.auth.currentUser?.uid else {
+                    return
+                }
+                do {
+                    let result = try await LogRepository.getLogs(userId: userId, showPrivate: false).get()
+                    logs = result
+                } catch {
+                    print("Error fetching logs: \(error.localizedDescription)")
+                }
             }
-        var logRequests: [String] {
-                // TEMP need friends ID
-                return ["Log1", "Log2", "Log3", "Log4"]
+        }
+    }
+    private func fetchFriends() {
+        DispatchQueue.main.async {
+            Task {
+                guard let userId = FirebaseService.shared.auth.currentUser?.uid else {
+                    return
+                }
+                do {
+                    let result = try await FriendRepository.getFriends(userId: userId).get()
+                    friends = result
+                } catch {
+                    print("Error fetching friends: \(error.localizedDescription)")
+                }
             }
+        }
     }
 }
 

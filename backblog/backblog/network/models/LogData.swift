@@ -7,9 +7,13 @@
 
 import Foundation
 
-struct LogData: Codable, Equatable {
+struct LogData: Identifiable, Codable, Equatable {
     static func == (lhs: LogData, rhs: LogData) -> Bool {
         return lhs.logId == rhs.logId
+    }
+    
+    var id: String {
+        logId ?? "null"
     }
     
     var logId: String?

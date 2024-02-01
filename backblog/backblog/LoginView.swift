@@ -84,13 +84,15 @@ struct LoginView: View {
     }
     
     private func attemptLogin(email: String, password: String) {
-        Task {
-            do {
-                // Login
-                _ = try await FirebaseService.shared.login(email: email, password: password).get()
-                isLoggedInToSocial = true
-            } catch {
-                let _ = print(error)
+        DispatchQueue.main.async {
+            Task {
+                do {
+                    // Login
+                    _ = try await FirebaseService.shared.login(email: email, password: password).get()
+                    isLoggedInToSocial = true
+                } catch {
+                    let _ = print(error)
+                }
             }
         }
     }
