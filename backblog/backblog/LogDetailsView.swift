@@ -5,7 +5,7 @@ struct LogDetailsView: View {
     let log: LocalLogData
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) var presentationMode
-    @State private var movies: [MovieData] = []
+    @State private var movies: [(MovieData, String)] = [] // Pair of MovieData and half-sheet URL
 
     var body: some View {
         ZStack {
@@ -13,26 +13,34 @@ struct LogDetailsView: View {
                 .edgesIgnoringSafeArea(.all)
 
             VStack {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("Details for Log: \(log.name ?? "Unknown")")
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
+                Text("Details for Log: \(log.name ?? "Unknown")")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .padding()
 
-                        if movies.isEmpty {
-                            Text("No movies added to this log yet.")
-                                .foregroundColor(.gray)
-                        } else {
-                            ForEach(movies, id: \.id) { movie in
-                                NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0))) {
-                                    MovieRow(movie: movie)
+                if movies.isEmpty {
+                    Text("No movies added to this log yet.")
+                        .foregroundColor(.gray)
+                        .padding()
+                } else {
+                    List {
+                        ForEach(movies, id: \.0.id) { (movie, halfSheetPath) in
+                            MovieRow(movie: movie, halfSheetPath: halfSheetPath)
+                                .listRowBackground(Color.clear)
+                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                    Button(role: .destructive) {
+                                        // Implement logic to mark the movie as watched or to complete it
+                                        print("Marked as watched")
+                                    } label: {
+                                        Label("Watched", systemImage: "checkmark.circle.fill")
+                                    }
                                 }
-                            }
                         }
                     }
+                    .listStyle(.plain)
+                    .background(Color.clear)
                 }
-                .padding()
 
                 Button("Delete Log") {
                     deleteLog()
@@ -52,23 +60,26 @@ struct LogDetailsView: View {
 
     private func fetchMovies() {
         guard let movieIds = log.movie_ids as? Set<LocalMovieData>, !(movieIds.count == 0) else { return }
-        
+
         let movieIdArr = movieIds.map { $0.movie_id }
 
         movies = [] // Reset movies list
 
         for movieId in movieIdArr {
-            guard let movie = movieId else {
+            guard let movieId = movieId else {
                 continue
             }
             Task {
-                let result = await MovieRepository.getMovieById(movieId: movie)
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let movieData):
-                        self.movies.append(movieData)
-                    case .failure(let error):
-                        print("Error fetching movie by ID: \(error.localizedDescription)")
+                let movieDetailsResult = await MovieService.shared.getMovieByID(movieId: movieId)
+                let halfSheetResult = await MovieService.shared.getMovieHalfSheet(movieId: movieId)
+                
+                await MainActor.run {
+                    switch (movieDetailsResult, halfSheetResult) {
+                    case (.success(let movieData), .success(let halfSheetPath)):
+                        let fullPath = "https://image.tmdb.org/t/p/w500\(halfSheetPath)"
+                        self.movies.append((movieData, fullPath))
+                    case (.failure(let error), _), (_, .failure(let error)):
+                        print("Error fetching movie by ID or half-sheet: \(error.localizedDescription)")
                     }
                 }
             }
@@ -88,26 +99,29 @@ struct LogDetailsView: View {
 
 struct MovieRow: View {
     let movie: MovieData
+    let halfSheetPath: String
 
     var body: some View {
-        HStack {
-            if let backdropPath = movie.backdropPath, let url = URL(string: "https://image.tmdb.org/t/p/w500" + backdropPath) {
-                AsyncImage(url: url) { image in
-                    image.resizable()
-                } placeholder: {
-                    Color.gray
+        NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0))) {
+            HStack {
+                if let url = URL(string: halfSheetPath) {
+                    AsyncImage(url: url) { image in
+                        image.resizable()
+                    } placeholder: {
+                        Color.gray
+                    }
+                    .frame(width: 145, height: 90)
+                    .cornerRadius(8)
+                    .padding(.leading)
                 }
-                .frame(width: 145, height: 90)
-                .cornerRadius(8)
-                .padding(.leading)
+                
+                VStack(alignment: .leading) {
+                    Text(movie.title ?? "N/A")
+                        .foregroundColor(.white)
+                        .fontWeight(.bold)
+                }
             }
-
-            VStack(alignment: .leading) {
-                Text(movie.title ?? "N/A")
-                    .foregroundColor(.white)
-                    .fontWeight(.bold)
-            }
+            .padding(.vertical, 5)
         }
-        .padding(.vertical, 5)
     }
 }
