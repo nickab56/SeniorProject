@@ -80,6 +80,7 @@ struct SocialView: View {
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
                         ForEach(logs) { log in
+                            let _ = print(log.logId as String? ?? "")
                             LogItemView(log: LogType.log(log))
                                 .accessibility(identifier: "logItem_\(log.logId ?? "")")
                         }
@@ -174,6 +175,33 @@ struct SocialView: View {
                 }
             }
         }
+        /*FirebaseService.shared.db.collection("logs")
+            .whereField("owner.user_id", isEqualTo: userId).whereField("is_visible", isEqualTo: true)
+            .addSnapshotListener { querySnapshot, error in
+                guard let snapshot = querySnapshot else {
+                    return
+                }
+                
+                do {
+                    try snapshot.documentChanges.forEach { diff in
+                        if (diff.type) == .added {
+                            let newData: LogData = try diff.document.data(as: LogData.self)
+                            logs.append(newData)
+                        }
+                        if (diff.type == .modified) {
+                            if let index = logs.firstIndex(where: { $0.logId == diff.document.documentID }) {
+                                let newData: LogData = try diff.document.data(as: LogData.self)
+                                logs[index] = newData
+                            }
+                        }
+                        if (diff.type == .removed) {
+                            logs.removeAll { $0.logId == diff.document.documentID }
+                        }
+                    }
+                } catch {
+                    return
+                }
+            }*/
     }
     private func fetchFriends() {
         DispatchQueue.main.async {
