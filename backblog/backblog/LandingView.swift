@@ -60,7 +60,7 @@ struct LandingView: View {
 
                 // Display the first log entry if available.
                 if let firstLog = logs.first {
-                    LogDisplayView(log: firstLog)
+                    WhatsNextView(log: firstLog)
                         .padding(.top, -20)
                 }
 

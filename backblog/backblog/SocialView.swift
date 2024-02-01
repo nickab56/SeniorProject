@@ -4,11 +4,7 @@
 //
 //  Created by Nick Abegg on 12/23/23.
 //  Updated by Josh Altmeyer on 01/18/24.
-//
-//  Description:
-//  SocialView serves as the social interaction hub within the BackBlog app.
-//  It features a user profile section, a tab view for Logs and Friends, and
-//  a grid display of the user's logs.
+
 
 import SwiftUI
 import FirebaseAuth

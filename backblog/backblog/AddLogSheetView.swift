@@ -51,7 +51,6 @@ struct AddLogSheetView: View {
         do {
             try viewContext.save()
         } catch {
-            // Error handling for failed save.
             print("Error saving new log: \(error)")
         }
     }

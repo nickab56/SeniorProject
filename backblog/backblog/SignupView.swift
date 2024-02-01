@@ -9,6 +9,8 @@ struct SignupView: View {
     @State private var username = ""
     @State private var password = ""
     @State private var displayName = ""
+    @State private var signupMessage = ""
+    @State private var messageColor = Color.red
 
     var body: some View {
             ZStack {
@@ -36,6 +38,10 @@ struct SignupView: View {
                         .font(.headline)
                         .foregroundColor(.gray)
                         .padding(.bottom, 20)
+                    
+                    Text(signupMessage)
+                        .foregroundColor(messageColor)
+                        .padding()
 
                     TextField("Email or Username", text: $username)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -55,14 +61,14 @@ struct SignupView: View {
                         .accessibility(identifier: "signupDisplayNameTextField")
 
                     Button("Continue") {
-                        //self.isLoggedInToSocial = true
-                        if (username.isEmpty || password.isEmpty || displayName.isEmpty) {
-                            // Add text "Please fill all fields"
+                        if username.isEmpty || password.isEmpty || displayName.isEmpty {
+                            signupMessage = "Please fill all fields"
+                            messageColor = Color.red
                         } else {
-                            if (password.count < 6) {
-                                // Add text "Please enter a password of 6 chars or more
+                            if password.count < 6 {
+                                signupMessage = "Password must be at least 6 characters"
+                                messageColor = Color.red
                             } else {
-                                // Fields are filled, attempt signup
                                 attemptSignup(email: username, password: password, displayName: displayName)
                             }
                         }
@@ -89,15 +95,14 @@ struct SignupView: View {
     private func attemptSignup(email: String, password: String, displayName: String) {
         Task {
             do {
-                // Register
                 let result = try await FirebaseService.shared.register(email: email, password: password).get()
-                
-                // Successfully registered, now try to add user to firestore
                 _ = try await UserRepository.addUser(userId: result, username: displayName, avatarPreset: 1).get()
-                
                 signupSuccessful = true
+                signupMessage = "Signup Successful"
+                messageColor = Color.green
             } catch {
-                let _ = print(error)
+                signupMessage = "Signup Failed: \(error.localizedDescription)"
+                messageColor = Color.red
             }
         }
     }

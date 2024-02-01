@@ -27,7 +27,6 @@ struct MovieDetailsView: View {
             } else if let movie = movieData {
                 ScrollView {
                     VStack {
-                        // Movie Image *needs to be changed to half sheet
                         if let posterPath = movie.posterPath, let url = URL(string: "https://image.tmdb.org/t/p/w500" + posterPath) {
                             AsyncImage(url: url) { image in
                                 image.resizable()

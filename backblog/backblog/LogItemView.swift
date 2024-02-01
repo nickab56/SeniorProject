@@ -26,12 +26,12 @@ struct LogItemView: View {
                     case .success(let image):
                         image.resizable()
                             .aspectRatio(contentMode: .fill)
-                            .overlay(Rectangle().foregroundColor(.black).opacity(0.3)) // Black overlay for all movies
+                            .overlay(Rectangle().foregroundColor(.black).opacity(0.3))
                     case .failure:
                         Image("NewLogImage") // Use the local asset as a fallback
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .blur(radius: 10) // Apply blur to the placeholder image
+                            .blur(radius: 10)
                     @unknown default:
                         EmptyView()
                     }
@@ -41,7 +41,7 @@ struct LogItemView: View {
                 Image("NewLogImage")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .blur(radius: 10) // Apply blur to the placeholder image
+                    .blur(radius: 10)
             }
 
             VStack {

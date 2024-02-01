@@ -12,7 +12,7 @@ struct LogSelectionView: View {
     @Binding var showingSheet: Bool
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \LocalLogData.orderIndex, ascending: true)]) var logs: FetchedResults<LocalLogData>
-    @State private var showingNotification = false // State variable to control the notification visibility
+    @State private var showingNotification = false
 
     var body: some View {
         NavigationView {
@@ -32,9 +32,9 @@ struct LogSelectionView: View {
                 })
 
                 if showingNotification {
-                    notificationView // Custom view for the notification
-                        .transition(.move(edge: .bottom)) // Animation for sliding in/out
-                        .zIndex(1) // Ensures the notification view is above other content
+                    notificationView
+                        .transition(.move(edge: .bottom))
+                        .zIndex(1)
                 }
             }
         }
@@ -48,10 +48,9 @@ struct LogSelectionView: View {
         
         // Check if movie is already in the log
         if existingMovieIds.contains("\(movieId)") {
-            // Movie is already in the log, show notification
             withAnimation {
                 showingNotification = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // Hide notification after 2 seconds
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     showingNotification = false
                 }
             }
@@ -77,7 +76,7 @@ struct LogSelectionView: View {
             .foregroundColor(.white)
             .background(Color.black.opacity(0.7))
             .cornerRadius(8)
-            .padding(.bottom, 50) // Adjust padding as needed
-            .transition(.move(edge: .bottom)) // Smooth transition for sliding in/out
+            .padding(.bottom, 50)
+            .transition(.move(edge: .bottom))
     }
 }

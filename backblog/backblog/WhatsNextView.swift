@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct LogDisplayView: View {
+struct WhatsNextView: View {
     @Environment(\.managedObjectContext) private var viewContext
     let log: LocalLogData
 

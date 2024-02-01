@@ -30,7 +30,7 @@ struct LogDetailsView: View {
                                 .listRowBackground(Color.clear)
                                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                     Button(role: .destructive) {
-                                        // Implement logic to mark the movie as watched or to complete it
+                                        // Need Implement logic to mark the movie as watched
                                         print("Marked as watched")
                                     } label: {
                                         Label("Watched", systemImage: "checkmark.circle.fill")
