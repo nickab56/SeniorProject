@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3401834A2B5DFE1D009D7818 /* LogDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340183492B5DFE1D009D7818 /* LogDisplayView.swift */; };
+		3401834A2B5DFE1D009D7818 /* WhatsNextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340183492B5DFE1D009D7818 /* WhatsNextView.swift */; };
 		340746AE2B62B5EB007711C8 /* LogSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340746AD2B62B5EB007711C8 /* LogSelectionView.swift */; };
 		344BA2742B3785ED002626F1 /* CustomTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2732B3785ED002626F1 /* CustomTitleView.swift */; };
 		344BA2762B37862E002626F1 /* MyLogsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2752B37862E002626F1 /* MyLogsView.swift */; };
@@ -71,7 +71,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		340183492B5DFE1D009D7818 /* LogDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDisplayView.swift; sourceTree = "<group>"; };
+		340183492B5DFE1D009D7818 /* WhatsNextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNextView.swift; sourceTree = "<group>"; };
 		340746AD2B62B5EB007711C8 /* LogSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogSelectionView.swift; sourceTree = "<group>"; };
 		344BA2732B3785ED002626F1 /* CustomTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTitleView.swift; sourceTree = "<group>"; };
 		344BA2752B37862E002626F1 /* MyLogsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLogsView.swift; sourceTree = "<group>"; };
@@ -255,7 +255,7 @@
 			children = (
 				34F035A72B606B1B00EB35C7 /* LogDetailsView.swift */,
 				344BA2752B37862E002626F1 /* MyLogsView.swift */,
-				340183492B5DFE1D009D7818 /* LogDisplayView.swift */,
+				340183492B5DFE1D009D7818 /* WhatsNextView.swift */,
 				34F035AB2B60A95500EB35C7 /* LogItemView.swift */,
 			);
 			name = "Log Displaying";
@@ -489,7 +489,7 @@
 				34F035A82B606B1B00EB35C7 /* LogDetailsView.swift in Sources */,
 				3469C17E2B312A4600B8EEFB /* LandingView.swift in Sources */,
 				97BF9EEA2B6B0B4300EE9ABB /* AvatarPresetMapper.swift in Sources */,
-				3401834A2B5DFE1D009D7818 /* LogDisplayView.swift in Sources */,
+				3401834A2B5DFE1D009D7818 /* WhatsNextView.swift in Sources */,
 				344BA2742B3785ED002626F1 /* CustomTitleView.swift in Sources */,
 				3469C1882B312A4700B8EEFB /* backblog.xcdatamodeld in Sources */,
 				3466FF2D2B61EA610028034C /* MovieDetailsView.swift in Sources */,

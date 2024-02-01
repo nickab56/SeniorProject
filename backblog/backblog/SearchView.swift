@@ -105,7 +105,7 @@ struct SearchView: View {
 
     private func addButton(for movie: MovieSearchData.MovieSearchResult) -> some View {
         Button(action: {
-            self.tappedMovieId = movie.id // Set the tappedMovieId to this movie's ID
+            self.tappedMovieId = movie.id
             withAnimation(.easeInOut(duration: 0.2)) {
                 self.selectedMovieForLog = movie
                 self.showingLogSelection = true
@@ -114,8 +114,8 @@ struct SearchView: View {
             Image(systemName: "plus.circle.fill")
                 .foregroundColor(Color(hex: "#3891e1"))
                 .imageScale(.large)
-                .scaleEffect(tappedMovieId == movie.id ? 1.2 : 1.0) // Scale up the tapped button
-                .opacity(tappedMovieId == movie.id ? 0.5 : 1.0) // Reduce opacity when tapped
+                .scaleEffect(tappedMovieId == movie.id ? 1.2 : 1.0)
+                .opacity(tappedMovieId == movie.id ? 0.5 : 1.0)
         }
         .padding()
         .accessibilityLabel("Add to Log")

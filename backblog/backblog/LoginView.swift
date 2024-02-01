@@ -4,6 +4,8 @@ struct LoginView: View {
     @Binding var isLoggedInToSocial: Bool
     @State private var username = ""
     @State private var password = ""
+    @State private var loginMessage = ""
+    @State private var messageColor = Color.red
 
     var body: some View {
             GeometryReader { geometry in
@@ -31,6 +33,10 @@ struct LoginView: View {
                             .font(.headline)
                             .foregroundColor(.gray)
                             .padding(.bottom, 20)
+                        
+                        Text(loginMessage)
+                            .foregroundColor(messageColor)
+                            .padding()
 
                         TextField("Email or Username", text: $username)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -45,14 +51,14 @@ struct LoginView: View {
                             .accessibility(identifier: "passwordSecureField")
 
                         Button("Log In") {
-                            //self.isLoggedInToSocial = true
-                            if (username.isEmpty || password.isEmpty) {
-                                // Add text "Please fill all fields"
+                            if username.isEmpty || password.isEmpty {
+                                loginMessage = "Please fill all fields"
+                                messageColor = Color.red
                             } else {
-                                if (password.count < 6) {
-                                    // Add text "Please enter a password of 6 chars or more
+                                if password.count < 6 {
+                                    loginMessage = "Password must be at least 6 characters"
+                                    messageColor = Color.red
                                 } else {
-                                    // Fields are filled, attempt login
                                     attemptLogin(email: username, password: password)
                                 }
                             }
@@ -87,11 +93,13 @@ struct LoginView: View {
         DispatchQueue.main.async {
             Task {
                 do {
-                    // Login
                     _ = try await FirebaseService.shared.login(email: email, password: password).get()
                     isLoggedInToSocial = true
+                    loginMessage = "Login Successful"
+                    messageColor = Color.green
                 } catch {
-                    let _ = print(error)
+                    loginMessage = "Login Failed: \(error.localizedDescription)"
+                    messageColor = Color.red
                 }
             }
         }
