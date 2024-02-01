@@ -10,7 +10,7 @@ import Foundation
 
 class LogRepository {
     
-    static func addLog(name: String, isVisible: Bool, ownerId: String) async -> Result<LogData, Error> {
+    static func addLog(name: String, isVisible: Bool, ownerId: String) async -> Result<Bool, Error> {
         do {
             let date = String(currentTimeInMS())
             let ownerData = Owner(userId: ownerId, priority: 0)
@@ -26,7 +26,10 @@ class LogRepository {
             )
             let result = try await FirebaseService.shared.post(data: logData, collection: "logs").get()
             
-            return .success(result)
+            // Update log to include logId
+            _ = try await FirebaseService.shared.put(updates: ["log_id": result], docId: result, collection: "logs").get()
+            
+            return .success(true)
         } catch {
             return .failure(error)
         }

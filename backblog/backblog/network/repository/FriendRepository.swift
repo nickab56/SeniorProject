@@ -9,23 +9,23 @@ import FirebaseFirestore
 import Foundation
 
 class FriendRepository {
-    static func addLogRequest(senderId: String, targetId: String, logId: String, requestDate: String) async -> Result<LogRequestData, Error> {
+    static func addLogRequest(senderId: String, targetId: String, logId: String, requestDate: String) async -> Result<Bool, Error> {
         do {
             let logRequestData = LogRequestData(senderId: senderId, targetId: targetId, logId: logId, requestDate: requestDate, isComplete: false)
             let result = try await FirebaseService.shared.post(data: logRequestData, collection: "log_requests").get()
             
-            return .success(result)
+            return .success(true)
         } catch {
             return .failure(error)
         }
     }
 
-    static func addFriendRequest(senderId: String, targetId: String, requestDate: String) async -> Result<FriendRequestData, Error> {
+    static func addFriendRequest(senderId: String, targetId: String, requestDate: String) async -> Result<Bool, Error> {
         do {
             let friendRequestData = FriendRequestData(senderId: senderId, targetId: targetId, requestDate: requestDate, isComplete: false)
             let result = try await FirebaseService.shared.post(data: friendRequestData, collection: "friend_requests").get()
             
-            return .success(result)
+            return .success(true)
         } catch {
             return .failure(error)
         }

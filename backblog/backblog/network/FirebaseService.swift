@@ -75,13 +75,13 @@ class FirebaseService {
         }
     }
     
-    func post<T: Codable>(data: T, collection: String) async -> Result<T, Error> {
+    func post<T: Codable>(data: T, collection: String) async -> Result<String, Error> {
         let docRef = db.collection(collection).document()
         let newData: T = data
         
         do {
             try docRef.setData(from: newData)
-            return .success(newData)
+            return .success(docRef.documentID)
         } catch {
             print("Error: \(error)")
             return .failure(error)
