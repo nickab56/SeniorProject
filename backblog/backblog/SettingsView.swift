@@ -21,13 +21,15 @@ struct SettingsView: View {
             
             VStack{
                 HStack{
+                                        
                     Text("Settings")
                         .font(.system(size: 40))
                         .foregroundColor(.white)
                         .bold()
-                        .padding(.leading)
+                        .padding()
                     
                     Spacer()
+
                 }
                 
                 HStack(spacing: 50){
@@ -95,12 +97,37 @@ struct SettingsView: View {
                 .frame(width: 300, height: 50)
                 .background(Color.blue)
                 .cornerRadius(50)
-                .padding(.top, 50)
+                .padding(.top, 5)
+                
+                Button(action: {
+                    // logout()
+                }) {
+                    Text("LOG OUT")
+                        .foregroundColor(.red)
+                }
+                .frame(width: 300, height: 50)
+                .background(Color.clear)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 25)
+                        .stroke(Color.red, lineWidth: 2)
+                )
+                .padding(.top, 10)
             
                 Spacer()
-            }
+            }.padding(.top, 10)
         }
     }
+    
+    
+//    func logout() {
+//        do {
+//            // move to log in page and clear all logs on landingView
+//        } catch {
+//            logoutMessage = "Logout Failed
+//            messageColor = Color.red
+//        }
+//    }
+    
 }
 
 struct SettingsView_Previews: PreviewProvider {
