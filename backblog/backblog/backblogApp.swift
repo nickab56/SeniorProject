@@ -11,29 +11,29 @@
 
 import SwiftUI
 
-class AppDelegate: NSObject, UIApplicationDelegate {
-    func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        return true
-    }
-}
-
-// The main structure for the BackBlog application.
 @main
 struct backblogApp: App {
-    // Shared instance of the PersistenceController.
-    // This handles all the Core Data stack setup and management.
     let persistenceController = PersistenceController.shared
-    
-    // allows for use in preview content view. comment out persistence from above
-    //let persistenceController = PersistenceController.preview
 
-    // The body of the App protocol. Defines the content of the application's scenes.
+    @State private var showingSplash = true
+
     var body: some Scene {
         WindowGroup {
-            // The root view of the app is LandingView.
-            LandingView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            Group {
+                if showingSplash {
+                    SplashScreenView()
+                } else {
+                    LandingView()
+                        .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                }
+            }
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                    withAnimation(.easeOut(duration: 2.0)) {
+                        showingSplash = false
+                    }
+                }
+            }
         }
     }
 }
