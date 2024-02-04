@@ -15,7 +15,7 @@ struct SplashScreenView: View {
             
             VStack {
                 Spacer()
-                Image("img_placeholder_backblog_logo")
+                Image("logo")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 300, height: 300)
