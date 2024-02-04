@@ -2,7 +2,7 @@ import SwiftUI
 
 struct WhatsNextView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    let log: LocalLogData
+    var log: LocalLogData
 
     @State private var movieTitle: String = "Loading..."
     @State private var movieDetails: String = "Loading details..."

@@ -14,6 +14,9 @@ import SwiftUI
 @main
 struct backblogApp: App {
     let persistenceController = PersistenceController.shared
+    
+    // allows for use in preview content view. comment out persistence from above
+    //let persistenceController = PersistenceController.preview
 
     @State private var showingSplash = true
 
