@@ -95,13 +95,12 @@ final class backblogUITests: XCTestCase {
         XCTAssertTrue(addToLogButton.exists, "Add to Log button is not found")
         addToLogButton.tap()
 
-        // Select a log to add the movie to
-        let favoriteMoviesLog = app.staticTexts["Favorite Movies"]
-        XCTAssertTrue(favoriteMoviesLog.exists, "Favorite Movies log is not found")
-        favoriteMoviesLog.tap()
+        let favoriteMoviesLogEntry = app.buttons["Favorite Movies"] // Use the accessibility identifier or the text of the log entry
+        XCTAssertTrue(favoriteMoviesLogEntry.exists, "Favorite Movies log entry is not found in the Log Selection View")
+        favoriteMoviesLogEntry.tap()
 
         // Verify the movie has been added to the log
-        app.tabBars.buttons["landingViewTab"].tap()
+        app.tabBars.buttons["Hdr"].tap()
         let favoriteMoviesLogInList = app.staticTexts["Favorite Movies"]
         favoriteMoviesLogInList.tap()
         
