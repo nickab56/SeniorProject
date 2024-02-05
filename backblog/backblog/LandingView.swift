@@ -7,7 +7,8 @@ struct LandingView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \LocalLogData.orderIndex, ascending: true)],
         animation: .default)
     private var logs: FetchedResults<LocalLogData>
-
+    
+    @StateObject private var logsViewModel = LogsViewModel()
     @State private var isLoggedInToSocial = false
 
     init() {
@@ -59,13 +60,15 @@ struct LandingView: View {
                     .bold()
                     .padding(.top, UIScreen.main.bounds.height * 0.08)
 
+                // Determine the first unwatched movie from the first log
                 if let firstLog = logs.first {
                     let firstUnwatchedMovie = (firstLog.movie_ids as? Set<LocalMovieData>)?
                         .subtracting(firstLog.watched_ids as? Set<LocalMovieData> ?? [])
                         .first
 
                     if let firstMovie = firstUnwatchedMovie {
-                        WhatsNextView(movie: firstMovie)
+                        // Pass LogsViewModel to WhatsNextView
+                        WhatsNextView(movie: firstMovie, logsViewModel: logsViewModel)
                             .padding(.top, -20)
                     } else {
                         Text("No upcoming movies in this log.")
@@ -74,11 +77,13 @@ struct LandingView: View {
                     }
                 }
 
-                MyLogsView()
+                // Pass LogsViewModel to MyLogsView
+                MyLogsView(logsViewModel: logsViewModel)
                     .padding(.bottom, 150)
             }
         }
         .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .edgesIgnoringSafeArea(.all)
     }
+
 }

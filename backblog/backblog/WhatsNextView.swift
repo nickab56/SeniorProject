@@ -4,6 +4,8 @@ import CoreData
 struct WhatsNextView: View {
     @Environment(\.managedObjectContext) private var viewContext
     var movie: LocalMovieData
+    
+    @ObservedObject var logsViewModel: LogsViewModel
 
     @State private var movieTitle: String = "Loading..."
     @State private var movieDetails: String = "Loading details..."
@@ -52,6 +54,9 @@ struct WhatsNextView: View {
                 .accessibility(identifier: "checkButton")
             }
             .padding(.horizontal)
+        }
+        .onReceive(logsViewModel.$refreshTrigger) { _ in
+            loadNextWatchMovie() // React to changes in LogsViewModel
         }
         .onAppear {
             loadNextWatchMovie()

@@ -5,6 +5,7 @@ struct MyLogsView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @State private var draggedLog: LocalLogData?
     @State private var showingAddLogSheet = false
+    @ObservedObject var logsViewModel: LogsViewModel
 
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \LocalLogData.log_id, ascending: true)],
@@ -50,7 +51,7 @@ struct MyLogsView: View {
                                 self.draggedLog = log
                                 return NSItemProvider()
                             }
-                            .onDrop(of: [.plainText], delegate: DropViewDelegate(droppedLog: log, logs: logs, draggedLog: $draggedLog, viewContext: viewContext))
+                            .onDrop(of: [.plainText], delegate: DropViewDelegate(logsViewModel: logsViewModel, droppedLog: log, logs: logs, draggedLog: $draggedLog, viewContext: viewContext))
                         }
                     }
                 }
@@ -62,6 +63,7 @@ struct MyLogsView: View {
     }
 
     struct DropViewDelegate: DropDelegate {
+        var logsViewModel: LogsViewModel
         let droppedLog: LocalLogData
         let logs: FetchedResults<LocalLogData>
         @Binding var draggedLog: LocalLogData?
@@ -88,6 +90,9 @@ struct MyLogsView: View {
             }
 
             self.draggedLog = nil
+            
+            logsViewModel.refreshTrigger.toggle()
+            
             return true
         }
 
