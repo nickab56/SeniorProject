@@ -14,6 +14,8 @@ struct SettingsView: View {
     @State private var newPasswordText = ""
     @State private var userData: UserData?
     
+    @State private var showingAvatarSelection = false
+    
     var body: some View {
         ZStack {
             LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -21,7 +23,7 @@ struct SettingsView: View {
             
             VStack{
                 HStack{
-                                        
+                    
                     Text("Settings")
                         .font(.system(size: 40))
                         .foregroundColor(.white)
@@ -29,7 +31,7 @@ struct SettingsView: View {
                         .padding()
                     
                     Spacer()
-
+                    
                 }
                 
                 HStack(spacing: 50){
@@ -40,7 +42,7 @@ struct SettingsView: View {
                     
                     
                     Button(action: {
-                        // Code for button to add a friend
+                        self.showingAvatarSelection = true
                     }) {
                         Text("Change Avatar")
                             .foregroundColor(.white)
@@ -81,7 +83,7 @@ struct SettingsView: View {
                         .foregroundColor(.white)
                         .bold()
                         .font(.system(size: 20))
-
+                    
                     Spacer()
                 }
                 SecureField("Enter New Password", text: $newPasswordText)
@@ -112,22 +114,16 @@ struct SettingsView: View {
                         .stroke(Color.red, lineWidth: 2)
                 )
                 .padding(.top, 10)
-            
+                
                 Spacer()
             }.padding(.top, 10)
         }
+        .sheet(isPresented: $showingAvatarSelection) {
+            AvatarSelectionView { selectedAvatarPreset in
+                self.showingAvatarSelection = false
+            }
+        }
     }
-    
-    
-//    func logout() {
-//        do {
-//            // move to log in page and clear all logs on landingView
-//        } catch {
-//            logoutMessage = "Logout Failed
-//            messageColor = Color.red
-//        }
-//    }
-    
 }
 
 struct SettingsView_Previews: PreviewProvider {
