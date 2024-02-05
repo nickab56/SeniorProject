@@ -94,9 +94,14 @@ struct LoginView: View {
             Task {
                 do {
                     _ = try await FirebaseService.shared.login(email: email, password: password).get()
-                    isLoggedInToSocial = true
-                    loginMessage = "Login Successful"
+                    loginMessage = "Login Successful, redirecting..."
                     messageColor = Color.green
+                    
+                    // Add a short delay to display the success message before changing the state
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        // Now change the isLoggedInToSocial to trigger the redirection
+                        isLoggedInToSocial = true
+                    }
                 } catch {
                     loginMessage = "Login Failed: \(error.localizedDescription)"
                     messageColor = Color.red
