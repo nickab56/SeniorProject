@@ -30,6 +30,7 @@
 		34AEBD512B6D569400C6EA87 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEBD502B6D569400C6EA87 /* SplashScreenView.swift */; };
 		34AEBD532B704E5400C6EA87 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 34AEBD522B704E5400C6EA87 /* GoogleService-Info.plist */; };
 		34AEBD592B70823F00C6EA87 /* LogsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEBD582B70823F00C6EA87 /* LogsViewModel.swift */; };
+		34AEBD5B2B709C4A00C6EA87 /* AvatarSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEBD5A2B709C4A00C6EA87 /* AvatarSelectionView.swift */; };
 		34F035A82B606B1B00EB35C7 /* LogDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035A72B606B1B00EB35C7 /* LogDetailsView.swift */; };
 		34F035AA2B60A93900EB35C7 /* AddLogSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035A92B60A93900EB35C7 /* AddLogSheetView.swift */; };
 		34F035AC2B60A95500EB35C7 /* LogItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035AB2B60A95500EB35C7 /* LogItemView.swift */; };
@@ -99,6 +100,7 @@
 		34AEBD502B6D569400C6EA87 /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 		34AEBD522B704E5400C6EA87 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		34AEBD582B70823F00C6EA87 /* LogsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsViewModel.swift; sourceTree = "<group>"; };
+		34AEBD5A2B709C4A00C6EA87 /* AvatarSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarSelectionView.swift; sourceTree = "<group>"; };
 		34F035A72B606B1B00EB35C7 /* LogDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDetailsView.swift; sourceTree = "<group>"; };
 		34F035A92B60A93900EB35C7 /* AddLogSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLogSheetView.swift; sourceTree = "<group>"; };
 		34F035AB2B60A95500EB35C7 /* LogItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogItemView.swift; sourceTree = "<group>"; };
@@ -242,6 +244,7 @@
 				344BA2812B48AC8E002626F1 /* SignupView.swift */,
 				344BA27F2B489F01002626F1 /* LoginView.swift */,
 				817960B22B6454BD00D94EF4 /* SettingsView.swift */,
+				34AEBD5A2B709C4A00C6EA87 /* AvatarSelectionView.swift */,
 			);
 			name = Social;
 			sourceTree = "<group>";
@@ -476,6 +479,7 @@
 				817960B32B6454BD00D94EF4 /* SettingsView.swift in Sources */,
 				3469C1852B312A4700B8EEFB /* Persistence.swift in Sources */,
 				344BA27C2B37875D002626F1 /* ExtensionUtility.swift in Sources */,
+				34AEBD5B2B709C4A00C6EA87 /* AvatarSelectionView.swift in Sources */,
 				344BA27A2B378713002626F1 /* SocialView.swift in Sources */,
 				97FCFC682B6369CD00F5BFCB /* LogRepository.swift in Sources */,
 				97D1CA1F2B66CDC600F45E5F /* CurrentTimeInMS.swift in Sources */,
