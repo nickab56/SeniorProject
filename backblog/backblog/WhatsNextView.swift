@@ -1,8 +1,11 @@
 import SwiftUI
+import CoreData
 
 struct WhatsNextView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    var log: LocalLogData
+    var movie: LocalMovieData
+    
+    @ObservedObject var logsViewModel: LogsViewModel
 
     @State private var movieTitle: String = "Loading..."
     @State private var movieDetails: String = "Loading details..."
@@ -10,7 +13,7 @@ struct WhatsNextView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text("From \(log.name ?? "Unknown")")
+            Text("From \(movie.movie_ids?.name ?? "Unknown")")
                 .font(.subheadline)
                 .foregroundColor(.gray)
                 .bold()
@@ -40,7 +43,7 @@ struct WhatsNextView: View {
                 Spacer()
 
                 Button(action: {
-                    // Action for the button
+                    markMovieAsWatched()
                 }) {
                     Image(systemName: "checkmark.circle.fill")
                         .resizable()
@@ -52,13 +55,16 @@ struct WhatsNextView: View {
             }
             .padding(.horizontal)
         }
+        .onReceive(logsViewModel.$refreshTrigger) { _ in
+            loadNextWatchMovie() // React to changes in LogsViewModel
+        }
         .onAppear {
             loadNextWatchMovie()
         }
     }
 
     private func loadNextWatchMovie() {
-        guard let firstMovieId = log.movie_ids?.allObjects.first as? LocalMovieData, let movieId = firstMovieId.movie_id else {
+        guard let movieId = movie.movie_id else {
             movieTitle = "No Movies"
             movieDetails = "Add movies to the log"
             return
@@ -83,6 +89,20 @@ struct WhatsNextView: View {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private func markMovieAsWatched() {
+        // Update the movie's watched status in Core Data
+        withAnimation {
+            movie.watched_ids = movie.movie_ids // Assuming 'watched_ids' is where you track watched movies
+            movie.in_log = false // Optionally update the 'in_log' status if needed
+
+            do {
+                try viewContext.save()
+            } catch {
+                print("Error marking movie as watched: \(error.localizedDescription)")
             }
         }
     }
