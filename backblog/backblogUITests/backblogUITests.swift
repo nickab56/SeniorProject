@@ -10,10 +10,13 @@ import XCTest
 final class backblogUITests: XCTestCase {
     
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-        
-        continueAfterFailure = false
+        continueAfterFailure = true
+
+        let app = XCUIApplication()
+        app.launchArguments.append("--uitesting-reset")
+        app.launch()
     }
+
     
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
