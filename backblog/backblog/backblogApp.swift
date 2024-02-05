@@ -10,6 +10,7 @@
 
 
 import SwiftUI
+import CoreData
 
 @main
 struct backblogApp: App {
@@ -37,7 +38,31 @@ struct backblogApp: App {
                     }
                 }
             }
+            .onAppear
+            {
+                if CommandLine.arguments.contains("--uitesting-reset") {
+                    // Call your method to delete all logs here
+                    resetAllLogs()
+                }
+            }
         }
     }
+    
+    func resetAllLogs() {
+        let context = PersistenceController.shared.container.viewContext
+
+        let fetchRequest: NSFetchRequest<LocalLogData> = LocalLogData.fetchRequest()
+        do {
+            let items = try context.fetch(fetchRequest)
+            for item in items {
+                context.delete(item)
+            }
+            try context.save()
+        } catch let error as NSError {
+            print("Error resetting logs: \(error), \(error.userInfo)")
+        }
+    }
+
+
 }
 

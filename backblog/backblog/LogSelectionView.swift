@@ -23,6 +23,7 @@ struct LogSelectionView: View {
                             addMovieToLog(movieId: selectedMovieId, log: log)
                         }) {
                             Text(log.name ?? "Unknown Log")
+                                .accessibility(identifier: log.name ?? "unknownLog")
                         }
                     }
                 }
