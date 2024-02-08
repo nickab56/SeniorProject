@@ -13,31 +13,55 @@ struct LogSelectionView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \LocalLogData.orderIndex, ascending: true)]) var logs: FetchedResults<LocalLogData>
     @State private var showingNotification = false
+    @State private var showingAddLogSheet = false
 
     var body: some View {
         NavigationView {
-            ZStack(alignment: .bottom) {
-                List {
+            Form {
+                Section {
                     ForEach(logs) { log in
-                        Button(action: {
-                            addMovieToLog(movieId: selectedMovieId, log: log)
-                        }) {
-                            Text(log.name ?? "Unknown Log")
+                        HStack {
+                            Text(log.name ?? "Log Name")
+                            Spacer()
+                            Button(action: {
+                                addMovieToLog(movieId: selectedMovieId, log: log)
+                            }) {
+                                Image(systemName: "plus.circle.fill")
+                                    .foregroundColor(Color.blue)
+                                    .imageScale(.large)
+                            }
+                            .accessibility(identifier: log.name ?? "unknownLog")
                         }
-                        .accessibility(identifier: log.name ?? "unknownLog")
+                        .padding(.vertical, 5)
                     }
                 }
-                .navigationBarTitle("Select Log", displayMode: .inline)
-                .navigationBarItems(trailing: Button("Done") {
-                    showingSheet = false
-                })
-
-                if showingNotification {
-                    notificationView
-                        .transition(.move(edge: .bottom))
-                        .zIndex(1)
+                
+                Section {
+                    Button(action: {
+                        showingAddLogSheet = true
+                    }) {
+                        Text("New Log")
+                            .frame(maxWidth: .infinity)
+                            .multilineTextAlignment(.center)
+                    }
+                    .accessibility(identifier: "createLogButton")
+               
+                    Button(action: {
+                        showingSheet = false
+                    }) {
+                        Text("Cancel")
+                            .frame(maxWidth: .infinity)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(.red)
+                    }
+                    .accessibility(identifier: "cancelAddLogButton")
                 }
             }
+            .navigationBarTitle("Add to Log", displayMode: .inline)
+            .preferredColorScheme(.dark)
+        }
+        .sheet(isPresented: $showingAddLogSheet) {
+            AddLogSheetView(isPresented: $showingAddLogSheet)
         }
     }
 
