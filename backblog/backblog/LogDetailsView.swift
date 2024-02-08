@@ -2,7 +2,7 @@ import SwiftUI
 import CoreData
 
 struct LogDetailsView: View {
-    let log: LocalLogData
+    let log: LogType
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) var presentationMode
     @State private var movies: [(MovieData, String)] = [] // Pair of MovieData and half-sheet URL
@@ -13,7 +13,13 @@ struct LogDetailsView: View {
                 .edgesIgnoringSafeArea(.all)
 
             VStack {
-                Text("Details for Log: \(log.name ?? "Unknown")")
+                let logName = switch log {
+                case .localLog(let log):
+                    log.name ?? ""
+                case .log(let log):
+                    log.name ?? ""
+                }
+                Text("Details for Log: \(logName)")
                     .font(.title)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
@@ -57,18 +63,25 @@ struct LogDetailsView: View {
             fetchMovies()
         }
     }
-
+    
     private func fetchMovies() {
-        guard let movieIds = log.movie_ids as? Set<LocalMovieData>, !(movieIds.count == 0) else { return }
-
-        let movieIdArr = movieIds.map { $0.movie_id }
+        var movieArr: [String]
+        switch log {
+        case .localLog(let log):
+            guard let movieIds = log.movie_ids as? Set<LocalMovieData> else { return }
+            movieArr = localMovieDataMapping(movieSet: movieIds)
+        case .log(let log):
+            guard let movieIds: [String: Bool] = log.movieIds else { return }
+            movieArr = movieIds.compactMap { $0.key }
+        }
+        
+        if (movieArr.count == 0) {
+            return
+        }
 
         movies = [] // Reset movies list
 
-        for movieId in movieIdArr {
-            guard let movieId = movieId else {
-                continue
-            }
+        for movieId in movieArr {
             Task {
                 let movieDetailsResult = await MovieService.shared.getMovieByID(movieId: movieId)
                 let halfSheetResult = await MovieService.shared.getMovieHalfSheet(movieId: movieId)
@@ -85,12 +98,35 @@ struct LogDetailsView: View {
             }
         }
     }
+    
+    private func localMovieDataMapping(movieSet: Set<LocalMovieData>?) -> [String] {
+        guard let movies: Set<LocalMovieData> = movieSet, !(movies.count == 0) else { return [] }
+        
+        return movies.compactMap { $0.movie_id  }
+    }
 
     private func deleteLog() {
-        viewContext.delete(log)
         do {
-            try viewContext.save()
-            presentationMode.wrappedValue.dismiss()
+            switch log {
+            case .localLog(let log):
+                viewContext.delete(log)
+                try viewContext.save()
+                presentationMode.wrappedValue.dismiss()
+            case .log(let log):
+                DispatchQueue.main.async {
+                    Task {
+                        guard let userId = FirebaseService.shared.auth.currentUser?.uid else {
+                            return
+                        }
+                        do {
+                            guard let logId = log.logId else { return }
+                            _ = try await LogRepository.deleteLog(logId: logId).get()
+                        } catch {
+                            throw error
+                        }
+                    }
+                }
+            }
         } catch {
             print("Error deleting log: \(error.localizedDescription)")
         }

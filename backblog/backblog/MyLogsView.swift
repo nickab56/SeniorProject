@@ -39,7 +39,7 @@ struct MyLogsView: View {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                     ForEach(logs.sorted(by: { $0.orderIndex < $1.orderIndex }), id: \.self) { log in
                         Group {
-                            NavigationLink(destination: LogDetailsView(log: log)) {
+                            NavigationLink(destination: LogDetailsView(log: LogType.localLog(log))) {
                                 LogItemView(log: LogType.localLog(log))
                                     .cornerRadius(15)
                             }
