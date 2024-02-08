@@ -37,6 +37,7 @@ struct LoginView: View {
                         Text(loginMessage)
                             .foregroundColor(messageColor)
                             .padding()
+                            .accessibilityIdentifier("loginMessage")
 
                         TextField("Email or Username", text: $username)
                             .textFieldStyle(RoundedBorderTextFieldStyle())

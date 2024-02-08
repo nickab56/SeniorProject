@@ -30,6 +30,7 @@ struct MovieDetailsView: View {
                         if let posterPath = movie.posterPath, let url = URL(string: "https://image.tmdb.org/t/p/w500" + posterPath) {
                             AsyncImage(url: url) { image in
                                 image.resizable()
+                                    .accessibility(identifier: "moviePoster")
                             } placeholder: {
                                 Color.gray
                             }
@@ -44,12 +45,14 @@ struct MovieDetailsView: View {
                             .foregroundColor(.white)
                             .bold()
                             .padding()
+                            .accessibility(identifier: "movieTitle")
 
                         // Release Date
                         if let releaseDate = movie.releaseDate {
                             Text("Release Date: \(releaseDate)")
                                 .foregroundColor(.white)
                                 .padding(.bottom, 1)
+                                .accessibility(identifier: "movieReleaseDate")
                         }
 
                         // Overview
@@ -69,6 +72,7 @@ struct MovieDetailsView: View {
                             Text("Runtime: \(runtime) minutes")
                                 .foregroundColor(.white)
                                 .padding(.bottom, 1)
+                                .accessibility(identifier: "movieRunTime")
                         }
 
                         // Cast
@@ -84,6 +88,7 @@ struct MovieDetailsView: View {
                                         .padding(.bottom, 1)
                                 }
                             }.padding()
+                                .accessibility(identifier: "movieCast")
                         }
 
                         // Director
@@ -91,6 +96,7 @@ struct MovieDetailsView: View {
                             Text("Director: \(director.name ?? "N/A")")
                                 .foregroundColor(.white)
                                 .padding(.bottom, 15)
+                                .accessibility(identifier: "movieDirector")
                         }
                     }
                 }
