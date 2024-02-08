@@ -10,10 +10,11 @@ import XCTest
 final class LandingView_UITests: XCTestCase {
 
     override func setUpWithError() throws {
+        continueAfterFailure = true
 
-        continueAfterFailure = false
-        XCUIApplication().launch()
-
+        let app = XCUIApplication()
+        app.launchArguments.append("--uitesting-reset")
+        app.launch()
     }
 
     override func tearDownWithError() throws {
