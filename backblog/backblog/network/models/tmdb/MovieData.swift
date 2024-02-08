@@ -7,7 +7,15 @@
 
 import Foundation
 
-struct MovieData: Codable {
+struct MovieData: Hashable, Codable {
+    static func == (lhs: MovieData, rhs: MovieData) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
     var adult: Bool?
     var backdropPath: String?
     var belongsToCollection: Collection?

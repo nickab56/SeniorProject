@@ -1,10 +1,5 @@
 import SwiftUI
 
-enum LogType {
-    case localLog(LocalLogData)
-    case log(LogData)
-}
-
 struct LogItemView: View {
     let log: LogType
     let maxCharacters = 20

@@ -9,7 +9,8 @@ import Foundation
 
 struct UserData: Identifiable, Codable, Equatable {
     static func == (lhs: UserData, rhs: UserData) -> Bool {
-        return lhs.userId == rhs.userId
+        return lhs.userId == rhs.userId && lhs.username == rhs.username &&
+        lhs.avatarPreset == rhs.avatarPreset
     }
     
     var id: String {
@@ -25,7 +26,7 @@ struct UserData: Identifiable, Codable, Equatable {
     
     enum CodingKeys: String, CodingKey {
         case username, friends, blocked
-        case userId = "log_id"
+        case userId = "user_id"
         case joinDate = "join_date"
         case avatarPreset = "avatar_preset"
     }

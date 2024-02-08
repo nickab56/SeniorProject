@@ -7,9 +7,15 @@
 
 import Foundation
 
-struct LogRequestData: Codable, Equatable {
+struct LogRequestData: Hashable, Codable, Equatable {
     static func == (lhs: LogRequestData, rhs: LogRequestData) -> Bool {
         return lhs.targetId == rhs.targetId && lhs.senderId == rhs.senderId && lhs.requestDate == rhs.requestDate && lhs.isComplete == rhs.isComplete && lhs.logId == rhs.logId
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(senderId)
+        hasher.combine(targetId)
+        hasher.combine(logId)
     }
     
     var senderId: String?
