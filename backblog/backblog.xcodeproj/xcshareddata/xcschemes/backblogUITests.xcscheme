@@ -24,6 +24,17 @@
                ReferencedContainer = "container:backblog.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "34AEBD612B745E4800C6EA87"
+               BuildableName = "newbackblogUITests.xctest"
+               BlueprintName = "newbackblogUITests"
+               ReferencedContainer = "container:backblog.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
