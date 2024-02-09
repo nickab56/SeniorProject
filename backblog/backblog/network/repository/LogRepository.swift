@@ -35,7 +35,6 @@ class LogRepository {
         }
     }
     
-    // TODO: Append movie data
     static func getLog(logId: String) async -> Result<LogData, Error> {
         do {
             let result = try await FirebaseService.shared.get(type: LogData(), docId: logId, collection: "logs").get()
@@ -46,7 +45,6 @@ class LogRepository {
         }
     }
     
-    // TODO: Get first movie id, add half sheet
     static func getLogs(userId: String, showPrivate: Bool) async -> Result<[LogData], Error> {
         do {
             let logRef = FirebaseService.shared.db.collection("logs")
@@ -69,9 +67,9 @@ class LogRepository {
                 group.addTask {
                     do {
                         let q = if (showPrivate) {
-                            logRef.order(by: "collaborators.\(userId)")
+                            logRef.whereField("collaborators.\(userId)", isEqualTo: true)
                         } else {
-                            logRef.order(by: "collaborators.\(userId)").whereField("is_visible", isEqualTo: true)
+                            logRef.whereField("collaborators.\(userId)", isEqualTo: true).whereField("is_visible", isEqualTo: true)
                         }
                         return try await FirebaseService.shared.getBatch(type: LogData(), query: q).get()
                     } catch {

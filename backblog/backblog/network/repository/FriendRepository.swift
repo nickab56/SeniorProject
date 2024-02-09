@@ -12,7 +12,10 @@ class FriendRepository {
     static func addLogRequest(senderId: String, targetId: String, logId: String, requestDate: String) async -> Result<Bool, Error> {
         do {
             let logRequestData = LogRequestData(senderId: senderId, targetId: targetId, logId: logId, requestDate: requestDate, isComplete: false)
-            _ = try await FirebaseService.shared.post(data: logRequestData, collection: "log_requests").get()
+            let result = try await FirebaseService.shared.post(data: logRequestData, collection: "log_requests").get()
+            
+            // Update log request to include request id
+            _ = try await FirebaseService.shared.put(updates: ["request_id": result], docId: result, collection: "log_requests").get()
             
             return .success(true)
         } catch {
@@ -23,7 +26,10 @@ class FriendRepository {
     static func addFriendRequest(senderId: String, targetId: String, requestDate: String) async -> Result<Bool, Error> {
         do {
             let friendRequestData = FriendRequestData(senderId: senderId, targetId: targetId, requestDate: requestDate, isComplete: false)
-            _ = try await FirebaseService.shared.post(data: friendRequestData, collection: "friend_requests").get()
+            let result = try await FirebaseService.shared.post(data: friendRequestData, collection: "friend_requests").get()
+            
+            // Update friend request to include request id
+            _ = try await FirebaseService.shared.put(updates: ["request_id": result], docId: result, collection: "friend_requests").get()
             
             return .success(true)
         } catch {

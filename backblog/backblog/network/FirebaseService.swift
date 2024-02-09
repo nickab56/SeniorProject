@@ -37,6 +37,22 @@ class FirebaseService {
         }
     }
     
+    func exists(query: Query) async -> Result<Bool, Error> {
+        do {
+            let snap = try await query.getDocuments()
+            
+            guard let doc = snap.documents.first else {
+                // Doc not found
+                return .success(false)
+            }
+            
+            return .success(true)
+        } catch {
+            print("Error: \(error)")
+            return .failure(error)
+        }
+    }
+    
     // From doc ref
     func get<T: Decodable>(type: T, docId: String, collection: String) async -> Result<T, Error> {
         do {
