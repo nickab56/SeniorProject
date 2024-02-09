@@ -30,10 +30,15 @@ struct LogSelectionView: View {
                 
                 Section {
                     Button(action: {
-                        addMovieToSelectedLogs()
-                        showingSheet = false
+                        if selectedLogs.isEmpty {
+                            showingAddLogSheet = true
+                        }
+                        else {
+                            addMovieToSelectedLogs()
+                            showingSheet = false
+                        }
                     }) {
-                        Text("Done")
+                        Text(selectedLogs.isEmpty ? "New Log" : "Add")
                             .frame(maxWidth: .infinity)
                             .multilineTextAlignment(.center)
                     }
