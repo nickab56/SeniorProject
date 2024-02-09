@@ -7,6 +7,7 @@ struct LogDetailsView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var movies: [(MovieData, String)] = [] // Pair of MovieData and half-sheet URL
     @State private var showingWatchedNotification = false
+    @State private var editCollaboratorSheet = false
 
     var body: some View {
         ZStack {
@@ -41,7 +42,7 @@ struct LogDetailsView: View {
                 
                 HStack {
                     Button(action: {
-                        // waiting for functionailty
+                        editCollaboratorSheet = true
                     }) {
                         Image(systemName: "person.badge.plus")
                             .padding()
@@ -135,6 +136,9 @@ struct LogDetailsView: View {
         .animation(.easeInOut, value: showingWatchedNotification)
         .onAppear {
             fetchMovies()
+        }
+        .sheet(isPresented: $editCollaboratorSheet) {
+            EditCollaboratorSheetView(isPresented: $editCollaboratorSheet)
         }
     }
     
