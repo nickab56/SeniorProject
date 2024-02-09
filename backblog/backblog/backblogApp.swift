@@ -7,8 +7,6 @@
 //  Description: Entry point to the app. Setsup firebase config and roots to landing page.
 //  Establishes persistence
 
-
-
 import SwiftUI
 import CoreData
 

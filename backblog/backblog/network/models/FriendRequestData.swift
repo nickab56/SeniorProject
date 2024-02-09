@@ -17,12 +17,14 @@ struct FriendRequestData: Hashable, Codable, Equatable {
         hasher.combine(targetId)
     }
     
+    var requestId: String?
     var senderId: String?
     var targetId: String?
     var requestDate: String?
     var isComplete: Bool?
     
     enum CodingKeys: String, CodingKey {
+        case requestId = "request_id"
         case senderId = "sender_id"
         case targetId = "target_id"
         case requestDate = "request_date"

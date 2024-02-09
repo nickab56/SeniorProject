@@ -18,6 +18,7 @@ struct LogRequestData: Hashable, Codable, Equatable {
         hasher.combine(logId)
     }
     
+    var requestId: String?
     var senderId: String?
     var targetId: String?
     var logId: String?
@@ -25,6 +26,7 @@ struct LogRequestData: Hashable, Codable, Equatable {
     var isComplete: Bool?
     
     enum CodingKeys: String, CodingKey {
+        case requestId = "request_id"
         case senderId = "sender_id"
         case targetId = "target_id"
         case logId = "log_id"

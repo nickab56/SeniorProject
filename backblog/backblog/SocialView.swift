@@ -18,6 +18,9 @@ struct SocialView: View {
     @State private var friendRequests: [(FriendRequestData, UserData)] = []
     @State private var logRequests: [(LogRequestData, UserData)] = []
     
+    @State private var showingNotification = false
+    @State private var notificationMessage = ""
+    
     var body: some View {
         fetchUserData()
         fetchLogs()
@@ -118,7 +121,8 @@ struct SocialView: View {
                                     .foregroundColor(.gray)
                             }
                             
-                            ForEach(friendRequests, id: \.0) { friendReq in FriendRequestList(reqId: friendReq.1.userId ?? "", reqUsername: friendReq.1.username ?? "", avatarPreset: friendReq.1.avatarPreset ?? 1)
+                            ForEach(friendRequests, id: \.0) { friendReq in 
+                                RequestList(notificationActive: $showingNotification, notificationMessage: $notificationMessage, reqId: friendReq.0.requestId ?? "", reqUserId: friendReq.1.userId ?? "", reqType: "friend", reqUsername: friendReq.1.username ?? "", avatarPreset: friendReq.1.avatarPreset ?? 1)
                                     .padding(.horizontal)
                             }
                         }
@@ -133,7 +137,8 @@ struct SocialView: View {
                                     .foregroundColor(.gray)
                             }
                             
-                            ForEach(logRequests, id: \.0) { logReq in LogRequestList(reqId: logReq.1.userId ?? "", reqUsername: logReq.1.username ?? "", avatarPreset: logReq.1.avatarPreset ?? 1 )
+                            ForEach(logRequests, id: \.0) { logReq in 
+                                RequestList(notificationActive: $showingNotification, notificationMessage: $notificationMessage, reqId: logReq.0.requestId ?? "", reqUserId: logReq.1.userId ?? "", reqType: "log", reqUsername: logReq.1.username ?? "", avatarPreset: logReq.1.avatarPreset ?? 1 )
                                     .padding(.horizontal)
                             }
                         }
@@ -154,6 +159,11 @@ struct SocialView: View {
                             Text("No friends found.")
                                 .foregroundColor(.gray)
                         }
+                        
+                        if showingNotification {
+                            notificationView
+                        }
+                        
                     }
                     .padding(.trailing)
                     .padding(.bottom, 175)
@@ -162,6 +172,17 @@ struct SocialView: View {
         }.padding(.top, 80)
         .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .edgesIgnoringSafeArea(.all)
+    }
+    
+    private var notificationView: some View {
+        Text(notificationMessage)
+            .padding()
+            .foregroundColor(.white)
+            .background(Color.black.opacity(0.7))
+            .cornerRadius(8)
+            .padding(.bottom, 50)
+            .transition(.move(edge: .bottom))
+            .accessibility(identifier: "NotificationView")
     }
     
     private func fetchUserData() {
@@ -284,103 +305,91 @@ struct SocialView: View {
     }
 }
 
-struct FriendRequestList: View {
+struct RequestList: View {
+    @Binding var notificationActive: Bool
+    @Binding var notificationMessage: String
+    
     let reqId: String
+    let reqUserId: String
+    let reqType: String
     let reqUsername: String
     let avatarPreset: Int
     
     var body: some View {
-        Button(action: {
-                    // TODO: Navigate to friend's profile
+        NavigationLink(destination: FriendsProfileView(friendId: reqUserId)) {
+            HStack {
+                let preset = getAvatarId(avatarPreset: avatarPreset)
+                Image(uiImage: UIImage(named: preset) ?? UIImage())
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 40, height: 40)
+                
+                Text(reqUsername)
+                    .font(.headline)
+                    .foregroundColor(.white)
+                
+                Spacer()
+                
+                Button(action: {
+                    updateRequest(reqId: reqId, reqType: reqType, accepted: true)
                 }) {
-                    HStack {
-                        let preset = getAvatarId(avatarPreset: avatarPreset)
-                        Image(uiImage: UIImage(named: preset) ?? UIImage())
+                    ZStack {
+                        Circle()
+                            .foregroundColor(.blue)
+                            .frame(width: 25, height: 25)
+                        
+                        Image(systemName: "checkmark")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 40, height: 40)
-                        
-                        Text(reqUsername)
-                            .font(.headline)
-                            .foregroundColor(.white)
-                        
-                        Spacer()
-                        
-                        Button(action: {
-                            // TODO: Accept friend request
-                        }) {
-                            ZStack {
-                                Circle()
-                                    .foregroundColor(.blue)
-                                    .frame(width: 25, height: 25)
-                                
-                                Image(systemName: "checkmark")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 10, height: 10)
-                                    .foregroundColor(.black)
-                            }.accessibility(identifier: "Accept Friend Request")
+                            .frame(width: 10, height: 10)
+                            .foregroundColor(.black)
+                    }.accessibility(identifier: "Accept Request")
+                }
+                .padding(.horizontal, 20)
+                
+                Button(action: {
+                    updateRequest(reqId: reqId, reqType: reqType, accepted: false)
+                }) {
+                    Image(systemName: "xmark.circle")
+                        .frame(width: 25, height: 25)
+                        .foregroundColor(.white)
+                }.accessibility(identifier: "Remove Request")
+                
+            }
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+    
+    private func updateRequest(reqId: String, reqType: String, accepted: Bool) {
+        DispatchQueue.main.async {
+            Task {
+                do {
+                    if reqType.lowercased() == "log" {
+                        _ = try await FriendRepository.updateLogRequest(logRequestId: reqId, isAccepted: accepted).get()
+                    } else {
+                        _ = try await FriendRepository.updateFriendRequest(friendRequestId: reqId, isAccepted: accepted).get()
+                    }
+                    
+                    // Successful
+                    withAnimation {
+                        notificationMessage = "Successfully updated request!"
+                        notificationActive = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            notificationActive = false
                         }
-                        .padding(.horizontal, 20)
-                                    
-                        Button(action: {
-                            // TODO: Reject friend request
-                        }) {
-                            Image(systemName: "xmark.circle")
-                                .frame(width: 25, height: 25)
-                                .foregroundColor(.white)
-                        }.accessibility(identifier: "Remove Friend Request")
-                        
+                    }
+                } catch {
+                    print("Error updating request: \(error.localizedDescription)")
+                    
+                    withAnimation {
+                        notificationMessage = "Error updating request"
+                        notificationActive = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            notificationActive = false
+                        }
                     }
                 }
-                .buttonStyle(PlainButtonStyle())
-    }
-}
-
-struct LogRequestList: View {
-    let reqId: String
-    let reqUsername: String
-    let avatarPreset: Int
-    
-    var body: some View {
-        HStack {
-            let preset = getAvatarId(avatarPreset: avatarPreset)
-            Image(uiImage: UIImage(named: preset) ?? UIImage())
-                .resizable()
-                .scaledToFit()
-                .frame(width: 40, height: 40)
-            
-            Text(reqUsername)
-                .font(.headline)
-                .foregroundColor(.white)
-            
-            Spacer()
-            
-            Button(action: {
-                // TODO: Accept log request
-            }) {
-                ZStack {
-                    Circle()
-                        .foregroundColor(.blue)
-                        .frame(width: 25, height: 25)
-                    
-                    Image(systemName: "checkmark")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 10, height: 10)
-                        .foregroundColor(.black)
-                }
-            }.accessibility(identifier: "Accept Log Request")
-            .padding(.horizontal, 20)
-                        
-            Button(action: {
-                // TODO: Reject log request
-            }) {
-                Image(systemName: "xmark.circle")
-                    .frame(width: 30, height: 30)
-                    .foregroundColor(.white)
-            }.accessibility(identifier: "Remove Log Request")
-            
+            }
         }
     }
 }

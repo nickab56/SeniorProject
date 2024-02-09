@@ -66,8 +66,11 @@ struct FriendsProfileView: View {
                     if (viewModel.logs.count > 0) {
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
                             ForEach(viewModel.logs) { log in
-                                LogItemView(log: LogType.log(log))
-                                    .accessibility(identifier: "logItem_\(log.logId ?? "")")
+                                NavigationLink(destination: LogDetailsView(log: LogType.log(log))) {
+                                    LogItemView(log: LogType.log(log))
+                                        .cornerRadius(15)
+                                        .accessibility(identifier: "logItem_\(log.logId ?? "")")
+                                }
                             }
                         }
                         .padding(.horizontal)
