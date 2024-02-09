@@ -145,7 +145,7 @@ final class LandingView_UITests: XCTestCase {
         // Navigate to the HDR screen and verify by looking for a unique element.
         let hdrButton = tabBar.buttons["Hdr"]
         hdrButton.tap()
-        let hdrScreenElement = app.buttons["addLogButton"] // Use a unique element from your HDR screen
+        let hdrScreenElement = app.buttons["addLogButton"]
         XCTAssertTrue(hdrScreenElement.waitForExistence(timeout: 5), "Should be on the HDR screen after tapping 'Hdr'")
         
         // Navigate back to the Login screen and verify.
@@ -175,7 +175,7 @@ final class LandingView_UITests: XCTestCase {
         let newLogNameTextField = app.textFields["newLogNameTextField"]
         XCTAssertTrue(newLogNameTextField.waitForExistence(timeout: 5), "New Log Name text field should be visible")
         newLogNameTextField.tap()
-        newLogNameTextField.typeText("Test Log\n") // Use '\n' to dismiss the keyboard
+        newLogNameTextField.typeText("Test Log\n")
         
         let createLogButton = app.buttons["createLogButton"]
         XCTAssertTrue(createLogButton.waitForExistence(timeout: 5), "Create Log button should be visible")
@@ -200,7 +200,7 @@ final class LandingView_UITests: XCTestCase {
         
         let newLogNameTextField = app.textFields["newLogNameTextField"]
         newLogNameTextField.tap()
-        newLogNameTextField.typeText("Test Log\n") // '\n' dismisses the keyboard
+        newLogNameTextField.typeText("Test Log\n")
 
         let createLogButton = app.buttons["createLogButton"]
         createLogButton.tap()
@@ -218,7 +218,7 @@ final class LandingView_UITests: XCTestCase {
         sleep(1)
         
         // Tap the "Add to Log" button for the searched movie
-        let addToLogButton = app.buttons["AddToLogButton"].firstMatch // Adjust identifier as needed
+        let addToLogButton = app.buttons["AddToLogButton"].firstMatch
         XCTAssertTrue(addToLogButton.waitForExistence(timeout: 5), "Add to Log button should appear for searched movie")
         addToLogButton.tap()
 
