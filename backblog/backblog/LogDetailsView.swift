@@ -160,6 +160,7 @@ struct LogDetailsView: View {
                 .cornerRadius(10)
                 .shadow(radius: 10)
                 .zIndex(1) // Ensure the notification view is always on top
+                .accessibility(identifier: "AddedToWatchedSwiped")
         }
     }
     
@@ -254,6 +255,7 @@ struct MovieRow: View {
                     Text(movie.title ?? "N/A")
                         .foregroundColor(.white)
                         .fontWeight(.bold)
+                        .accessibility(identifier: "LogDetailsMovieTitle")
                 }
             }
             .padding(.vertical, 5)
