@@ -33,11 +33,13 @@ struct WhatsNextView: View {
                         .font(.title)
                         .foregroundColor(.white)
                         .bold()
+                        .accessibility(identifier: "WhatsNextTitle")
 
                     Text(movieDetails)
                         .font(.subheadline)
                         .bold()
                         .foregroundColor(.gray)
+                        .accessibilityIdentifier("WhatsNextDetails")
                 }
                 
                 Spacer()
