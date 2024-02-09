@@ -8,11 +8,12 @@ struct LogSelectionView: View {
     @State private var selectedLogs = Set<Int64>()
     @State private var logsWithDuplicates = Set<Int64>() // Track logs with duplicate movies
     @State private var showingNotification = false
+    @State private var showingAddLogSheet = false
 
     var body: some View {
         NavigationView {
-            ZStack(alignment: .bottom) {
-                List {
+            Form {
+                Section {
                     ForEach(logs) { log in
                         MultipleSelectionRow(title: log.name ?? "Unknown Log", isSelected: selectedLogs.contains(log.log_id)) {
                             if selectedLogs.contains(log.log_id) {
@@ -23,19 +24,42 @@ struct LogSelectionView: View {
                                 checkForDuplicateAndNotify(logId: log.log_id) // Check for duplicates when a log is selected
                             }
                         }
-                        .accessibility(identifier: log.name ?? "unknownLog")
+                        .padding(.vertical, 5)
                     }
                 }
-                .navigationBarTitle("Select Log", displayMode: .inline)
-                .navigationBarItems(trailing: Button("Done") {
-                    addMovieToSelectedLogs()
-                    showingSheet = false
-                }.disabled(!logsWithDuplicates.isEmpty)) // Disable "Done" if there are duplicates
-
+                
+                Section {
+                    Button(action: {
+                        addMovieToSelectedLogs()
+                        showingSheet = false
+                    }) {
+                        Text("Done")
+                            .frame(maxWidth: .infinity)
+                            .multilineTextAlignment(.center)
+                    }
+                    .accessibility(identifier: "createLogButton")
+                    .disabled(!logsWithDuplicates.isEmpty) // Disable "Done" if there are duplicates
+                    
+                    Button(action: {
+                        showingSheet = false
+                    }) {
+                        Text("Cancel")
+                            .frame(maxWidth: .infinity)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(.red)
+                    }
+                    .accessibility(identifier: "cancelAddLogButton")
+                }
+                
                 if showingNotification {
                     notificationView
                 }
             }
+            .navigationBarTitle("Add to Log", displayMode: .inline)
+            .preferredColorScheme(.dark)
+        }
+        .sheet(isPresented: $showingAddLogSheet) {
+            AddLogSheetView(isPresented: $showingAddLogSheet)
         }
     }
 
