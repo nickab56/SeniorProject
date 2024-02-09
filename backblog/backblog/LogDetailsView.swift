@@ -6,6 +6,7 @@ struct LogDetailsView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) var presentationMode
     @State private var movies: [(MovieData, String)] = [] // Pair of MovieData and half-sheet URL
+    @State private var showingWatchedNotification = false
 
     var body: some View {
         ZStack {
@@ -97,8 +98,7 @@ struct LogDetailsView: View {
                                 .listRowBackground(Color.clear)
                                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                     Button(role: .destructive) {
-                                        // Need Implement logic to mark the movie as watched
-                                        print("Marked as watched")
+                                        markMovieAsWatched(movieId: movie.id ?? 0)
                                     } label: {
                                         Label("Watched", systemImage: "checkmark.circle.fill")
                                     }
@@ -120,9 +120,42 @@ struct LogDetailsView: View {
                 .padding(.bottom, 20)
                 .accessibility(identifier: "Delete Log")
             }
+            if showingWatchedNotification {
+                WatchedNotificationView()
+                    .transition(.move(edge: .bottom))
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            withAnimation {
+                                showingWatchedNotification = false
+                            }
+                        }
+                    }
+            }
         }
+        .animation(.easeInOut, value: showingWatchedNotification)
         .onAppear {
             fetchMovies()
+        }
+    }
+    
+    private func markMovieAsWatched(movieId: Int) {
+            // Implement logic to mark the movie as watched in your data model
+            
+            // Show "Movie added to watched" notification
+            withAnimation {
+                showingWatchedNotification = true
+            }
+        }
+    
+    struct WatchedNotificationView: View {
+        var body: some View {
+            Text("Movie added to watched")
+                .padding()
+                .background(Color.gray.opacity(0.9))
+                .foregroundColor(Color.white)
+                .cornerRadius(10)
+                .shadow(radius: 10)
+                .zIndex(1) // Ensure the notification view is always on top
         }
     }
     
