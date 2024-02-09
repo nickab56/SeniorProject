@@ -109,10 +109,8 @@ final class SearchView_UITests: XCTestCase {
         XCTAssertTrue(logSelection.waitForExistence(timeout: 5), "Log selection should be present")
         logSelection.tap()
 
-        // Confirm the selection by tapping the "Done" button
-        let doneButton = app.buttons["Done"] // Adjust identifier or label as needed
-        XCTAssertTrue(doneButton.exists, "Done button should be present")
-        doneButton.tap()
+        // Confirm adding the movie to the log
+        app.buttons["Add"].tap()
         
         // 4. Verify the movie is added to the log
         tabBar.buttons["Hdr"].tap() // Adjust as needed for your app's tab
@@ -176,11 +174,10 @@ final class SearchView_UITests: XCTestCase {
         XCTAssertTrue(log2Button.waitForExistence(timeout: 5), "Second log selection should be present")
         log2Button.tap()
 
-        // Confirm the selection by tapping the "Done" button
-        let doneButton = app.buttons["Done"] // Adjust identifier or label as needed
-        XCTAssertTrue(doneButton.exists, "Done button should be present")
-        doneButton.tap()
-
+        // Confirm adding the movie to the log
+        app.buttons["Add"].tap()
+        
+        
         // Verify the movie is added to the first log
         app.tabBars["Tab Bar"].buttons["Hdr"].tap() // Adjust as needed for your app's tab
         let log1Entry = app.staticTexts["Log 1"].firstMatch // Adjust as needed
