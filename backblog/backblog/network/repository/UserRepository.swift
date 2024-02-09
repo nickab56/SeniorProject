@@ -37,21 +37,21 @@ class UserRepository {
         }
     }
     
-    static func updateUser(userId: String, updateData: [String: Any]) async -> Result<Bool, Error> {
+    static func updateUser(userId: String, password: String, updateData: [String: Any]) async -> Result<Bool, Error> {
         do {
             var newData = updateData
-            var password: String?
+            var newPassword: String?
             
             // Remove password from update
             if updateData["password"] != nil {
-                password = updateData["password"] as? String
+                newPassword = updateData["password"] as? String
                 newData.removeValue(forKey: "password")
             }
             
             let result = try await FirebaseService.shared.put(updates: newData, docId: userId, collection: "users").get()
             
-            if password != nil {
-                // TODO: Update password if provided through firebase auth
+            if newPassword != nil {
+                _ = try await FirebaseService.shared.updatePassword(password: password, newPassword: newPassword!).get()
             }
             
             return .success(result)
@@ -62,7 +62,7 @@ class UserRepository {
     
     static func getLogRequests(userId: String) async -> Result<[LogRequestData], Error> {
         do {
-            let q = FirebaseService.shared.db.collection("log_requests").whereField("target_id", isEqualTo: userId)
+            let q = FirebaseService.shared.db.collection("log_requests").whereField("target_id", isEqualTo: userId).whereField("is_complete", isEqualTo: false)
             let result = try await FirebaseService.shared.getBatch(type: LogRequestData(), query: q).get()
             
             return .success(result)
@@ -73,7 +73,7 @@ class UserRepository {
     
     static func getFriendRequests(userId: String) async -> Result<[FriendRequestData], Error> {
         do {
-            let q = FirebaseService.shared.db.collection("friend_requests").whereField("target_id", isEqualTo: userId)
+            let q = FirebaseService.shared.db.collection("friend_requests").whereField("target_id", isEqualTo: userId).whereField("is_complete", isEqualTo: false)
             let result = try await FirebaseService.shared.getBatch(type: FriendRequestData(), query: q).get()
             
             return .success(result)

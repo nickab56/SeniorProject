@@ -63,6 +63,7 @@ struct SearchView: View {
                         Text(movie.title ?? "N/A")
                             .foregroundColor(.white)
                             .bold()
+                            .accessibilityIdentifier("SearchMovieTitle")
                         Text(formatReleaseYear(from: movie.releaseDate))
                             .foregroundColor(.gray)
                             .font(.footnote)
@@ -119,6 +120,7 @@ struct SearchView: View {
         }
         .padding()
         .accessibilityLabel("Add to Log")
+        .accessibility(identifier: "AddToLogButton")
         .onChange(of: tappedMovieId) { _ in
             // Reset the animation after a delay
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {

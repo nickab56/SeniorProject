@@ -15,34 +15,28 @@ struct SocialView: View {
     @State private var selectedTab = "Logs"
     @State private var userData: UserData?
     @State private var friends: [UserData] = []
-    @State private var friendRequests: [FriendRequestData] = []
-    @State private var logRequests: [LogRequestData] = []
-
+    @State private var friendRequests: [(FriendRequestData, UserData)] = []
+    @State private var logRequests: [(LogRequestData, UserData)] = []
+    
     var body: some View {
         fetchUserData()
         fetchLogs()
         fetchFriends()
-        var friendRequests: [String] {
-                // TEMP need friends ID
-                return ["nick", "jake", "TOM", "John"]
-            }
-        var logRequests: [String] {
-                // TEMP need friends ID
-                return ["Log1", "Log2", "Log3", "Log4"]
-            }
+        fetchFriendRequests()
+        fetchLogRequests()
         
         return VStack {
             HStack {
                 Spacer()
                 
-                NavigationLink(destination: SettingsView()) {
+                NavigationLink(destination: SettingsView(userData: $userData)) {
                     Image(systemName: "gear")
                         .font(.title)
                         .foregroundColor(.gray)
                 }
                 .frame(width: 50, height: 50)
-                .cornerRadius(25)
-                .padding(.horizontal, 30)
+                .padding(.horizontal, 10)
+                .padding(.top, 10)
             }
             HStack {
                 // Display user's avatar
@@ -74,14 +68,21 @@ struct SocialView: View {
             
             if selectedTab == "Logs" {
                 ScrollView {
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-                        ForEach(logs) { log in
-                            let _ = print(log.logId as String? ?? "")
-                            LogItemView(log: LogType.log(log))
-                                .accessibility(identifier: "logItem_\(log.logId ?? "")")
+                    if (logs.count > 0) {
+                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
+                            ForEach(logs) { log in
+                                NavigationLink(destination: LogDetailsView(log: LogType.log(log))) {
+                                    LogItemView(log: LogType.log(log))
+                                        .cornerRadius(15)
+                                        .accessibility(identifier: "logItem_\(log.logId ?? "")")
+                                }
+                            }
                         }
+                        .padding(.horizontal)
+                    } else {
+                        Text("No public logs found.")
+                            .foregroundColor(.gray)
                     }
-                    .padding(.horizontal)
                 }
             } else if selectedTab == "Friends" {
                 HStack {
@@ -94,7 +95,7 @@ struct SocialView: View {
                     Spacer()
                     
                     Button(action: {
-                        // Code for button to add a friend
+                        // TODO: Add friend implementation
                     }) {
                         Image(systemName: "person.badge.plus")
                             .foregroundColor(.white)
@@ -112,9 +113,12 @@ struct SocialView: View {
                                     .foregroundColor(.gray)
                                     .padding(.horizontal, 20)
                                 Spacer()
+                                Rectangle()
+                                    .frame(height: 1)
+                                    .foregroundColor(.gray)
                             }
                             
-                            ForEach(friendRequests, id: \.self) { friendID in FriendRequestList(FriendRequestID: friendID)
+                            ForEach(friendRequests, id: \.0) { friendReq in FriendRequestList(reqId: friendReq.1.userId ?? "", reqUsername: friendReq.1.username ?? "", avatarPreset: friendReq.1.avatarPreset ?? 1)
                                     .padding(.horizontal)
                             }
                         }
@@ -124,17 +128,35 @@ struct SocialView: View {
                                     .foregroundColor(.gray)
                                     .padding(.horizontal, 20)
                                 Spacer()
+                                Rectangle()
+                                    .frame(height: 1)
+                                    .foregroundColor(.gray)
                             }
                             
-                            ForEach(logRequests, id: \.self) { logID in LogRequestList(RequestID: logID)
+                            ForEach(logRequests, id: \.0) { logReq in LogRequestList(reqId: logReq.1.userId ?? "", reqUsername: logReq.1.username ?? "", avatarPreset: logReq.1.avatarPreset ?? 1 )
                                     .padding(.horizontal)
                             }
                         }
-                        ForEach(friends) { friendID in FriendList(friendName: friendID.username ?? "")
-                                .padding(.horizontal)
+                        if friends.isEmpty == false {
+                            HStack {
+                                Text("Friends")
+                                    .foregroundColor(.gray)
+                                    .padding(.horizontal, 20)
+                                Spacer()
+                                Rectangle()
+                                    .frame(height: 1)
+                                    .foregroundColor(.gray)
+                            }
+                            ForEach(friends) { friendId in FriendListElement(friendId: friendId.userId ?? "", userId: FirebaseService.shared.auth.currentUser?.uid ?? "", username: friendId.username ?? "", avatarPreset: friendId.avatarPreset ?? 1)
+                                    .padding(.horizontal)
+                            }
+                        } else {
+                            Text("No friends found.")
+                                .foregroundColor(.gray)
                         }
                     }
-                    .padding(.horizontal)
+                    .padding(.trailing)
+                    .padding(.bottom, 175)
                 }
             }
         }.padding(.top, 80)
@@ -171,33 +193,6 @@ struct SocialView: View {
                 }
             }
         }
-        /*FirebaseService.shared.db.collection("logs")
-            .whereField("owner.user_id", isEqualTo: userId).whereField("is_visible", isEqualTo: true)
-            .addSnapshotListener { querySnapshot, error in
-                guard let snapshot = querySnapshot else {
-                    return
-                }
-                
-                do {
-                    try snapshot.documentChanges.forEach { diff in
-                        if (diff.type) == .added {
-                            let newData: LogData = try diff.document.data(as: LogData.self)
-                            logs.append(newData)
-                        }
-                        if (diff.type == .modified) {
-                            if let index = logs.firstIndex(where: { $0.logId == diff.document.documentID }) {
-                                let newData: LogData = try diff.document.data(as: LogData.self)
-                                logs[index] = newData
-                            }
-                        }
-                        if (diff.type == .removed) {
-                            logs.removeAll { $0.logId == diff.document.documentID }
-                        }
-                    }
-                } catch {
-                    return
-                }
-            }*/
     }
     private func fetchFriends() {
         DispatchQueue.main.async {
@@ -207,109 +202,162 @@ struct SocialView: View {
                 }
                 do {
                     let result = try await FriendRepository.getFriends(userId: userId).get()
-                    friends = result
+                    friends = result.sorted { ($0.userId ?? "") > ($1.userId ?? "") }
                 } catch {
                     print("Error fetching friends: \(error.localizedDescription)")
                 }
             }
         }
     }
+    private func fetchLogRequests() {
+        DispatchQueue.main.async {
+            Task {
+                guard let userId = FirebaseService.shared.auth.currentUser?.uid else {
+                    return
+                }
+                do {
+                    let logReq = try await UserRepository.getLogRequests(userId: userId).get() // Returns [LogRequestData]
+                    
+                    let result: [(LogRequestData, UserData)] = try await withThrowingTaskGroup(of: (LogRequestData, UserData).self) { group in
+                        for req in logReq {
+                            group.addTask {
+                                do {
+                                    let user = try await UserRepository.getUser(userId: req.senderId ?? "").get()
+                                    return (req, user)
+                                } catch {
+                                    throw error
+                                }
+                            }
+                        }
+                        
+                        var resultArr: [(LogRequestData, UserData)] = []
+                        
+                        for try await result in group {
+                            resultArr.append(result)
+                        }
+                        
+                        return resultArr
+                    }
+                    logRequests = result
+                } catch {
+                    print("Error fetching log requests: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    private func fetchFriendRequests() {
+        DispatchQueue.main.async {
+            Task {
+                guard let userId = FirebaseService.shared.auth.currentUser?.uid else {
+                    return
+                }
+                do {
+                    let friendReq = try await UserRepository.getFriendRequests(userId: userId).get() // Returns [FriendRequestData]
+                    
+                    let result: [(FriendRequestData, UserData)] = try await withThrowingTaskGroup(of: (FriendRequestData, UserData).self) { group in
+                        for req in friendReq {
+                            group.addTask {
+                                do {
+                                    let user = try await UserRepository.getUser(userId: req.senderId ?? "").get()
+                                    return (req, user)
+                                } catch {
+                                    throw error
+                                }
+                            }
+                        }
+                        
+                        var resultArr: [(FriendRequestData, UserData)] = []
+                        
+                        for try await result in group {
+                            resultArr.append(result)
+                        }
+                        
+                        return resultArr
+                    }
+                    
+                    friendRequests = result
+                } catch {
+                    print("Error fetching log requests: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
 }
 
-struct FriendList: View {
-    let friendName: String
-        
-        var body: some View {
-            Button(action: {
-                        // Code for Functionaility
-                    }) {
-                        HStack {
-                            Image(systemName: "person.crop.circle") //TEMP friend PFP
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 40, height: 40)
-                                                        
-                            Text(friendName)
-                                .font(.headline)
-                                .foregroundColor(.white)
-                            
-                            Spacer()
-                        }
-                        .cornerRadius(10)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                }
-        }
-
 struct FriendRequestList: View {
-    let FriendRequestID: String
+    let reqId: String
+    let reqUsername: String
+    let avatarPreset: Int
+    
+    var body: some View {
+        Button(action: {
+                    // TODO: Navigate to friend's profile
+                }) {
+                    HStack {
+                        let preset = getAvatarId(avatarPreset: avatarPreset)
+                        Image(uiImage: UIImage(named: preset) ?? UIImage())
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 40, height: 40)
+                        
+                        Text(reqUsername)
+                            .font(.headline)
+                            .foregroundColor(.white)
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            // TODO: Accept friend request
+                        }) {
+                            ZStack {
+                                Circle()
+                                    .foregroundColor(.blue)
+                                    .frame(width: 25, height: 25)
+                                
+                                Image(systemName: "checkmark")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 10, height: 10)
+                                    .foregroundColor(.black)
+                            }.accessibility(identifier: "Accept Friend Request")
+                        }
+                        .padding(.horizontal, 20)
+                                    
+                        Button(action: {
+                            // TODO: Reject friend request
+                        }) {
+                            Image(systemName: "xmark.circle")
+                                .frame(width: 25, height: 25)
+                                .foregroundColor(.white)
+                        }.accessibility(identifier: "Remove Friend Request")
+                        
+                    }
+                }
+                .buttonStyle(PlainButtonStyle())
+    }
+}
+
+struct LogRequestList: View {
+    let reqId: String
+    let reqUsername: String
+    let avatarPreset: Int
     
     var body: some View {
         HStack {
-            Image(systemName: "person.crop.circle") //TEMP friend PFP
+            let preset = getAvatarId(avatarPreset: avatarPreset)
+            Image(uiImage: UIImage(named: preset) ?? UIImage())
                 .resizable()
                 .scaledToFit()
                 .frame(width: 40, height: 40)
             
-            Text("FriendRequestName")
+            Text(reqUsername)
                 .font(.headline)
                 .foregroundColor(.white)
             
             Spacer()
             
             Button(action: {
-                // Code for Functionaility
-            }) {
-                ZStack {
-                    Circle()
-                        .foregroundColor(.blue)
-                        .frame(width: 25, height: 25)
-                    
-                    Image(systemName: "checkmark")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 10, height: 10)
-                        .foregroundColor(.black)
-                }.accessibility(identifier: "Accept Friend Request")
-            }
-            .padding(.horizontal, 20)
-                        
-            Button(action: {
-                // Functionaility
-            }) {
-                Image(systemName: "xmark.circle")
-                    .frame(width: 25, height: 25)
-                    .foregroundColor(.white)
-            }.accessibility(identifier: "Remove Friend Request")
-            
-        }
-    }
-}
-
-struct LogRequestList: View {
-    let RequestID: String
-    
-    var body: some View {
-        HStack {
-            Image(systemName: "person.crop.circle") //TEMP friend PFP
-                .resizable()
-                .scaledToFit()
-                .frame(width: 40, height: 40)
-            
-            VStack {
-                Text("CreatorName")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                Text(RequestID)
-                    .font(.headline)
-                    .foregroundColor(.gray)
-            }
-            
-            
-            Spacer()
-            
-            Button(action: {
-                // Code for Functionaility
+                // TODO: Accept log request
             }) {
                 ZStack {
                     Circle()
@@ -326,7 +374,7 @@ struct LogRequestList: View {
             .padding(.horizontal, 20)
                         
             Button(action: {
-                // Functionaility
+                // TODO: Reject log request
             }) {
                 Image(systemName: "xmark.circle")
                     .frame(width: 30, height: 30)

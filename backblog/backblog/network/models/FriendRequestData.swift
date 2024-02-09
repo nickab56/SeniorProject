@@ -7,9 +7,14 @@
 
 import Foundation
 
-struct FriendRequestData: Codable, Equatable {
+struct FriendRequestData: Hashable, Codable, Equatable {
     static func == (lhs: FriendRequestData, rhs: FriendRequestData) -> Bool {
         return lhs.targetId == rhs.targetId && lhs.senderId == rhs.senderId && lhs.requestDate == rhs.requestDate && lhs.isComplete == rhs.isComplete
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(senderId)
+        hasher.combine(targetId)
     }
     
     var senderId: String?

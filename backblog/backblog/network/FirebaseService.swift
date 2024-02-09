@@ -49,6 +49,7 @@ class FirebaseService {
             }
             
             print("Error: Document not found")
+            print("The document Id of this error: \(docId)")
             return .failure(FirebaseError.notFound)
         } catch {
             print("Error: \(error)")
@@ -148,6 +149,33 @@ class FirebaseService {
             return .success(true)
         } catch {
             print("Error logging in: \(error)")
+            return .failure(error)
+        }
+    }
+    
+    func updatePassword(password: String, newPassword: String) async -> Result<Bool, Error> {
+        do {
+            let email: String = auth.currentUser?.email ?? ""
+            
+            // Attempt reauthentication
+            _ = try await auth.currentUser?.reauthenticate(with: EmailAuthProvider.credential(withEmail: email, password: password))
+            
+            // Authentication successful, attempt password update
+            _ = try await auth.currentUser?.updatePassword(to: password)
+            
+            return .success(true)
+        } catch {
+            return .failure(error)
+        }
+    }
+    
+    func logout() -> Result<Bool, Error> {
+        do {
+            // Attempt to log out current user
+            _ = try auth.signOut()
+            
+            return .success(true)
+        } catch {
             return .failure(error)
         }
     }
