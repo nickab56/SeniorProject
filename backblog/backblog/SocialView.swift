@@ -3,8 +3,7 @@
 //  backblog
 //
 //  Created by Nick Abegg on 12/23/23.
-//  Updated by Josh Altmeyer on 01/18/24.
-
+//  Updated by Jake Buhite on 02/09/24.
 
 import SwiftUI
 import FirebaseAuth
@@ -20,6 +19,8 @@ struct SocialView: View {
     
     @State private var showingNotification = false
     @State private var notificationMessage = ""
+    
+    @State private var showingSendFriendReqSheet = false
     
     var body: some View {
         fetchUserData()
@@ -98,7 +99,7 @@ struct SocialView: View {
                     Spacer()
                     
                     Button(action: {
-                        // TODO: Add friend implementation
+                        showingSendFriendReqSheet = true
                     }) {
                         Image(systemName: "person.badge.plus")
                             .foregroundColor(.white)
@@ -172,6 +173,9 @@ struct SocialView: View {
         }.padding(.top, 80)
         .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .edgesIgnoringSafeArea(.all)
+        .sheet(isPresented: $showingSendFriendReqSheet) {
+            AddFriendSheetView(isPresented: $showingSendFriendReqSheet, notificationMsg: $notificationMessage, notificationActive: $showingNotification)
+        }
     }
     
     private var notificationView: some View {

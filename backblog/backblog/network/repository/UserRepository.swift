@@ -37,6 +37,18 @@ class UserRepository {
         }
     }
     
+    static func getUserByUsername(username: String) async -> Result<UserData, Error> {
+        do {
+            let q = FirebaseService.shared.db.collection("users").whereField("username", isEqualTo: username)
+            
+            let result = try await FirebaseService.shared.get(type: UserData(), query: q).get()
+            
+            return .success(result)
+        } catch {
+            return .failure(error)
+        }
+    }
+    
     static func usernameExists(username: String) async -> Result<Bool, Error> {
         do {
             let q = FirebaseService.shared.db.collection("users").whereField("username", isEqualTo: username)

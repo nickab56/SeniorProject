@@ -1,3 +1,10 @@
+//
+//  AvatarSelectionView.swift
+//  backblog
+//
+//  Updated by Jake Buhite on 02/09/24.
+//
+
 import SwiftUI
 
 struct AvatarSelectionView: View {

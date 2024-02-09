@@ -1,4 +1,9 @@
-// SignupView.swift
+//
+//  SignupView.swift
+//  backblog
+//
+//  Updated by Jake Buhite on 02/09/24.
+//
 
 import SwiftUI
 import FirebaseAuth
@@ -88,35 +93,37 @@ struct SignupView: View {
                 SocialView()
             }
             .navigationDestination(isPresented: $signupSuccessful) {
-                SignupView(isLoggedInToSocial: $isLoggedInToSocial)
+                LoginView(isLoggedInToSocial: $isLoggedInToSocial)
             }
     }
     
     private func attemptSignup(email: String, password: String, displayName: String) {
-        Task {
-            do {
-                // Check if username already exists
-                let exists = try await UserRepository.usernameExists(username: displayName).get()
-                
-                if (exists) {
-                    signupMessage = "Username already exists"
+        DispatchQueue.main.async {
+            Task {
+                do {
+                    // Check if username already exists
+                    let exists = try await UserRepository.usernameExists(username: displayName).get()
+                    
+                    if (exists) {
+                        signupMessage = "Username already exists"
+                        messageColor = Color.red
+                        return
+                    }
+                    
+                    // Register
+                    let result = try await FirebaseService.shared.register(email: email, password: password).get()
+                    
+                    // Store additional user data in firestore
+                    _ = try await UserRepository.addUser(userId: result, username: displayName, avatarPreset: 1).get()
+                    
+                    // Update status
+                    signupSuccessful = true
+                    signupMessage = "Signup Successful"
+                    messageColor = Color.green
+                } catch {
+                    signupMessage = "Signup Failed: \(error.localizedDescription)"
                     messageColor = Color.red
-                    return
                 }
-                
-                // Register
-                let result = try await FirebaseService.shared.register(email: email, password: password).get()
-                
-                // Store additional user data in firestore
-                _ = try await UserRepository.addUser(userId: result, username: displayName, avatarPreset: 1).get()
-                
-                // Update status
-                signupSuccessful = true
-                signupMessage = "Signup Successful"
-                messageColor = Color.green
-            } catch {
-                signupMessage = "Signup Failed: \(error.localizedDescription)"
-                messageColor = Color.red
             }
         }
     }
