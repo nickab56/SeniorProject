@@ -214,7 +214,7 @@ struct LogDetailsView: View {
             case .log(let log):
                 DispatchQueue.main.async {
                     Task {
-                        guard let userId = FirebaseService.shared.auth.currentUser?.uid else {
+                        guard (FirebaseService.shared.auth.currentUser?.uid) != nil else {
                             return
                         }
                         do {

@@ -1,3 +1,10 @@
+//
+//  LoginView.swift
+//  backblog
+//
+//  Updated by Jake Buhite on 02/09/24.
+//
+
 import SwiftUI
 
 struct LoginView: View {
@@ -104,7 +111,12 @@ struct LoginView: View {
                         isLoggedInToSocial = true
                     }
                 } catch {
-                    loginMessage = "Login Failed: \(error.localizedDescription)"
+                    let msg = if (error.localizedDescription.contains("malformed")) {
+                        "Incorrect email or password"
+                    } else {
+                        error.localizedDescription
+                    }
+                    loginMessage = msg
                     messageColor = Color.red
                 }
             }

@@ -85,31 +85,29 @@ class FriendRepository {
                 }
                 
                 // Sender Id and Target Id are not nil, continue
-                _ = await withThrowingTaskGroup(of: Bool.self) { group in
-                    // Update senderId's friends map
-                    group.addTask {
-                        do {
-                            let update = ["friends.\(friendRequestData.targetId!)": true]
-                            return try await FirebaseService.shared.put(updates: update, docId: friendRequestData.senderId!, collection: "users").get()
-                        } catch {
-                            throw error
-                        }
-                    }
-                    
-                    // Update targetId's friends map
-                    group.addTask {
-                        do {
-                            let update = ["friends.\(friendRequestData.senderId!)": true]
-                            return try await FirebaseService.shared.put(updates: update, docId: friendRequestData.targetId!, collection: "users").get()
-                        } catch {
-                            throw error
-                        }
-                    }
-                    
-                    
-                    return group
+                
+                // Update user's document first
+                guard let userId = FirebaseService.shared.auth.currentUser?.uid else {
+                    return .failure(FirebaseError.nullProperty)
                 }
                 
+                if (userId == friendRequestData.targetId!) {
+                    // Update current user's document
+                    var update = ["friends.\(friendRequestData.senderId!)": true]
+                    _ = try await FirebaseService.shared.put(updates: update, docId: friendRequestData.targetId!, collection: "users").get()
+                    
+                    // Update other user's document
+                    update = ["friends.\(friendRequestData.targetId!)": true]
+                    _ = try await FirebaseService.shared.put(updates: update, docId: friendRequestData.senderId!, collection: "users").get()
+                } else {
+                    // Update current user's document
+                    var update = ["friends.\(friendRequestData.targetId!)": true]
+                    _ = try await FirebaseService.shared.put(updates: update, docId: friendRequestData.senderId!, collection: "users").get()
+                    
+                    // Update other user's document
+                    update = ["friends.\(friendRequestData.senderId!)": true]
+                    _ = try await FirebaseService.shared.put(updates: update, docId: friendRequestData.targetId!, collection: "users").get()
+                }
             }
             
             let result = try await FirebaseService.shared.put(updates: updates, docId: friendRequestId, collection: "friend_requests").get()

@@ -53,6 +53,8 @@
 		97A8F9542B647323000A0096 /* MovieAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A8F9532B647323000A0096 /* MovieAccess.swift */; };
 		97BF9EEA2B6B0B4300EE9ABB /* AvatarPresetMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BF9EE92B6B0B4300EE9ABB /* AvatarPresetMapper.swift */; };
 		97D1CA1F2B66CDC600F45E5F /* CurrentTimeInMS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D1CA1E2B66CDC600F45E5F /* CurrentTimeInMS.swift */; };
+		97DD39FE2B76840100D8D759 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 97DD39FD2B76840100D8D759 /* GoogleService-Info.plist */; };
+		97DD3A042B768AD700D8D759 /* AddFriendSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DD3A032B768AD700D8D759 /* AddFriendSheetView.swift */; };
 		97FA406D2B754207004A4945 /* FriendsProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FA406C2B754207004A4945 /* FriendsProfileView.swift */; };
 		97FA40702B7542F8004A4945 /* FriendsListElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FA406F2B7542F8004A4945 /* FriendsListElement.swift */; };
 		97FA40722B754943004A4945 /* FriendsProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FA40712B754943004A4945 /* FriendsProfileViewModel.swift */; };
@@ -143,6 +145,8 @@
 		97A8F9532B647323000A0096 /* MovieAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieAccess.swift; sourceTree = "<group>"; };
 		97BF9EE92B6B0B4300EE9ABB /* AvatarPresetMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarPresetMapper.swift; sourceTree = "<group>"; };
 		97D1CA1E2B66CDC600F45E5F /* CurrentTimeInMS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentTimeInMS.swift; sourceTree = "<group>"; };
+		97DD39FD2B76840100D8D759 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		97DD3A032B768AD700D8D759 /* AddFriendSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendSheetView.swift; sourceTree = "<group>"; };
 		97FA406C2B754207004A4945 /* FriendsProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsProfileView.swift; sourceTree = "<group>"; };
 		97FA406F2B7542F8004A4945 /* FriendsListElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsListElement.swift; sourceTree = "<group>"; };
 		97FA40712B754943004A4945 /* FriendsProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsProfileViewModel.swift; sourceTree = "<group>"; };
@@ -215,7 +219,7 @@
 		3469C17A2B312A4600B8EEFB /* backblog */ = {
 			isa = PBXGroup;
 			children = (
-				8108A63F2B7660080069DBEA /* GoogleService-Info.plist */,
+				97DD39FD2B76840100D8D759 /* GoogleService-Info.plist */,
 				3469C17F2B312A4700B8EEFB /* Assets.xcassets */,
 				3469C1862B312A4700B8EEFB /* backblog.xcdatamodeld */,
 				3469C17B2B312A4600B8EEFB /* backblogApp.swift */,
@@ -303,6 +307,7 @@
 				34AEBD5A2B709C4A00C6EA87 /* AvatarSelectionView.swift */,
 				97FA406C2B754207004A4945 /* FriendsProfileView.swift */,
 				97FA40712B754943004A4945 /* FriendsProfileViewModel.swift */,
+				97DD3A032B768AD700D8D759 /* AddFriendSheetView.swift */,
 			);
 			name = Social;
 			sourceTree = "<group>";
@@ -537,7 +542,7 @@
 			files = (
 				3469C1832B312A4700B8EEFB /* Preview Assets.xcassets in Resources */,
 				3469C1802B312A4700B8EEFB /* Assets.xcassets in Resources */,
-				8108A6402B7660080069DBEA /* GoogleService-Info.plist in Resources */,
+				97DD39FE2B76840100D8D759 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -598,6 +603,7 @@
 				97FCFC6C2B6369E900F5BFCB /* UserRepository.swift in Sources */,
 				340746AE2B62B5EB007711C8 /* LogSelectionView.swift in Sources */,
 				344BA2762B37862E002626F1 /* MyLogsView.swift in Sources */,
+				97DD3A042B768AD700D8D759 /* AddFriendSheetView.swift in Sources */,
 				34F035A82B606B1B00EB35C7 /* LogDetailsView.swift in Sources */,
 				3469C17E2B312A4600B8EEFB /* LandingView.swift in Sources */,
 				34AEBD592B70823F00C6EA87 /* LogsViewModel.swift in Sources */,

@@ -41,7 +41,7 @@ class FirebaseService {
         do {
             let snap = try await query.getDocuments()
             
-            guard let doc = snap.documents.first else {
+            guard snap.documents.first != nil else {
                 // Doc not found
                 return .success(false)
             }
