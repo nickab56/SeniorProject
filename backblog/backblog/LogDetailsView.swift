@@ -19,12 +19,73 @@ struct LogDetailsView: View {
                 case .log(let log):
                     log.name ?? ""
                 }
-                Text("Details for Log: \(logName)")
-                    .font(.title)
-                    .fontWeight(.bold)
+                HStack{
+                    Text("\(logName)")
+                        .font(.system(size: 30))
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .padding()
+                    
+                    Spacer()
+                }
+                
+                HStack{
+                    Text("\(movies.count) movies")
+                        .fontWeight(.bold)
+                        .foregroundColor(.gray)
+                        .padding()
+                    
+                    Spacer()
+                }.padding(.top, -25)
+                
+                HStack {
+                    Button(action: {
+                        // waiting for functionailty
+                    }) {
+                        Image(systemName: "person.badge.plus")
+                            .padding()
+                            .font(.system(size: 25))
+                    }
+                    .background(Color.clear)
                     .foregroundColor(.white)
-                    .padding()
-
+                    .cornerRadius(8)
+                    
+                    Button(action: {
+                        // waiting for functionailty
+                    }) {
+                        Image(systemName: "pencil")
+                            .padding()
+                            .font(.system(size: 25))
+                    }
+                    .background(Color.clear)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        // waiting for functionailty
+                    }) {
+                        Image(systemName: "shuffle")
+                            .padding()
+                            .font(.system(size: 25))
+                    }
+                    .background(Color.clear)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    
+                    Button(action: {
+                        // waiting for functionailty
+                    }) {
+                        Image(systemName: "plus.circle.fill")
+                            .padding()
+                            .font(.system(size: 30))
+                    }
+                    .background(Color.clear)
+                    .foregroundColor(.blue)
+                    .cornerRadius(8)
+                }.padding(.top, -20)
+                
                 if movies.isEmpty {
                     Text("No movies added to this log yet.")
                         .foregroundColor(.gray)
@@ -47,6 +108,7 @@ struct LogDetailsView: View {
                     .listStyle(.plain)
                     .background(Color.clear)
                 }
+                    
 
                 Button("Delete Log") {
                     deleteLog()
