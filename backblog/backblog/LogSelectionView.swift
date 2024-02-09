@@ -8,71 +8,86 @@ struct LogSelectionView: View {
     @State private var selectedLogs = Set<Int64>()
     @State private var logsWithDuplicates = Set<Int64>() // Track logs with duplicate movies
     @State private var showingNotification = false
-    @State private var showingAddLogSheet = false
 
     var body: some View {
-        NavigationView {
-            Form {
-                Section {
-                    ForEach(logs) { log in
-                        MultipleSelectionRow(title: log.name ?? "Unknown Log", isSelected: selectedLogs.contains(log.log_id)) {
-                            if selectedLogs.contains(log.log_id) {
-                                selectedLogs.remove(log.log_id)
-                                logsWithDuplicates.remove(log.log_id) // Remove from duplicates if deselected
-                            } else {
-                                selectedLogs.insert(log.log_id)
-                                checkForDuplicateAndNotify(logId: log.log_id) // Check for duplicates when a log is selected
+        ZStack {
+            NavigationView {
+                Form {
+                    Section {
+                        ForEach(logs) { log in
+                            MultipleSelectionRow(title: log.name ?? "Unknown Log", isSelected: selectedLogs.contains(log.log_id)) {
+                                                            handleLogSelection(logId: log.log_id)
+                                                        }
+                            .padding(.vertical, 5)
+                        }
+                    }
+
+                    Section {
+                        Button(action: {
+                            if selectedLogs.isEmpty {
+                                showingSheet = false // Consider how to handle new log creation
+                            }
+                            else {
+                                addMovieToSelectedLogs()
+                                showingSheet = false
+                            }
+                        }) {
+                            Text(selectedLogs.isEmpty ? "New Log" : "Add")
+                                .frame(maxWidth: .infinity)
+                                .multilineTextAlignment(.center)
+                        }
+                        .disabled(!logsWithDuplicates.isEmpty) // Disable "Done" if there are duplicates
+
+                        Button(action: {
+                            showingSheet = false
+                        }) {
+                            Text("Cancel")
+                                .frame(maxWidth: .infinity)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(.red)
+                        }
+                    }
+                }
+                .navigationBarTitle("Add to Log", displayMode: .inline)
+            }
+
+            if showingNotification {
+                NotificationView()
+                    .transition(.move(edge: .bottom))
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            withAnimation {
+                                showingNotification = false
                             }
                         }
-                        .padding(.vertical, 5)
                     }
-                }
-                
-                Section {
-                    Button(action: {
-                        if selectedLogs.isEmpty {
-                            showingAddLogSheet = true
-                        }
-                        else {
-                            addMovieToSelectedLogs()
-                            showingSheet = false
-                        }
-                    }) {
-                        Text(selectedLogs.isEmpty ? "New Log" : "Add")
-                            .frame(maxWidth: .infinity)
-                            .multilineTextAlignment(.center)
-                    }
-                    .accessibility(identifier: "createLogButton")
-                    .disabled(!logsWithDuplicates.isEmpty) // Disable "Done" if there are duplicates
-                    
-                    Button(action: {
-                        showingSheet = false
-                    }) {
-                        Text("Cancel")
-                            .frame(maxWidth: .infinity)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(.red)
-                    }
-                    .accessibility(identifier: "cancelAddLogButton")
-                }
-                
-                if showingNotification {
-                    notificationView
-                }
             }
-            .navigationBarTitle("Add to Log", displayMode: .inline)
-            .preferredColorScheme(.dark)
         }
-        .sheet(isPresented: $showingAddLogSheet) {
-            AddLogSheetView(isPresented: $showingAddLogSheet)
+        .animation(.easeInOut, value: showingNotification)
+        .preferredColorScheme(.dark)
+    }
+
+    private func handleLogSelection(logId: Int64) {
+        if isDuplicateInLog(logId: logId) {
+            // If the movie is already in the log, show notification and don't change selection
+            withAnimation {
+                showingNotification = true
+            }
+        } else {
+            // If the movie is not in the log, toggle selection
+            if selectedLogs.contains(logId) {
+                selectedLogs.remove(logId)
+            } else {
+                selectedLogs.insert(logId)
+            }
         }
     }
 
-    private func checkForDuplicateAndNotify(logId: Int64) {
+    private func isDuplicateInLog(logId: Int64) -> Bool {
         if let log = logs.first(where: { $0.log_id == logId }), let movieIds = log.movie_ids as? Set<LocalMovieData>, movieIds.map({ $0.movie_id }).contains("\(selectedMovieId)") {
-            logsWithDuplicates.insert(logId) // Mark log as having a duplicate
-            showingNotification = true // Show notification
+            return true // The movie is already in the log
         }
+        return false // The movie is not in the log
     }
 
     private func addMovieToSelectedLogs() {
@@ -91,12 +106,7 @@ struct LogSelectionView: View {
         
         // Check if movie is already in the log
         if existingMovieIds.contains("\(movieId)") {
-            withAnimation {
-                showingNotification = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    showingNotification = false
-                }
-            }
+            
         } else {
             // Add movie to log
             let newMovieData = LocalMovieData(context: viewContext)
@@ -112,16 +122,16 @@ struct LogSelectionView: View {
             }
         }
     }
-
-    private var notificationView: some View {
-        Text("Movie is already in log!")
-            .padding()
-            .foregroundColor(.white)
-            .background(Color.black.opacity(0.7))
-            .cornerRadius(8)
-            .padding(.bottom, 50)
-            .transition(.move(edge: .bottom))
-            .accessibility(identifier: "NotificationView")
+    struct NotificationView: View {
+        var body: some View {
+            Text("Movie is already in log")
+                .padding()
+                .background(Color.gray.opacity(0.9))
+                .foregroundColor(Color.white)
+                .cornerRadius(10)
+                .shadow(radius: 10)
+                .zIndex(1)
+        }
     }
 }
 
@@ -129,7 +139,7 @@ struct MultipleSelectionRow: View {
     var title: String
     var isSelected: Bool
     var action: () -> Void
-
+    
     var body: some View {
         Button(action: action) {
             HStack {
