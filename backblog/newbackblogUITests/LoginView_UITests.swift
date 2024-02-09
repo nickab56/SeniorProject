@@ -55,6 +55,8 @@ final class LoginView_UITests: XCTestCase {
 
         // Navigate to the social view tab
         app.tabBars["Tab Bar"].buttons["person.2.fill"].tap()
+        
+        sleep(1)
 
         // Leave the username text field blank and enter a password
         let passwordSecureField = app.secureTextFields["passwordSecureField"]

@@ -36,6 +36,7 @@
 		34AEBD722B750ED200C6EA87 /* SearchView_UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEBD712B750ED200C6EA87 /* SearchView_UITests.swift */; };
 		34AEBD742B754D6E00C6EA87 /* SocialView_UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEBD732B754D6E00C6EA87 /* SocialView_UITests.swift */; };
 		34AEBD762B75504B00C6EA87 /* LoginView_UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEBD752B75504B00C6EA87 /* LoginView_UITests.swift */; };
+		34B36DE32B769CA6002768CC /* UITestPerformance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B36DE12B769C9F002768CC /* UITestPerformance.swift */; };
 		34F035A82B606B1B00EB35C7 /* LogDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035A72B606B1B00EB35C7 /* LogDetailsView.swift */; };
 		34F035AA2B60A93900EB35C7 /* AddLogSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035A92B60A93900EB35C7 /* AddLogSheetView.swift */; };
 		34F035AC2B60A95500EB35C7 /* LogItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035AB2B60A95500EB35C7 /* LogItemView.swift */; };
@@ -124,6 +125,7 @@
 		34AEBD712B750ED200C6EA87 /* SearchView_UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView_UITests.swift; sourceTree = "<group>"; };
 		34AEBD732B754D6E00C6EA87 /* SocialView_UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialView_UITests.swift; sourceTree = "<group>"; };
 		34AEBD752B75504B00C6EA87 /* LoginView_UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView_UITests.swift; sourceTree = "<group>"; };
+		34B36DE12B769C9F002768CC /* UITestPerformance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestPerformance.swift; sourceTree = "<group>"; };
 		34F035A72B606B1B00EB35C7 /* LogDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDetailsView.swift; sourceTree = "<group>"; };
 		34F035A92B60A93900EB35C7 /* AddLogSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLogSheetView.swift; sourceTree = "<group>"; };
 		34F035AB2B60A95500EB35C7 /* LogItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogItemView.swift; sourceTree = "<group>"; };
@@ -258,6 +260,7 @@
 		34AEBD632B745E4800C6EA87 /* newbackblogUITests */ = {
 			isa = PBXGroup;
 			children = (
+				34B36DE12B769C9F002768CC /* UITestPerformance.swift */,
 				34AEBD642B745E4800C6EA87 /* newbackblog_UITests.swift */,
 				34AEBD6D2B745F3100C6EA87 /* LandingView_UITests.swift */,
 				34AEBD712B750ED200C6EA87 /* SearchView_UITests.swift */,
@@ -634,6 +637,7 @@
 				34AEBD672B745E4800C6EA87 /* newbackblog_UITestsLaunchTests.swift in Sources */,
 				34AEBD762B75504B00C6EA87 /* LoginView_UITests.swift in Sources */,
 				34AEBD6E2B745F3100C6EA87 /* LandingView_UITests.swift in Sources */,
+				34B36DE32B769CA6002768CC /* UITestPerformance.swift in Sources */,
 				34AEBD742B754D6E00C6EA87 /* SocialView_UITests.swift in Sources */,
 				34AEBD652B745E4800C6EA87 /* newbackblog_UITests.swift in Sources */,
 			);
@@ -800,7 +804,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.TABKA.backblog1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TABKA.backblog;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -829,7 +833,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.TABKA.backblog1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TABKA.backblog;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

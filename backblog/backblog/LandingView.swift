@@ -70,10 +70,12 @@ struct LandingView: View {
                         // Pass LogsViewModel to WhatsNextView
                         WhatsNextView(movie: firstMovie, logsViewModel: logsViewModel)
                             .padding(.top, -20)
+                            //.accessibilityIdentifier("WhatsNextMovie")
                     } else {
                         Text("No upcoming movies in this log.")
                             .foregroundColor(.gray)
                             .padding()
+                            .accessibility(identifier: "NoNextMovieText")
                     }
                 }
 
