@@ -26,53 +26,77 @@ struct MovieDetailsView: View {
                 ProgressView("Loading...")
             } else if let movie = movieData {
                 ScrollView {
+                    // TODO: figure out how to not have the text not come in center but align on the left
                     VStack {
-                        if let posterPath = movie.posterPath, let url = URL(string: "https://image.tmdb.org/t/p/w500" + posterPath) {
-                            AsyncImage(url: url) { image in
-                                image.resizable()
-                                    .accessibility(identifier: "moviePoster")
-                            } placeholder: {
-                                Color.gray
+                        HStack {
+                            if let posterPath = movie.posterPath, let url = URL(string: "https://image.tmdb.org/t/p/w500" + posterPath) {
+                                AsyncImage(url: url) { image in
+                                    image.resizable()
+                                        .accessibility(identifier: "moviePoster")
+                                } placeholder: {
+                                    Color.gray
+                                }
+                                .frame(width: 120, height: 175)
+                                .cornerRadius(10)
+                                .padding(.top)
                             }
-                            .frame(width: 180, height: 270)
-                            .cornerRadius(10)
-                            .padding(.top)
+                            VStack{
+                                // Movie Title
+                                Text(movie.title ?? "N/A")
+                                    .font(.title)
+                                    .foregroundColor(.white)
+                                    .bold()
+                                    .accessibility(identifier: "movieTitle")
+                                
+                                // Release Date
+                                if let releaseDate = movie.releaseDate {
+                                    Text("\(releaseDate)")
+                                        .foregroundColor(.gray)
+                                        .accessibility(identifier: "movieReleaseDate")
+                                }
+                                
+                                // Runtime
+                                if let runtime = movie.runtime {
+                                    Text("\(runtime) minutes")
+                                        .foregroundColor(.white)
+                                        .padding(.bottom, 1)
+                                        .accessibility(identifier: "movieRunTime")
+                                }
+                                
+                                // Genres
+                                // TODO: need to a way to make genres hashable so that we can put a circle around each of the genres to match figma.
+                                if let genres = movie.genres, !genres.isEmpty {
+                                    Text("Genres: " + genres.map { $0.name ?? "N/A" }.joined(separator: ", "))
+                                        .foregroundColor(.white)
+                                        .padding(.bottom, 1)
+                                }
+
+                            }
                         }
-
-                        // Movie Title
-                        Text(movie.title ?? "N/A")
-                            .font(.title)
-                            .foregroundColor(.white)
-                            .bold()
-                            .padding()
-                            .accessibility(identifier: "movieTitle")
-
-                        // Release Date
-                        if let releaseDate = movie.releaseDate {
-                            Text("Release Date: \(releaseDate)")
+                        
+                        Button(action: {
+                            // TODO: need to figure out how to depending on where you click if say watched or add to log
+                        }) {
+                            Text("Add to Log / Watch")
                                 .foregroundColor(.white)
-                                .padding(.bottom, 1)
-                                .accessibility(identifier: "movieReleaseDate")
                         }
+                        .frame(width: 350, height: 40)
+                        .background(Color(hex: "3891E1"))
+                        .cornerRadius(25)
+                        .padding(.top, 5)
 
                         // Overview
                         Text(movie.overview ?? "No overview available.")
                             .foregroundColor(.white)
                             .padding()
 
-                        // Genres
-                        if let genres = movie.genres, !genres.isEmpty {
-                            Text("Genres: " + genres.map { $0.name ?? "N/A" }.joined(separator: ", "))
+                        
+                        // Director
+                        if let crew = movie.credits?.crew, let director = crew.first(where: { $0.job == "Director" }) {
+                            Text("**Director:** \(director.name ?? "N/A")")
                                 .foregroundColor(.white)
-                                .padding(.bottom, 1)
-                        }
-
-                        // Runtime
-                        if let runtime = movie.runtime {
-                            Text("Runtime: \(runtime) minutes")
-                                .foregroundColor(.white)
-                                .padding(.bottom, 1)
-                                .accessibility(identifier: "movieRunTime")
+                                .padding(.bottom, 15)
+                                .accessibility(identifier: "movieDirector")
                         }
 
                         // Cast
@@ -91,13 +115,6 @@ struct MovieDetailsView: View {
                                 .accessibility(identifier: "movieCast")
                         }
 
-                        // Director
-                        if let crew = movie.credits?.crew, let director = crew.first(where: { $0.job == "Director" }) {
-                            Text("Director: \(director.name ?? "N/A")")
-                                .foregroundColor(.white)
-                                .padding(.bottom, 15)
-                                .accessibility(identifier: "movieDirector")
-                        }
                     }
                 }
             } else if errorMessage != nil {

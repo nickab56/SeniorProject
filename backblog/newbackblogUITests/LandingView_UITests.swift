@@ -145,7 +145,7 @@ final class LandingView_UITests: XCTestCase {
         // Navigate to the HDR screen and verify by looking for a unique element.
         let hdrButton = tabBar.buttons["Hdr"]
         hdrButton.tap()
-        let hdrScreenElement = app.buttons["addLogButton"] // Use a unique element from your HDR screen
+        let hdrScreenElement = app.buttons["addLogButton"]
         XCTAssertTrue(hdrScreenElement.waitForExistence(timeout: 5), "Should be on the HDR screen after tapping 'Hdr'")
         
         // Navigate back to the Login screen and verify.
@@ -162,6 +162,94 @@ final class LandingView_UITests: XCTestCase {
         hdrButton.tap()
         XCTAssertTrue(hdrScreenElement.waitForExistence(timeout: 5), "Should return to the HDR screen after tapping 'Hdr' again")
     }
+    
+    func test_WhatsNextView_NoMovie_DisplayedAfterCreatingLog() {
+        let app = XCUIApplication()
+        app.launch()
+
+        // Add a new log without adding any movies to it
+        let addLogButton = app.buttons["addLogButton"]
+        XCTAssertTrue(addLogButton.waitForExistence(timeout: 5), "Add Log button should be visible")
+        addLogButton.tap()
+
+        let newLogNameTextField = app.textFields["newLogNameTextField"]
+        XCTAssertTrue(newLogNameTextField.waitForExistence(timeout: 5), "New Log Name text field should be visible")
+        newLogNameTextField.tap()
+        newLogNameTextField.typeText("Test Log\n")
+        
+        let createLogButton = app.buttons["createLogButton"]
+        XCTAssertTrue(createLogButton.waitForExistence(timeout: 5), "Create Log button should be visible")
+        createLogButton.tap()
+
+        // Ensure that we navigate back to the main landing view
+        XCTAssertTrue(addLogButton.waitForExistence(timeout: 5), "Should return to the main landing view after creating a log")
+
+        // Check for the "No upcoming movies in this log." text
+        let noMoviesText = app.staticTexts["NoNextMovieText"]
+        XCTAssertTrue(noMoviesText.waitForExistence(timeout: 5), "The 'No upcoming movies in this log.' text should be displayed")
+    }
+
+    
+    func test_WhatsNextView_MovieDisplayWatchedButton_DisplayAndRemoveMovie() {
+        let app = XCUIApplication()
+        app.launch()
+        // Add a new log
+        let addLogButton = app.buttons["addLogButton"]
+        XCTAssertTrue(addLogButton.waitForExistence(timeout: 5), "Add Log button should be visible")
+        addLogButton.tap()
+        
+        let newLogNameTextField = app.textFields["newLogNameTextField"]
+        newLogNameTextField.tap()
+        newLogNameTextField.typeText("Test Log\n")
+
+        let createLogButton = app.buttons["createLogButton"]
+        createLogButton.tap()
+
+        // Wait for the log to be created
+        XCTAssertTrue(app.staticTexts["Test Log"].waitForExistence(timeout: 5))
+
+        // Step 2: Search for a movie and add it to the log
+        app.tabBars["Tab Bar"].buttons["Search"].tap()
+
+        let movieSearchField = app.textFields["movieSearchField"]
+        movieSearchField.tap()
+        movieSearchField.typeText("Star Wars\n")
+
+        sleep(1)
+        
+        // Tap the "Add to Log" button for the searched movie
+        let addToLogButton = app.buttons["AddToLogButton"].firstMatch
+        XCTAssertTrue(addToLogButton.waitForExistence(timeout: 5), "Add to Log button should appear for searched movie")
+        addToLogButton.tap()
+
+        // Select the log
+        let testLogButton = app.buttons["MultipleSelectionRow_Test Log"]
+        XCTAssertTrue(testLogButton.waitForExistence(timeout: 5))
+        testLogButton.tap()
+        
+        // Confirm adding the movie to the log
+        app.buttons["Add"].tap()
+
+        // Step 3: Verify movie details in "What's Next" section
+        app.tabBars["Tab Bar"].buttons["Hdr"].tap()
+        sleep(1)
+
+        XCTAssertTrue(app.staticTexts["WhatsNextTitle"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["WhatsNextDetails"].waitForExistence(timeout: 5))
+
+        // Verify details
+        XCTAssertEqual(app.staticTexts["WhatsNextTitle"].label, "Star Wars")
+        XCTAssertEqual(app.staticTexts["WhatsNextDetails"].label, "121 min · 1977")
+
+        // Step 4: Mark the movie as watched
+        let watchedButton = app.buttons["checkButton"]
+        XCTAssertTrue(watchedButton.waitForExistence(timeout: 5))
+        watchedButton.tap()
+
+        // Step 5: Verify that the movie is no longer displayed
+        XCTAssertFalse(app.staticTexts["WhatsNextTitle"].exists)
+    }
+
 
 
 }

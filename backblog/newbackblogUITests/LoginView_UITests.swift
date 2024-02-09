@@ -44,7 +44,7 @@ final class LoginView_UITests: XCTestCase {
         XCTAssertTrue(loginButton.waitForExistence(timeout: 5), "Login button should be present")
         loginButton.tap()
 
-        // Add assertions here to verify successful login, such as checking for the presence of an element that only appears upon successful login
+        
     }
     
     func test_LoginView_LoginButton_LoginFailsMissingUsername() {
@@ -55,6 +55,8 @@ final class LoginView_UITests: XCTestCase {
 
         // Navigate to the social view tab
         app.tabBars["Tab Bar"].buttons["person.2.fill"].tap()
+        
+        sleep(1)
 
         // Leave the username text field blank and enter a password
         let passwordSecureField = app.secureTextFields["passwordSecureField"]

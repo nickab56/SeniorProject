@@ -33,12 +33,11 @@ final class SearchView_UITests: XCTestCase {
         let searchField = app.textFields["movieSearchField"]
         XCTAssertTrue(searchField.waitForExistence(timeout: 5), "Search field should exist")
         searchField.tap()
-        searchField.typeText("Star Wars\n") // Assuming hitting return performs the search
+        searchField.typeText("Star Wars\n")
         
         sleep(2)
 
         // Tap on the search result to view movie details
-        // Adjust the identifier for the search result to match what's in your app
         let searchMovieTitle = app.staticTexts["SearchMovieTitle"].firstMatch
         let exists = NSPredicate(format: "exists == true")
         expectation(for: exists, evaluatedWith: searchMovieTitle, handler: nil)
@@ -69,8 +68,7 @@ final class SearchView_UITests: XCTestCase {
         // Verify Director
         let movieDirector = app.staticTexts["movieDirector"]
         XCTAssertTrue(movieDirector.exists, "Movie director should be displayed")
-
-        // Add more assertions as needed for genres, overview, etc.
+        
     }
     
     func test_AddMovieToLogButton_SearchAndAddMovie() {
@@ -83,9 +81,9 @@ final class SearchView_UITests: XCTestCase {
         let newLogNameTextField = app.textFields["newLogNameTextField"]
         XCTAssertTrue(newLogNameTextField.waitForExistence(timeout: 5), "New Log Name text field should appear")
         newLogNameTextField.tap()
-        newLogNameTextField.typeText("Log 1\n") // Assuming "\n" confirms the entry
+        newLogNameTextField.typeText("Log 1\n")
 
-        let createLogButton = app.buttons["createLogButton"] // Adjust the identifier as needed
+        let createLogButton = app.buttons["createLogButton"]
         createLogButton.tap()
         
         // 2. Navigate to Search tab and perform a search
@@ -95,27 +93,25 @@ final class SearchView_UITests: XCTestCase {
         let movieSearchField = app.textFields["movieSearchField"]
         XCTAssertTrue(movieSearchField.waitForExistence(timeout: 5), "Movie Search field should appear")
         movieSearchField.tap()
-        movieSearchField.typeText("Star Wars\n") // Assuming "\n" performs the search
+        movieSearchField.typeText("Star Wars\n")
         
         sleep(1)
         
         // Tap the "Add to Log" button for the searched movie
-        let addToLogButton = app.buttons["AddToLogButton"].firstMatch // Adjust identifier as needed
+        let addToLogButton = app.buttons["AddToLogButton"].firstMatch
         XCTAssertTrue(addToLogButton.waitForExistence(timeout: 5), "Add to Log button should appear for searched movie")
         addToLogButton.tap()
 
         // Select a log from the list
-        let logSelection = app.buttons["Log 1"] // Adjust identifier or label as needed
+        let logSelection = app.buttons["Log 1"]
         XCTAssertTrue(logSelection.waitForExistence(timeout: 5), "Log selection should be present")
         logSelection.tap()
 
-        // Confirm the selection by tapping the "Done" button
-        let doneButton = app.buttons["Done"] // Adjust identifier or label as needed
-        XCTAssertTrue(doneButton.exists, "Done button should be present")
-        doneButton.tap()
+        // Confirm adding the movie to the log
+        app.buttons["Add"].tap()
         
         // 4. Verify the movie is added to the log
-        tabBar.buttons["Hdr"].tap() // Adjust as needed for your app's tab
+        tabBar.buttons["Hdr"].tap()
         
         let newLogEntry = app.staticTexts["Log 1"]
         XCTAssertTrue(newLogEntry.waitForExistence(timeout: 5), "Newly created log named 'Log 1' should exist on the landing page")
@@ -132,22 +128,22 @@ final class SearchView_UITests: XCTestCase {
         app.launch()
 
         // Create the first log
-        app.tabBars["Tab Bar"].buttons["Hdr"].tap() // Adjust as needed for your app's tab to access logs
-        app.buttons["addLogButton"].tap() // Adjust the identifier as needed
+        app.tabBars["Tab Bar"].buttons["Hdr"].tap()
+        app.buttons["addLogButton"].tap()
 
         let newLogNameTextField = app.textFields["newLogNameTextField"]
         XCTAssertTrue(newLogNameTextField.waitForExistence(timeout: 5), "New Log Name text field should appear")
         newLogNameTextField.tap()
-        newLogNameTextField.typeText("Log 1\n") // Assuming "\n" confirms the entry
+        newLogNameTextField.typeText("Log 1\n")
 
-        let createLogButton = app.buttons["createLogButton"] // Adjust the identifier as needed
+        let createLogButton = app.buttons["createLogButton"]
         createLogButton.tap()
 
         // Create the second log
-        app.buttons["addLogButton"].tap() // Adjust the identifier as needed
+        app.buttons["addLogButton"].tap()
         XCTAssertTrue(newLogNameTextField.waitForExistence(timeout: 5), "New Log Name text field should appear")
         newLogNameTextField.tap()
-        newLogNameTextField.typeText("Log 2\n") // Assuming "\n" confirms the entry
+        newLogNameTextField.typeText("Log 2\n")
 
         createLogButton.tap()
 
@@ -157,45 +153,131 @@ final class SearchView_UITests: XCTestCase {
         let movieSearchField = app.textFields["movieSearchField"]
         XCTAssertTrue(movieSearchField.waitForExistence(timeout: 5), "Movie Search field should appear")
         movieSearchField.tap()
-        movieSearchField.typeText("Star Wars\n") // Assuming "\n" performs the search
+        movieSearchField.typeText("Star Wars\n")
         
         sleep(1)
         
         // Tap the "Add to Log" button for the searched movie
-        let addToLogButton = app.buttons["AddToLogButton"].firstMatch // Adjust identifier as needed
+        let addToLogButton = app.buttons["AddToLogButton"].firstMatch
         XCTAssertTrue(addToLogButton.waitForExistence(timeout: 5), "Add to Log button should appear for searched movie")
         addToLogButton.tap()
 
         // Select the first log
-        let log1Button = app.buttons["Log 1"] // Adjust identifier or label as needed
+        let log1Button = app.buttons["Log 1"]
         XCTAssertTrue(log1Button.waitForExistence(timeout: 5), "First log selection should be present")
         log1Button.tap()
 
         // Select the second log
-        let log2Button = app.buttons["Log 2"] // Adjust identifier or label as needed
+        let log2Button = app.buttons["Log 2"]
         XCTAssertTrue(log2Button.waitForExistence(timeout: 5), "Second log selection should be present")
         log2Button.tap()
 
-        // Confirm the selection by tapping the "Done" button
-        let doneButton = app.buttons["Done"] // Adjust identifier or label as needed
-        XCTAssertTrue(doneButton.exists, "Done button should be present")
-        doneButton.tap()
-
+        // Confirm adding the movie to the log
+        app.buttons["Add"].tap()
+        
+        
         // Verify the movie is added to the first log
-        app.tabBars["Tab Bar"].buttons["Hdr"].tap() // Adjust as needed for your app's tab
-        let log1Entry = app.staticTexts["Log 1"].firstMatch // Adjust as needed
+        app.tabBars["Tab Bar"].buttons["Hdr"].tap()
+        let log1Entry = app.staticTexts["Log 1"].firstMatch
         XCTAssertTrue(log1Entry.waitForExistence(timeout: 5), "Log 1 entry should exist")
         log1Entry.tap()
-        let movieInLog1 = app.staticTexts["Star Wars"] // Adjust as needed
+        let movieInLog1 = app.staticTexts["Star Wars"]
         XCTAssertTrue(movieInLog1.exists, "Movie should be in Log 1")
 
         // Navigate back and verify the movie is added to the second log
-        app.navigationBars.buttons["Back"].tap() // Adjust the back button identifier if needed
-        let log2Entry = app.staticTexts["Log 2"].firstMatch // Adjust as needed
+        app.navigationBars.buttons["Back"].tap()
+        let log2Entry = app.staticTexts["Log 2"].firstMatch
         XCTAssertTrue(log2Entry.waitForExistence(timeout: 5), "Log 2 entry should exist")
         log2Entry.tap()
-        let movieInLog2 = app.staticTexts["Star Wars"] // Adjust as needed
+        let movieInLog2 = app.staticTexts["Star Wars"]
         XCTAssertTrue(movieInLog2.exists, "Movie should be in Log 2")
+    }
+    
+    func test_AddMovieToLogWithDuplicationCheck() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        // Create the first log
+        app.tabBars["Tab Bar"].buttons["Hdr"].tap()
+        app.buttons["addLogButton"].tap()
+
+        let newLogNameTextField = app.textFields["newLogNameTextField"]
+        XCTAssertTrue(newLogNameTextField.waitForExistence(timeout: 5), "New Log Name text field should appear")
+        newLogNameTextField.tap()
+        newLogNameTextField.typeText("Test Log\n")
+
+        let createLogButton = app.buttons["createLogButton"]
+        createLogButton.tap()
+
+        // Step 2: Navigate to Search tab and add "Star Wars" to the log
+        app.tabBars["Tab Bar"].buttons["Search"].tap()
+
+        let movieSearchField = app.textFields["movieSearchField"]
+        XCTAssertTrue(movieSearchField.waitForExistence(timeout: 5), "Movie Search field should appear")
+        movieSearchField.tap()
+        movieSearchField.typeText("Star Wars\n")
+        
+        sleep(1)
+        
+        let addToLogButton = app.buttons["AddToLogButton"].firstMatch
+        XCTAssertTrue(addToLogButton.waitForExistence(timeout: 5), "Add to Log button should appear for searched movie")
+        addToLogButton.tap()
+
+        let logSelection = app.buttons["Test Log"]
+        XCTAssertTrue(logSelection.waitForExistence(timeout: 5), "Log selection should be present")
+        logSelection.tap()
+
+        app.buttons["Add"].tap()
+
+        // Step 3: Attempt to add "Star Wars" again to the same log
+        addToLogButton.tap()
+        logSelection.tap()
+
+        // Step 4: Check for duplication notification
+        let notificationText = app.staticTexts["AlreadyInLogText"]
+        XCTAssertTrue(notificationText.waitForExistence(timeout: 5), "Notification for duplicate movie should be displayed")
+    }
+
+    
+    func test_AddMovieToLogWithoutDuplication() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        // Create a new log
+        app.tabBars["Tab Bar"].buttons["Hdr"].tap()
+        app.buttons["addLogButton"].tap()
+
+        let newLogNameTextField = app.textFields["newLogNameTextField"]
+        XCTAssertTrue(newLogNameTextField.waitForExistence(timeout: 5), "New Log Name text field should appear")
+        newLogNameTextField.tap()
+        newLogNameTextField.typeText("Test Log\n")
+
+        let createLogButton = app.buttons["createLogButton"]
+        createLogButton.tap()
+
+        // Step 2: Navigate to Search tab and add "Star Wars" to the log
+        app.tabBars["Tab Bar"].buttons["Search"].tap()
+
+        let movieSearchField = app.textFields["movieSearchField"]
+        XCTAssertTrue(movieSearchField.waitForExistence(timeout: 5), "Movie Search field should appear")
+        movieSearchField.tap()
+        movieSearchField.typeText("Star Wars\n")
+        
+        sleep(1)
+        
+        let addToLogButton = app.buttons["AddToLogButton"].firstMatch
+        XCTAssertTrue(addToLogButton.waitForExistence(timeout: 5), "Add to Log button should appear for searched movie")
+        addToLogButton.tap()
+
+        let logSelection = app.buttons["Test Log"]
+        XCTAssertTrue(logSelection.waitForExistence(timeout: 5), "Log selection should be present")
+        logSelection.tap()
+
+        app.buttons["Add"].tap()
+
+        // Step 3: Ensure the duplication notification does not appear
+        let notificationText = app.staticTexts["AlreadyInLogText"]
+        XCTAssertFalse(notificationText.exists, "Notification for duplicate movie should not be displayed")
     }
 
 
