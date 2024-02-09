@@ -131,6 +131,7 @@ struct LogSelectionView: View {
                 .cornerRadius(10)
                 .shadow(radius: 10)
                 .zIndex(1)
+                .accessibility(identifier: "AlreadyInLogText")
         }
     }
 }
