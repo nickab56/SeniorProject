@@ -8,6 +8,9 @@ struct LogDetailsView: View {
     @State private var movies: [(MovieData, String)] = [] // Pair of MovieData and half-sheet URL
     @State private var showingWatchedNotification = false
     @State private var editCollaboratorSheet = false
+    
+    @State private var watchedMovies: [(MovieData, String)] = []
+
 
     var body: some View {
         ZStack {
@@ -94,20 +97,32 @@ struct LogDetailsView: View {
                         .padding()
                 } else {
                     List {
-                        ForEach(movies, id: \.0.id) { (movie, halfSheetPath) in
-                            MovieRow(movie: movie, halfSheetPath: halfSheetPath)
-                                .listRowBackground(Color.clear)
-                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                    Button(role: .destructive) {
-                                        markMovieAsWatched(movieId: movie.id ?? 0)
-                                    } label: {
-                                        Label("Watched", systemImage: "checkmark.circle.fill")
+                        Section(header: Text("Unwatched").foregroundColor(.white)) {
+                            ForEach(movies, id: \.0.id) { (movie, halfSheetPath) in
+                                MovieRow(movie: movie, halfSheetPath: halfSheetPath)
+                                    .listRowBackground(Color.clear)
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        Button {
+                                            markMovieAsWatched(movieId: movie.id ?? 0)
+                                        } label: {
+                                            Label("Watched", systemImage: "checkmark.circle.fill")
+                                        }
+                                        .tint(.green)
                                     }
-                                }
+                            }
+                        }
+
+
+                        Section(header: Text("Watched").foregroundColor(.white)) {
+                            ForEach(watchedMovies, id: \.0.id) { (movie, halfSheetPath) in
+                                MovieRow(movie: movie, halfSheetPath: halfSheetPath)
+                                    .listRowBackground(Color.clear)
+                            }
                         }
                     }
                     .listStyle(.plain)
                     .background(Color.clear)
+
                 }
                     
 
@@ -143,13 +158,29 @@ struct LogDetailsView: View {
     }
     
     private func markMovieAsWatched(movieId: Int) {
-            // Implement logic to mark the movie as watched in your data model
-            
-            // Show "Movie added to watched" notification
-            withAnimation {
-                showingWatchedNotification = true
+        guard case .localLog(let localLog) = log else { return }
+
+        if let index = movies.firstIndex(where: { $0.0.id == movieId }) {
+            let movieTuple = movies.remove(at: index)
+            watchedMovies.append(movieTuple)
+
+            // Update Core Data model
+            if let movieEntity = (localLog.movie_ids as? Set<LocalMovieData>)?.first(where: { $0.movie_id == String(movieId) }) {
+                localLog.removeFromMovie_ids(movieEntity)
+                localLog.addToWatched_ids(movieEntity)
+
+                do {
+                    try viewContext.save()
+                    showingWatchedNotification = true
+                } catch {
+                    print("Error updating watched status in Core Data: \(error.localizedDescription)")
+                }
             }
         }
+    }
+
+
+
     
     struct WatchedNotificationView: View {
         var body: some View {
@@ -165,39 +196,44 @@ struct LogDetailsView: View {
     }
     
     private func fetchMovies() {
-        var movieArr: [String]
-        switch log {
-        case .localLog(let log):
-            guard let movieIds = log.movie_ids as? Set<LocalMovieData> else { return }
-            movieArr = localMovieDataMapping(movieSet: movieIds)
-        case .log(let log):
-            guard let movieIds: [String: Bool] = log.movieIds else { return }
-            movieArr = movieIds.compactMap { $0.key }
-        }
-        
-        if (movieArr.count == 0) {
-            return
-        }
+        guard case .localLog(let localLog) = log else { return }
 
-        movies = [] // Reset movies list
+        // Clear existing data
+        movies = []
+        watchedMovies = []
 
-        for movieId in movieArr {
+        let allMovies = localLog.movie_ids as? Set<LocalMovieData> ?? []
+        let watchedIds = localLog.watched_ids as? Set<LocalMovieData> ?? []
+
+        for movie in allMovies {
             Task {
-                let movieDetailsResult = await MovieService.shared.getMovieByID(movieId: movieId)
-                let halfSheetResult = await MovieService.shared.getMovieHalfSheet(movieId: movieId)
-                
-                await MainActor.run {
-                    switch (movieDetailsResult, halfSheetResult) {
-                    case (.success(let movieData), .success(let halfSheetPath)):
-                        let fullPath = "https://image.tmdb.org/t/p/w500\(halfSheetPath)"
-                        self.movies.append((movieData, fullPath))
-                    case (.failure(let error), _), (_, .failure(let error)):
-                        print("Error fetching movie by ID or half-sheet: \(error.localizedDescription)")
-                    }
-                }
+                let isWatched = watchedIds.contains(movie)
+                await fetchMovieDetails(movieId: movie.movie_id ?? "", isWatched: isWatched)
             }
         }
     }
+    
+    private func fetchMovieDetails(movieId: String, isWatched: Bool) async {
+        let movieDetailsResult = await MovieService.shared.getMovieByID(movieId: movieId)
+        let halfSheetResult = await MovieService.shared.getMovieHalfSheet(movieId: movieId)
+
+        await MainActor.run {
+            switch (movieDetailsResult, halfSheetResult) {
+            case (.success(let movieData), .success(let halfSheetPath)):
+                let fullPath = "https://image.tmdb.org/t/p/w500\(halfSheetPath)"
+                let movieTuple = (movieData, fullPath)
+                if isWatched {
+                    watchedMovies.append(movieTuple)
+                } else {
+                    movies.append(movieTuple)
+                }
+            case (.failure(let error), _), (_, .failure(let error)):
+                print("Error fetching movie by ID or half-sheet: \(error.localizedDescription)")
+            }
+        }
+    }
+
+
     
     private func localMovieDataMapping(movieSet: Set<LocalMovieData>?) -> [String] {
         guard let movies: Set<LocalMovieData> = movieSet, !(movies.count == 0) else { return [] }
