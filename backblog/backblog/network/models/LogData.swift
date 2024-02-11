@@ -22,8 +22,8 @@ struct LogData: Identifiable, Codable, Equatable {
     var lastModifiedDate: String?
     var isVisible: Bool?
     var owner: Owner?
-    var movieIds: Dictionary<String, Bool>?
-    var watchedIds: Dictionary<String, Bool>?
+    var movieIds: [String]?
+    var watchedIds: [String]?
     var collaborators: Dictionary<String, Dictionary<String, Int>>?
     
     enum CodingKeys: String, CodingKey {

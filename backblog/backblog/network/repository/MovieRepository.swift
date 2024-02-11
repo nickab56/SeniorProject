@@ -68,7 +68,7 @@ class MovieRepository {
                 return .failure(FirebaseError.nullProperty)
             }
             
-            return .success(priorityLog!.movieIds!.keys.first!)
+            return .success(priorityLog!.movieIds!.first!)
         } catch {
             return .failure(error)
         }
