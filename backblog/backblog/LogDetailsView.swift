@@ -34,12 +34,17 @@ struct LogDetailsView: View {
                     Spacer()
                 }
                 
-                HStack{
-                    Text("\(movies.count) movies")
+                HStack {
+                    Text("Unwatched: \(movies.count)")
                         .fontWeight(.bold)
                         .foregroundColor(.gray)
                         .padding()
-                    
+
+                    Text("Watched: \(watchedMovies.count)")
+                        .fontWeight(.bold)
+                        .foregroundColor(.gray)
+                        .padding()
+
                     Spacer()
                 }.padding(.top, -25)
                 
@@ -91,27 +96,28 @@ struct LogDetailsView: View {
                     .cornerRadius(8)
                 }.padding(.top, -20)
                 
-                if movies.isEmpty {
+                if movies.isEmpty && watchedMovies.isEmpty {
                     Text("No movies added to this log yet.")
                         .foregroundColor(.gray)
                         .padding()
                 } else {
                     List {
-                        Section(header: Text("Unwatched").foregroundColor(.white)) {
-                            ForEach(movies, id: \.0.id) { (movie, halfSheetPath) in
-                                MovieRow(movie: movie, halfSheetPath: halfSheetPath)
-                                    .listRowBackground(Color.clear)
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        Button {
-                                            markMovieAsWatched(movieId: movie.id ?? 0)
-                                        } label: {
-                                            Label("Watched", systemImage: "checkmark.circle.fill")
+                        if !movies.isEmpty {
+                            Section(header: Text("Unwatched").foregroundColor(.white)) {
+                                ForEach(movies, id: \.0.id) { (movie, halfSheetPath) in
+                                    MovieRow(movie: movie, halfSheetPath: halfSheetPath)
+                                        .listRowBackground(Color.clear)
+                                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                            Button {
+                                                markMovieAsWatched(movieId: movie.id ?? 0)
+                                            } label: {
+                                                Label("Watched", systemImage: "checkmark.circle.fill")
+                                            }
+                                            .tint(.green)
                                         }
-                                        .tint(.green)
-                                    }
+                                }
                             }
                         }
-
 
                         Section(header: Text("Watched").foregroundColor(.white)) {
                             ForEach(watchedMovies, id: \.0.id) { (movie, halfSheetPath) in
@@ -122,10 +128,9 @@ struct LogDetailsView: View {
                     }
                     .listStyle(.plain)
                     .background(Color.clear)
-
                 }
-                    
 
+                    
                 Button("Delete Log") {
                     deleteLog()
                 }
@@ -202,16 +207,25 @@ struct LogDetailsView: View {
         movies = []
         watchedMovies = []
 
-        let allMovies = localLog.movie_ids as? Set<LocalMovieData> ?? []
-        let watchedIds = localLog.watched_ids as? Set<LocalMovieData> ?? []
+        // Fetch unwatched movies
+        if let unwatchedMovieEntities = localLog.movie_ids as? Set<LocalMovieData> {
+            for movieEntity in unwatchedMovieEntities {
+                Task {
+                    await fetchMovieDetails(movieId: movieEntity.movie_id ?? "", isWatched: false)
+                }
+            }
+        }
 
-        for movie in allMovies {
-            Task {
-                let isWatched = watchedIds.contains(movie)
-                await fetchMovieDetails(movieId: movie.movie_id ?? "", isWatched: isWatched)
+        // Fetch watched movies
+        if let watchedMovieEntities = localLog.watched_ids as? Set<LocalMovieData> {
+            for movieEntity in watchedMovieEntities {
+                Task {
+                    await fetchMovieDetails(movieId: movieEntity.movie_id ?? "", isWatched: true)
+                }
             }
         }
     }
+
     
     private func fetchMovieDetails(movieId: String, isWatched: Bool) async {
         let movieDetailsResult = await MovieService.shared.getMovieByID(movieId: movieId)
