@@ -60,24 +60,33 @@ struct LandingView: View {
                     .bold()
                     .padding(.top, UIScreen.main.bounds.height * 0.08)
 
-                // Determine the first unwatched movie from the first log
                 if let firstLog = logs.first {
-                    let firstUnwatchedMovie = (firstLog.movie_ids as? Set<LocalMovieData>)?
-                        .subtracting(firstLog.watched_ids as? Set<LocalMovieData> ?? [])
-                        .first
+                                // Determine if there are any unwatched movies in the first log
+                                let unwatchedMovies = (firstLog.movie_ids as? Set<LocalMovieData>)?.subtracting(firstLog.watched_ids as? Set<LocalMovieData> ?? [])
 
-                    if let firstMovie = firstUnwatchedMovie {
-                        // Pass LogsViewModel to WhatsNextView
-                        WhatsNextView(movie: firstMovie, logsViewModel: logsViewModel)
-                            .padding(.top, -20)
-                            //.accessibilityIdentifier("WhatsNextMovie")
-                    } else {
-                        Text("No upcoming movies in this log.")
-                            .foregroundColor(.gray)
-                            .padding()
-                            .accessibility(identifier: "NoNextMovieText")
-                    }
-                }
+                                if let unwatchedMovies = unwatchedMovies, !unwatchedMovies.isEmpty {
+                                    // If there are unwatched movies, show the WhatsNextView for the first log
+                                    WhatsNextView(log: firstLog, logsViewModel: logsViewModel)
+                                        .padding(.top, -20)
+                                } else {
+                                    // If there are no unwatched movies, show "All Caught Up" message
+                                    VStack {
+                                        Text("All Caught Up!")
+                                            .font(.title)
+                                            .foregroundColor(.white)
+
+                                        Text("You've watched all the movies in this log.")
+                                            .foregroundColor(.gray)
+                                    }
+                                    //.padding(.top, UIScreen.main.bounds.height * 0.1) // Adjust padding as needed
+                                }
+                            } else {
+                                // If there are no logs, show "No logs available" message
+                                Text("No logs available.")
+                                    .foregroundColor(.gray)
+                                    .padding()
+                            }
+
 
                 // Pass LogsViewModel to MyLogsView
                 MyLogsView(logsViewModel: logsViewModel)

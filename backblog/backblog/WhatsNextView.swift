@@ -3,17 +3,18 @@ import CoreData
 
 struct WhatsNextView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    var movie: LocalMovieData
-    
-    @ObservedObject var logsViewModel: LogsViewModel
+    var log: LocalLogData  // Assuming you're passing the specific log for "What's Next"
 
+    @State private var nextMovie: LocalMovieData?  // The next movie to watch
     @State private var movieTitle: String = "Loading..."
     @State private var movieDetails: String = "Loading details..."
     @State private var halfSheetImage: Image = Image("img_placeholder_poster")
+    
+    var logsViewModel: LogsViewModel
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text("From \(movie.movie_ids?.name ?? "Unknown")")
+            Text("From \(log.name ?? "Unknown")")
                 .font(.subheadline)
                 .foregroundColor(.gray)
                 .bold()
@@ -57,23 +58,35 @@ struct WhatsNextView: View {
             }
             .padding(.horizontal)
         }
-        .onReceive(logsViewModel.$refreshTrigger) { _ in
-            loadNextWatchMovie() // React to changes in LogsViewModel
-        }
         .onAppear {
-            loadNextWatchMovie()
+            loadNextUnwatchedMovie()
         }
     }
 
-    private func loadNextWatchMovie() {
-        guard let movieId = movie.movie_id else {
-            movieTitle = "No Movies"
-            movieDetails = "Add movies to the log"
-            return
-        }
+    private func loadNextUnwatchedMovie() {
+        // Assuming movie_ids and watched_ids are Set<LocalMovieData>
+        let unwatchedMovies = log.movie_ids as? Set<LocalMovieData> ?? Set()
+        let watchedMovies = log.watched_ids as? Set<LocalMovieData> ?? Set()
+        let nextUnwatchedMovie = unwatchedMovies.subtracting(watchedMovies).first
 
+        nextMovie = nextUnwatchedMovie  // Update the state to reflect the next unwatched movie
+
+        if let nextMovie = nextMovie {
+            // Fetch and display movie details
+            loadMovieDetails(movie: nextMovie)
+        } else {
+            // Handle case where there are no unwatched movies
+            movieTitle = "All Caught Up!"
+            movieDetails = "You've watched all the movies in this log."
+            halfSheetImage = Image("default-placeholder") // Use an appropriate placeholder image
+        }
+    }
+
+    private func loadMovieDetails(movie: LocalMovieData) {
+        guard let movieId = movie.movie_id else { return }
+        
         Task {
-            // Fetch movie details
+            // Fetch movie details (adapt this part to your data fetching logic)
             let movieDetailsResult = await MovieService.shared.getMovieByID(movieId: movieId)
             if case .success(let movieData) = movieDetailsResult {
                 DispatchQueue.main.async {
@@ -82,7 +95,7 @@ struct WhatsNextView: View {
                     movieDetails = "\(movieData.runtime ?? 0) min · \(releaseYear)"
                 }
 
-                // Fetch halfsheet image
+                // Fetch half-sheet image (adapt this part to your data fetching logic)
                 let halfSheetResult = await MovieService.shared.getMovieHalfSheet(movieId: movieId)
                 if case .success(let halfSheetPath) = halfSheetResult, let url = URL(string: "https://image.tmdb.org/t/p/w500\(halfSheetPath)") {
                     let _ = ImageLoader.loadImage(from: url) { image in
@@ -96,13 +109,15 @@ struct WhatsNextView: View {
     }
 
     private func markMovieAsWatched() {
-        // Update the movie's watched status in Core Data
+        guard let movie = nextMovie else { return }
+
         withAnimation {
-            movie.watched_ids = movie.movie_ids // Assuming 'watched_ids' is where you track watched movies
-            movie.in_log = false // Optionally update the 'in_log' status if needed
+            log.removeFromMovie_ids(movie)
+            log.addToWatched_ids(movie)
 
             do {
                 try viewContext.save()
+                loadNextUnwatchedMovie()  // Refresh the view to show the next unwatched movie
             } catch {
                 print("Error marking movie as watched: \(error.localizedDescription)")
             }

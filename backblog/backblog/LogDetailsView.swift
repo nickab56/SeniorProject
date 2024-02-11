@@ -123,6 +123,14 @@ struct LogDetailsView: View {
                             ForEach(watchedMovies, id: \.0.id) { (movie, halfSheetPath) in
                                 MovieRow(movie: movie, halfSheetPath: halfSheetPath)
                                     .listRowBackground(Color.clear)
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                        Button {
+                                            markMovieAsUnwatched(movieId: movie.id ?? 0)
+                                        } label: {
+                                            Label("Unwatched", systemImage: "arrow.uturn.backward.circle.fill")
+                                        }
+                                        .tint(.blue)
+                                    }
                             }
                         }
                     }
@@ -184,6 +192,27 @@ struct LogDetailsView: View {
         }
     }
 
+    private func markMovieAsUnwatched(movieId: Int) {
+        guard case .localLog(let localLog) = log else { return }
+
+        // Find the movie in the watchedMovies list
+        if let index = watchedMovies.firstIndex(where: { $0.0.id == movieId }) {
+            let movieTuple = watchedMovies.remove(at: index)
+            movies.append(movieTuple)
+
+            // Update Core Data model
+            if let movieEntity = (localLog.watched_ids as? Set<LocalMovieData>)?.first(where: { $0.movie_id == String(movieId) }) {
+                localLog.removeFromWatched_ids(movieEntity)
+                localLog.addToMovie_ids(movieEntity)
+
+                do {
+                    try viewContext.save()
+                } catch {
+                    print("Error updating unwatched status in Core Data: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
 
 
     
