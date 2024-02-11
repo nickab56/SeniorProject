@@ -250,6 +250,71 @@ final class LandingView_UITests: XCTestCase {
         XCTAssertFalse(app.staticTexts["WhatsNextTitle"].exists)
     }
     
+    func test_WhatsNextMarkMovieAsWatched_AddWatchedButton_MovieAddedToWatched() {
+        let app = XCUIApplication()
+        app.launch()
+        // Add a new log
+        let addLogButton = app.buttons["addLogButton"]
+        XCTAssertTrue(addLogButton.waitForExistence(timeout: 5), "Add Log button should be visible")
+        addLogButton.tap()
+        
+        let newLogNameTextField = app.textFields["newLogNameTextField"]
+        newLogNameTextField.tap()
+        newLogNameTextField.typeText("Test Log\n")
+
+        let createLogButton = app.buttons["createLogButton"]
+        createLogButton.tap()
+
+        // Wait for the log to be created
+        XCTAssertTrue(app.staticTexts["Test Log"].waitForExistence(timeout: 5))
+
+        // Step 2: Search for a movie and add it to the log
+        app.tabBars["Tab Bar"].buttons["Search"].tap()
+
+        let movieSearchField = app.textFields["movieSearchField"]
+        movieSearchField.tap()
+        movieSearchField.typeText("Star Wars\n")
+
+        sleep(1)
+        
+        // Tap the "Add to Log" button for the searched movie
+        let addToLogButton = app.buttons["AddToLogButton"].firstMatch
+        XCTAssertTrue(addToLogButton.waitForExistence(timeout: 5), "Add to Log button should appear for searched movie")
+        addToLogButton.tap()
+
+        // Select the log
+        let testLogButton = app.buttons["MultipleSelectionRow_Test Log"]
+        XCTAssertTrue(testLogButton.waitForExistence(timeout: 5))
+        testLogButton.tap()
+        
+        // Confirm adding the movie to the log
+        app.buttons["Add"].tap()
+
+        // Step 3: Verify movie details in "What's Next" section
+        app.tabBars["Tab Bar"].buttons["Hdr"].tap()
+        sleep(1)
+
+        // Step 4: Mark "Star Wars" as watched
+        let markAsWatchedButton = app.buttons["checkButton"] // Adjust identifier as needed
+        markAsWatchedButton.tap()
+
+        // Ensure "Log 1" is created before proceeding.
+        let logEntry = app.staticTexts["Test Log"]
+        XCTAssertTrue(logEntry.waitForExistence(timeout: 10), "Test Log should be created and visible on the landing page")
+
+        // When: We tap on the log entry to select it.
+        logEntry.tap()
+        
+        let watchedSectionHeader = app.staticTexts["WatchedSectionHeader"]
+        XCTAssertTrue(watchedSectionHeader.waitForExistence(timeout: 5), "Watched section header should be visible")
+
+        print(app.debugDescription)
+        
+        let starWarsWatchedRow = app.buttons["MovieRow_StarWars"]
+        XCTAssertTrue(starWarsWatchedRow.waitForExistence(timeout: 5), "'Star Wars' should be listed in the watched section")
+    }
+
+    
     func test_MovieDetailsView_WatchedNotification_DisplayAddedToWatched()
     {
         let app = XCUIApplication()

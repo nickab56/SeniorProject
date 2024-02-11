@@ -103,9 +103,10 @@ struct LogDetailsView: View {
                 } else {
                     List {
                         if !movies.isEmpty {
-                            Section(header: Text("Unwatched").foregroundColor(.white)) {
+                            Section(header: Text("Unwatched").foregroundColor(.white).accessibility(identifier: "UnwatchedSectionHeader")) {
                                 ForEach(movies, id: \.0.id) { (movie, halfSheetPath) in
                                     MovieRow(movie: movie, halfSheetPath: halfSheetPath)
+                                        .accessibility(identifier: "MovieRow_\(movie.title?.replacingOccurrences(of: " ", with: "") ?? "Unknown")")
                                         .listRowBackground(Color.clear)
                                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                             Button {
@@ -119,10 +120,11 @@ struct LogDetailsView: View {
                             }
                         }
 
-                        Section(header: Text("Watched").foregroundColor(.white)) {
+                        Section(header: Text("Watched").foregroundColor(.white).accessibility(identifier: "WatchedSectionHeader")) {
                             ForEach(watchedMovies, id: \.0.id) { (movie, halfSheetPath) in
                                 MovieRow(movie: movie, halfSheetPath: halfSheetPath)
                                     .listRowBackground(Color.clear)
+                                    .accessibility(identifier: "MovieRow_\(movie.title?.replacingOccurrences(of: " ", with: "") ?? "Unknown")")
                                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                         Button {
                                             markMovieAsUnwatched(movieId: movie.id ?? 0)
