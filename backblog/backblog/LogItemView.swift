@@ -68,7 +68,7 @@ struct LogItemView: View {
         case .localLog(let local):
             (local.movie_ids?.allObjects.first as? LocalMovieData)?.movie_id
         case .log(let log):
-            (log.movieIds?.keys.first)
+            log.movieIds?.first
         } else {
             isLoading = false
             return
@@ -95,7 +95,7 @@ struct LogItemView: View {
         case .localLog(let local):
             local.movie_ids?.count ?? 0 > 0
         case .log(let log):
-            log.movieIds?.keys.count ?? 0 > 0
+            log.movieIds?.count ?? 0 > 0
         }
     }
 

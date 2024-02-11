@@ -20,8 +20,8 @@ class LogRepository {
                 lastModifiedDate: date,
                 isVisible: isVisible,
                 owner: ownerData,
-                movieIds: [:],
-                watchedIds: [:],
+                movieIds: [],
+                watchedIds: [],
                 collaborators: [:]
             )
             let result = try await FirebaseService.shared.post(data: logData, collection: "logs").get()
