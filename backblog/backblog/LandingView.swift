@@ -74,6 +74,7 @@ struct LandingView: View {
                                         Text("All Caught Up!")
                                             .font(.title)
                                             .foregroundColor(.white)
+                                            .accessibilityIdentifier("NoNextMovieText")
 
                                         Text("You've watched all the movies in this log.")
                                             .foregroundColor(.gray)

@@ -26,6 +26,8 @@ final class SearchView_UITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
 
+        sleep(1)
+        
         // Navigate to the Search tab
         app.tabBars["Tab Bar"].buttons["Search"].tap()
 
@@ -74,6 +76,8 @@ final class SearchView_UITests: XCTestCase {
     func test_AddMovieToLogButton_SearchAndAddMovie() {
         let app = XCUIApplication()
         app.launch()
+        
+        sleep(1)
 
         // 1. Create a new log
         app.buttons["addLogButton"].tap()

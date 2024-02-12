@@ -21,6 +21,8 @@ final class LoginView_UITests: XCTestCase {
     func test_LoginView_LoginButton_LogsTheUserIn() {
         let app = XCUIApplication()
         app.launch()
+        
+        sleep(1)
 
         // Navigate to the social view tab
         app.tabBars["Tab Bar"].buttons["person.2.fill"].tap()
