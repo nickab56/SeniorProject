@@ -51,6 +51,7 @@ struct SocialView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 60, height: 60)
+                    .accessibility(identifier: "UserProfileImage")
                 
                 Text(userData?.username ?? "")
                     .font(.system(size: 40))
@@ -86,6 +87,7 @@ struct SocialView: View {
                     } else {
                         Text("No public logs found.")
                             .foregroundColor(.gray)
+                            .accessibilityIdentifier("NoLogsText")
                     }
                 }
             } else if selectedTab == "Friends" {
@@ -95,6 +97,7 @@ struct SocialView: View {
                         .font(.system(size: 30))
                         .bold()
                         .foregroundColor(.white)
+                        .accessibility(identifier: "FriendsSection")
                     
                     Spacer()
                     
@@ -148,6 +151,7 @@ struct SocialView: View {
                                 Text("Friends")
                                     .foregroundColor(.gray)
                                     .padding(.horizontal, 20)
+                                    .accessibility(identifier: "FriendsSectionHeader")
                                 Spacer()
                                 Rectangle()
                                     .frame(height: 1)

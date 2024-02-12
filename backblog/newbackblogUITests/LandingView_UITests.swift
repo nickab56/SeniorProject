@@ -133,6 +133,8 @@ final class LandingView_UITests: XCTestCase {
         
         let app = XCUIApplication()
         app.launch()
+        
+        sleep(1)
 
         let tabBar = app.tabBars["Tab Bar"]
         

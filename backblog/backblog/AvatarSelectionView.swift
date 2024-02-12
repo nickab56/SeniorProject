@@ -14,9 +14,6 @@ struct AvatarSelectionView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.6), Color.gray.opacity(0.3)]), startPoint: .top, endPoint: .bottom)
-                .edgesIgnoringSafeArea(.all)
-
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
                 ForEach(Array(zip(avatarIds.indices, avatarIds)), id: \.0) { index, avatarId in
                     VStack {
@@ -29,6 +26,7 @@ struct AvatarSelectionView: View {
                             .onTapGesture {
                                 onSelect(index + 1)
                             }
+                            .accessibility(identifier: avatarId) // Assigning accessibility identifier
                         Text(avatarNames[index])
                             .foregroundColor(.white)
                             .font(.headline)
