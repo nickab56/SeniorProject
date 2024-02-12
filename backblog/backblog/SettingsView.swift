@@ -108,6 +108,7 @@ struct SettingsView: View {
                     Text(saveMessage)
                         .foregroundColor(messageColor)
                         .padding()
+                        .accessibility(identifier: "StatusMessage")
                     
                     Button(action: {
                         // Update user

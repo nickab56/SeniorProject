@@ -121,10 +121,8 @@ final class SearchView_UITests: XCTestCase {
         XCTAssertTrue(newLogEntry.waitForExistence(timeout: 5), "Newly created log named 'Log 1' should exist on the landing page")
         
         newLogEntry.tap()
-        
-        // Assuming the movie title is displayed as a button in the log
-        let addedMovie = app.buttons["Star Wars"]
-        XCTAssertTrue(addedMovie.exists, "Added movie should appear in the log")
+        let movieInLog1 = app.staticTexts["Star Wars"]
+        XCTAssertTrue(movieInLog1.exists, "Movie should be in Log 1")
     }
     
     func test_AddMovieToMultipleLogs_MovieInBothLogs() throws {
