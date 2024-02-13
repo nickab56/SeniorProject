@@ -8,7 +8,6 @@
 import Foundation
 
 struct MovieService {
-    static let shared = MovieService()
     let baseURL = "https://api.themoviedb.org/3/"
    
     enum MovieError: Error {

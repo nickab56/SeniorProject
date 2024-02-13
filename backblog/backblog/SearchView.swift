@@ -1,11 +1,9 @@
 import SwiftUI
 
 struct SearchView: View {
+    @StateObject private var vm = SearchViewModel()
     @State private var searchText = ""
     @State private var isSearching = false
-    @State private var movies: [MovieSearchData.MovieSearchResult] = []
-    @State private var errorMessage: String?
-    @State private var halfSheetImageUrls: [Int: URL?] = [:]
 
     @State private var showingLogSelection = false
     @State private var selectedMovieForLog: MovieSearchData.MovieSearchResult?
@@ -25,7 +23,7 @@ struct SearchView: View {
                 }
             }
         }
-        .onChange(of: selectedMovieForLog) { _ in }
+        .onChange(of: selectedMovieForLog) { newValue, oldValue in }
         .sheet(isPresented: $showingLogSelection, content: {
             if let selectedMovie = selectedMovieForLog {
                 LogSelectionView(selectedMovieId: selectedMovie.id ?? 0, showingSheet: $showingLogSelection)
@@ -39,9 +37,9 @@ struct SearchView: View {
         HStack {
             Image(systemName: "magnifyingglass").foregroundColor(.gray)
             TextField("Search for a movie", text: $searchText)
-                .onChange(of: searchText) { newValue in
+                .onChange(of: searchText) { newValue, oldValue in
                     isSearching = !newValue.isEmpty
-                    searchMovies(query: newValue)
+                    vm.searchMovies(query: newValue)
                 }
                 .font(.system(size: 18, weight: .bold))
                 .foregroundColor(.primary)
@@ -54,7 +52,7 @@ struct SearchView: View {
     }
 
     private var movieList: some View {
-        ForEach(movies, id: \.id) { movie in
+        ForEach(vm.movies, id: \.id) { movie in
             NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0))) {
                 HStack {
                     movieImageView(for: movie.id)
@@ -64,7 +62,7 @@ struct SearchView: View {
                             .foregroundColor(.white)
                             .bold()
                             .accessibilityIdentifier("SearchMovieTitle")
-                        Text(formatReleaseYear(from: movie.releaseDate))
+                        Text(vm.formatReleaseYear(from: movie.releaseDate))
                             .foregroundColor(.gray)
                             .font(.footnote)
                     }
@@ -80,7 +78,7 @@ struct SearchView: View {
 
     private func movieImageView(for movieId: Int?) -> some View {
         Group {
-            if let movieId = movieId, let url = halfSheetImageUrls[movieId] {
+            if let movieId = movieId, let url = vm.halfSheetImageUrls[movieId] {
                 AsyncImage(url: url) { image in
                     image.resizable()
                 } placeholder: {
@@ -95,9 +93,9 @@ struct SearchView: View {
                     .cornerRadius(8)
                     .padding(.leading)
                     .onAppear {
-                        if let movieId = movieId, halfSheetImageUrls[movieId] == nil {
+                        if let movieId = movieId, vm.halfSheetImageUrls[movieId] == nil {
                             // Only load if not already attempted
-                            loadHalfSheetImage(movieId: movieId)
+                            vm.loadHalfSheetImage(movieId: movieId)
                         }
                     }
             }
@@ -121,7 +119,7 @@ struct SearchView: View {
         .padding()
         .accessibilityLabel("Add to Log")
         .accessibility(identifier: "AddToLogButton")
-        .onChange(of: tappedMovieId) { _ in
+        .onChange(of: tappedMovieId) { newValue, oldValue in
             // Reset the animation after a delay
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 withAnimation(.easeInOut) {
@@ -130,52 +128,4 @@ struct SearchView: View {
             }
         }
     }
-
-    private func searchMovies(query: String) {
-        guard !query.isEmpty else {
-            movies = []
-            return
-        }
-        Task {
-            let result = await MovieService.shared.searchMovie(query: query, includeAdult: false, language: "en", page: 1)
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let movieSearchData):
-                    let sortedResults = movieSearchData.results?.sorted(by: {
-                        $0.popularity ?? 0 > $1.popularity ?? 0
-                    }) ?? []
-                    self.movies = sortedResults
-                case .failure(let error):
-                    self.errorMessage = error.localizedDescription
-                }
-            }
-        }
-    }
-
-
-    private func loadHalfSheetImage(movieId: Int) {
-        Task {
-            let result = await MovieService.shared.getMovieHalfSheet(movieId: String(movieId))
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let halfsheetPath):
-                    if !halfsheetPath.isEmpty {
-                        self.halfSheetImageUrls[movieId] = URL(string: "https://image.tmdb.org/t/p/w500" + halfsheetPath)
-                    } else {
-                        self.halfSheetImageUrls[movieId] = nil // Explicitly store nil for no image
-                    }
-                case .failure:
-                    self.halfSheetImageUrls[movieId] = nil // Store nil on failure to indicate no image
-                }
-            }
-        }
-    }
-    
-    private func formatReleaseYear(from dateString: String?) -> String {
-        guard let dateString = dateString, let year = dateString.split(separator: "-").first else {
-            return "Unknown year"
-        }
-        return String(year)
-    }
-
 }

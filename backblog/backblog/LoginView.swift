@@ -8,11 +8,9 @@
 import SwiftUI
 
 struct LoginView: View {
-    @Binding var isLoggedInToSocial: Bool
+    @ObservedObject var vm: AuthViewModel
     @State private var username = ""
     @State private var password = ""
-    @State private var loginMessage = ""
-    @State private var messageColor = Color.red
 
     var body: some View {
             GeometryReader { geometry in
@@ -41,8 +39,8 @@ struct LoginView: View {
                             .foregroundColor(.gray)
                             .padding(.bottom, 20)
                         
-                        Text(loginMessage)
-                            .foregroundColor(messageColor)
+                        Text(vm.loginMessage)
+                            .foregroundColor(vm.messageColor)
                             .padding()
                             .accessibilityIdentifier("loginMessage")
 
@@ -60,14 +58,14 @@ struct LoginView: View {
 
                         Button("Log In") {
                             if username.isEmpty || password.isEmpty {
-                                loginMessage = "Please fill all fields"
-                                messageColor = Color.red
+                                vm.loginMessage = "Please fill all fields"
+                                vm.messageColor = Color.red
                             } else {
                                 if password.count < 6 {
-                                    loginMessage = "Password must be at least 6 characters"
-                                    messageColor = Color.red
+                                    vm.loginMessage = "Password must be at least 6 characters"
+                                    vm.messageColor = Color.red
                                 } else {
-                                    attemptLogin(email: username, password: password)
+                                    vm.attemptLogin(email: username, password: password)
                                 }
                             }
                         }
@@ -79,7 +77,7 @@ struct LoginView: View {
                         .padding()
                         .accessibility(identifier: "loginButton")
 
-                        NavigationLink(destination: SignupView(isLoggedInToSocial: $isLoggedInToSocial)) {
+                        NavigationLink(destination: SignupView(vm: vm)) {
                             HStack {
                                 Text("Don't have an account?")
                                     .foregroundColor(.gray)
@@ -92,34 +90,8 @@ struct LoginView: View {
                     .padding()
                 }
             }
-            .navigationDestination(isPresented: $isLoggedInToSocial) {
+            .navigationDestination(isPresented: $vm.isLoggedInToSocial) {
                 SocialView()
             }
-    }
-    
-    private func attemptLogin(email: String, password: String) {
-        DispatchQueue.main.async {
-            Task {
-                do {
-                    _ = try await FirebaseService.shared.login(email: email, password: password).get()
-                    loginMessage = "Login Successful, redirecting..."
-                    messageColor = Color.green
-                    
-                    // Add a short delay to display the success message before changing the state
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        // Now change the isLoggedInToSocial to trigger the redirection
-                        isLoggedInToSocial = true
-                    }
-                } catch {
-                    let msg = if (error.localizedDescription.contains("malformed")) {
-                        "Incorrect email or password"
-                    } else {
-                        error.localizedDescription
-                    }
-                    loginMessage = msg
-                    messageColor = Color.red
-                }
-            }
-        }
     }
 }

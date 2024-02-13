@@ -100,7 +100,9 @@ struct FriendsProfileView: View {
                                     .frame(height: 1)
                                     .foregroundColor(.gray)
                             }
-                            ForEach(viewModel.friends) { friendId in FriendListElement(friendId: friendId.userId ?? "", userId: FirebaseService.shared.auth.currentUser?.uid ?? "", username: friendId.username ?? "", avatarPreset: friendId.avatarPreset ?? 1)
+                            ForEach(viewModel.friends) { friendId in 
+                                FriendListElement(
+                                    friendId: friendId.userId ?? "", userId: viewModel.fb.auth.currentUser?.uid ?? "", username: friendId.username ?? "", avatarPreset: friendId.avatarPreset ?? 1)
                                     .padding(.horizontal)
                             }
                         } else {

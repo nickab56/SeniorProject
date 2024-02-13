@@ -43,6 +43,11 @@
 		34F035AC2B60A95500EB35C7 /* LogItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035AB2B60A95500EB35C7 /* LogItemView.swift */; };
 		8108A6422B76A2650069DBEA /* EditCollaboratorSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8108A6412B76A2650069DBEA /* EditCollaboratorSheetView.swift */; };
 		817960B32B6454BD00D94EF4 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 817960B22B6454BD00D94EF4 /* SettingsView.swift */; };
+		975B33FF2B7A9B10004167D2 /* MockFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975B33FE2B7A9B10004167D2 /* MockFirebaseService.swift */; };
+		975B34012B7AA44E004167D2 /* SocialViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975B34002B7AA44E004167D2 /* SocialViewModel.swift */; };
+		975B34032B7AACC7004167D2 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975B34022B7AACC7004167D2 /* AuthViewModel.swift */; };
+		975B34052B7AB3E8004167D2 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975B34042B7AB3E8004167D2 /* SearchViewModel.swift */; };
+		975B34072B7ABC89004167D2 /* LogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975B34062B7ABC89004167D2 /* LogViewModel.swift */; };
 		9777C8C42B5D8ACD000F40EA /* FriendRequestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9777C8C32B5D8ACD000F40EA /* FriendRequestData.swift */; };
 		9777C8C62B5D8CD9000F40EA /* LogData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9777C8C52B5D8CD9000F40EA /* LogData.swift */; };
 		9777C8C82B5D8F83000F40EA /* LogRequestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9777C8C72B5D8F83000F40EA /* LogRequestData.swift */; };
@@ -54,6 +59,7 @@
 		97BF9EEA2B6B0B4300EE9ABB /* AvatarPresetMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BF9EE92B6B0B4300EE9ABB /* AvatarPresetMapper.swift */; };
 		97D1CA1F2B66CDC600F45E5F /* CurrentTimeInMS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D1CA1E2B66CDC600F45E5F /* CurrentTimeInMS.swift */; };
 		97DD3A042B768AD700D8D759 /* AddFriendSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97DD3A032B768AD700D8D759 /* AddFriendSheetView.swift */; };
+		97E9067E2B7AE0B8006D3EE1 /* MoviesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97E9067D2B7AE0B8006D3EE1 /* MoviesViewModel.swift */; };
 		97FA406D2B754207004A4945 /* FriendsProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FA406C2B754207004A4945 /* FriendsProfileView.swift */; };
 		97FA40702B7542F8004A4945 /* FriendsListElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FA406F2B7542F8004A4945 /* FriendsListElement.swift */; };
 		97FA40722B754943004A4945 /* FriendsProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FA40712B754943004A4945 /* FriendsProfileViewModel.swift */; };
@@ -134,6 +140,11 @@
 		34F035AB2B60A95500EB35C7 /* LogItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogItemView.swift; sourceTree = "<group>"; };
 		8108A6412B76A2650069DBEA /* EditCollaboratorSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCollaboratorSheetView.swift; sourceTree = "<group>"; };
 		817960B22B6454BD00D94EF4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		975B33FE2B7A9B10004167D2 /* MockFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFirebaseService.swift; sourceTree = "<group>"; };
+		975B34002B7AA44E004167D2 /* SocialViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialViewModel.swift; sourceTree = "<group>"; };
+		975B34022B7AACC7004167D2 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		975B34042B7AB3E8004167D2 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		975B34062B7ABC89004167D2 /* LogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewModel.swift; sourceTree = "<group>"; };
 		9777C8C32B5D8ACD000F40EA /* FriendRequestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestData.swift; sourceTree = "<group>"; };
 		9777C8C52B5D8CD9000F40EA /* LogData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogData.swift; sourceTree = "<group>"; };
 		9777C8C72B5D8F83000F40EA /* LogRequestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogRequestData.swift; sourceTree = "<group>"; };
@@ -145,6 +156,7 @@
 		97BF9EE92B6B0B4300EE9ABB /* AvatarPresetMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarPresetMapper.swift; sourceTree = "<group>"; };
 		97D1CA1E2B66CDC600F45E5F /* CurrentTimeInMS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentTimeInMS.swift; sourceTree = "<group>"; };
 		97DD3A032B768AD700D8D759 /* AddFriendSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendSheetView.swift; sourceTree = "<group>"; };
+		97E9067D2B7AE0B8006D3EE1 /* MoviesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesViewModel.swift; sourceTree = "<group>"; };
 		97FA406C2B754207004A4945 /* FriendsProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsProfileView.swift; sourceTree = "<group>"; };
 		97FA406F2B7542F8004A4945 /* FriendsListElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsListElement.swift; sourceTree = "<group>"; };
 		97FA40712B754943004A4945 /* FriendsProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsProfileViewModel.swift; sourceTree = "<group>"; };
@@ -222,6 +234,7 @@
 				3469C1862B312A4700B8EEFB /* backblog.xcdatamodeld */,
 				3469C17B2B312A4600B8EEFB /* backblogApp.swift */,
 				3466FF2C2B61EA610028034C /* MovieDetailsView.swift */,
+				97E9067D2B7AE0B8006D3EE1 /* MoviesViewModel.swift */,
 				34AEBD502B6D569400C6EA87 /* SplashScreenView.swift */,
 				34F796C12B6409530024FD15 /* Landing Page */,
 				34F796C62B640A460024FD15 /* Log Displaying */,
@@ -248,6 +261,7 @@
 			isa = PBXGroup;
 			children = (
 				3469C1912B312A4700B8EEFB /* backblogTests.swift */,
+				975B33FE2B7A9B10004167D2 /* MockFirebaseService.swift */,
 			);
 			path = backblogTests;
 			sourceTree = "<group>";
@@ -304,8 +318,10 @@
 				817960B22B6454BD00D94EF4 /* SettingsView.swift */,
 				34AEBD5A2B709C4A00C6EA87 /* AvatarSelectionView.swift */,
 				97FA406C2B754207004A4945 /* FriendsProfileView.swift */,
-				97FA40712B754943004A4945 /* FriendsProfileViewModel.swift */,
 				97DD3A032B768AD700D8D759 /* AddFriendSheetView.swift */,
+				975B34022B7AACC7004167D2 /* AuthViewModel.swift */,
+				975B34002B7AA44E004167D2 /* SocialViewModel.swift */,
+				97FA40712B754943004A4945 /* FriendsProfileViewModel.swift */,
 			);
 			name = Social;
 			sourceTree = "<group>";
@@ -315,6 +331,7 @@
 			children = (
 				340746AD2B62B5EB007711C8 /* LogSelectionView.swift */,
 				344BA2772B378709002626F1 /* SearchView.swift */,
+				975B34042B7AB3E8004167D2 /* SearchViewModel.swift */,
 			);
 			name = Search;
 			sourceTree = "<group>";
@@ -326,8 +343,9 @@
 				344BA2752B37862E002626F1 /* MyLogsView.swift */,
 				340183492B5DFE1D009D7818 /* WhatsNextView.swift */,
 				34F035AB2B60A95500EB35C7 /* LogItemView.swift */,
-				34AEBD582B70823F00C6EA87 /* LogsViewModel.swift */,
 				8108A6412B76A2650069DBEA /* EditCollaboratorSheetView.swift */,
+				34AEBD582B70823F00C6EA87 /* LogsViewModel.swift */,
+				975B34062B7ABC89004167D2 /* LogViewModel.swift */,
 			);
 			name = "Log Displaying";
 			sourceTree = "<group>";
@@ -580,6 +598,8 @@
 				34F035AA2B60A93900EB35C7 /* AddLogSheetView.swift in Sources */,
 				817960B32B6454BD00D94EF4 /* SettingsView.swift in Sources */,
 				3469C1852B312A4700B8EEFB /* Persistence.swift in Sources */,
+				975B34072B7ABC89004167D2 /* LogViewModel.swift in Sources */,
+				975B34032B7AACC7004167D2 /* AuthViewModel.swift in Sources */,
 				344BA27C2B37875D002626F1 /* ExtensionUtility.swift in Sources */,
 				34AEBD5B2B709C4A00C6EA87 /* AvatarSelectionView.swift in Sources */,
 				344BA27A2B378713002626F1 /* SocialView.swift in Sources */,
@@ -589,6 +609,7 @@
 				97A8F9542B647323000A0096 /* MovieAccess.swift in Sources */,
 				97FCFC602B63591F00F5BFCB /* MovieData.swift in Sources */,
 				977922D52B758FA60021ECD9 /* LogType.swift in Sources */,
+				975B34052B7AB3E8004167D2 /* SearchViewModel.swift in Sources */,
 				344BA2782B378709002626F1 /* SearchView.swift in Sources */,
 				97FCFC662B6369C000F5BFCB /* FriendRepository.swift in Sources */,
 				34AEBD512B6D569400C6EA87 /* SplashScreenView.swift in Sources */,
@@ -607,6 +628,7 @@
 				34AEBD592B70823F00C6EA87 /* LogsViewModel.swift in Sources */,
 				97BF9EEA2B6B0B4300EE9ABB /* AvatarPresetMapper.swift in Sources */,
 				3401834A2B5DFE1D009D7818 /* WhatsNextView.swift in Sources */,
+				975B34012B7AA44E004167D2 /* SocialViewModel.swift in Sources */,
 				97FA40722B754943004A4945 /* FriendsProfileViewModel.swift in Sources */,
 				344BA2742B3785ED002626F1 /* CustomTitleView.swift in Sources */,
 				3469C1882B312A4700B8EEFB /* backblog.xcdatamodeld in Sources */,
@@ -617,6 +639,7 @@
 				9777C8CA2B5D90F9000F40EA /* UserData.swift in Sources */,
 				97FA40702B7542F8004A4945 /* FriendsListElement.swift in Sources */,
 				97A8F9502B646C22000A0096 /* MovieService.swift in Sources */,
+				97E9067E2B7AE0B8006D3EE1 /* MoviesViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -624,6 +647,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				975B33FF2B7A9B10004167D2 /* MockFirebaseService.swift in Sources */,
 				3469C1922B312A4700B8EEFB /* backblogTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

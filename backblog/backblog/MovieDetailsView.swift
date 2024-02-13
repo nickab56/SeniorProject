@@ -10,10 +10,11 @@
 import SwiftUI
 
 struct MovieDetailsView: View {
-    let movieId: String
-    @State private var movieData: MovieData?
-    @State private var isLoading = true
-    @State private var errorMessage: String?
+    @StateObject var vm: MoviesViewModel
+    
+    init (movieId: String) {
+        _vm = StateObject(wrappedValue: MoviesViewModel(movieId: movieId))
+    }
 
     var body: some View {
         ZStack {
@@ -22,9 +23,9 @@ struct MovieDetailsView: View {
                 .edgesIgnoringSafeArea(.all)
 
             // Content
-            if isLoading {
+            if vm.isLoading {
                 ProgressView("Loading...")
-            } else if let movie = movieData {
+            } else if let movie = vm.movieData {
                 ScrollView {
                     // TODO: figure out how to not have the text not come in center but align on the left
                     VStack {
@@ -117,30 +118,13 @@ struct MovieDetailsView: View {
 
                     }
                 }
-            } else if errorMessage != nil {
+            } else if vm.errorMessage != nil {
                 Text("Failed to load movie details.")
             }
         }
         .onAppear {
-            fetchMovieDetails()
+            vm.fetchMovieDetails()
         }
         .navigationBarTitleDisplayMode(.inline)
-    }
-
-    // fetches the movie details using the id using repo function.
-    private func fetchMovieDetails() {
-        isLoading = true
-        Task {
-            let result = await MovieRepository.getMovieById(movieId: movieId)
-            DispatchQueue.main.async {
-                isLoading = false
-                switch result {
-                case .success(let movieData):
-                    self.movieData = movieData
-                case .failure(let error):
-                    self.errorMessage = error.localizedDescription
-                }
-            }
-        }
     }
 }

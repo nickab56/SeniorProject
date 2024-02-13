@@ -8,7 +8,13 @@
 import Foundation
 
 class UserRepository {
-    static func addUser(userId: String, username: String, avatarPreset: Int) async -> Result<UserData, Error> {
+    let fb: FirebaseService
+    
+    init(fb: FirebaseService) {
+        self.fb = fb
+    }
+    
+    func addUser(userId: String, username: String, avatarPreset: Int) async -> Result<UserData, Error> {
         do {
             let userData = UserData(
                 userId: userId,
@@ -19,7 +25,7 @@ class UserRepository {
                 blocked: [:]
             )
             
-            let result = try await FirebaseService.shared.put(doc: userData, docId: userId, collection: "users").get()
+            let result = try await fb.put(doc: userData, docId: userId, collection: "users").get()
             
             return .success(result)
         } catch {
@@ -27,9 +33,9 @@ class UserRepository {
         }
     }
     
-    static func getUser(userId: String) async -> Result<UserData, Error> {
+    func getUser(userId: String) async -> Result<UserData, Error> {
         do {
-            let result = try await FirebaseService.shared.get(type: UserData(), docId: userId, collection: "users").get()
+            let result = try await fb.get(type: UserData(), docId: userId, collection: "users").get()
             
             return .success(result)
         } catch {
@@ -37,11 +43,11 @@ class UserRepository {
         }
     }
     
-    static func getUserByUsername(username: String) async -> Result<UserData, Error> {
+    func getUserByUsername(username: String) async -> Result<UserData, Error> {
         do {
-            let q = FirebaseService.shared.db.collection("users").whereField("username", isEqualTo: username)
+            let q = fb.db.collection("users").whereField("username", isEqualTo: username)
             
-            let result = try await FirebaseService.shared.get(type: UserData(), query: q).get()
+            let result = try await fb.get(type: UserData(), query: q).get()
             
             return .success(result)
         } catch {
@@ -49,11 +55,11 @@ class UserRepository {
         }
     }
     
-    static func usernameExists(username: String) async -> Result<Bool, Error> {
+    func usernameExists(username: String) async -> Result<Bool, Error> {
         do {
-            let q = FirebaseService.shared.db.collection("users").whereField("username", isEqualTo: username)
+            let q = fb.db.collection("users").whereField("username", isEqualTo: username)
             
-            let result = try await FirebaseService.shared.exists(query: q).get()
+            let result = try await fb.exists(query: q).get()
             
             return .success(result)
         } catch {
@@ -61,7 +67,7 @@ class UserRepository {
         }
     }
     
-    static func updateUser(userId: String, password: String, updateData: [String: Any]) async -> Result<Bool, Error> {
+    func updateUser(userId: String, password: String, updateData: [String: Any]) async -> Result<Bool, Error> {
         do {
             var newData = updateData
             var newPassword: String?
@@ -72,10 +78,10 @@ class UserRepository {
                 newData.removeValue(forKey: "password")
             }
             
-            let result = try await FirebaseService.shared.put(updates: newData, docId: userId, collection: "users").get()
+            let result = try await fb.put(updates: newData, docId: userId, collection: "users").get()
             
             if newPassword != nil {
-                _ = try await FirebaseService.shared.updatePassword(password: password, newPassword: newPassword!).get()
+                _ = try await fb.updatePassword(password: password, newPassword: newPassword!).get()
             }
             
             return .success(result)
@@ -84,10 +90,10 @@ class UserRepository {
         }
     }
     
-    static func getLogRequests(userId: String) async -> Result<[LogRequestData], Error> {
+    func getLogRequests(userId: String) async -> Result<[LogRequestData], Error> {
         do {
-            let q = FirebaseService.shared.db.collection("log_requests").whereField("target_id", isEqualTo: userId).whereField("is_complete", isEqualTo: false)
-            let result = try await FirebaseService.shared.getBatch(type: LogRequestData(), query: q).get()
+            let q = fb.db.collection("log_requests").whereField("target_id", isEqualTo: userId).whereField("is_complete", isEqualTo: false)
+            let result = try await fb.getBatch(type: LogRequestData(), query: q).get()
             
             return .success(result)
         } catch {
@@ -95,10 +101,10 @@ class UserRepository {
         }
     }
     
-    static func getFriendRequests(userId: String) async -> Result<[FriendRequestData], Error> {
+    func getFriendRequests(userId: String) async -> Result<[FriendRequestData], Error> {
         do {
-            let q = FirebaseService.shared.db.collection("friend_requests").whereField("target_id", isEqualTo: userId).whereField("is_complete", isEqualTo: false)
-            let result = try await FirebaseService.shared.getBatch(type: FriendRequestData(), query: q).get()
+            let q = fb.db.collection("friend_requests").whereField("target_id", isEqualTo: userId).whereField("is_complete", isEqualTo: false)
+            let result = try await fb.getBatch(type: FriendRequestData(), query: q).get()
             
             return .success(result)
         } catch {

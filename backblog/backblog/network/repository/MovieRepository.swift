@@ -9,11 +9,18 @@ import FirebaseFirestore
 import Foundation
 
 class MovieRepository {
+    let fb: FirebaseService
+    let movieService: MovieService
     
-    static func addMovie(logId: String, movieId: String) async -> Result<Bool, Error> {
+    init(fb: FirebaseService, movieService: MovieService) {
+        self.fb = fb
+        self.movieService = movieService
+    }
+    
+    func addMovie(logId: String, movieId: String) async -> Result<Bool, Error> {
         do {
-            let updates: [String: Any] = ["movie_ids.\(movieId)": true, "last_modified_date": String(currentTimeInMS())]
-            let result = try await FirebaseService.shared.put(updates: updates, docId: logId, collection: "logs").get()
+            let updates: [String: Any] = ["movie_ids": FieldValue.arrayUnion([movieId]), "last_modified_date": String(currentTimeInMS())]
+            let result = try await fb.put(updates: updates, docId: logId, collection: "logs").get()
             
             return .success(result)
         } catch {
@@ -21,17 +28,17 @@ class MovieRepository {
         }
     }
     
-    static func markMovie(logId: String, movieId: String, watched: Bool) async -> Result<Bool, Error> {
+    func markMovie(logId: String, movieId: String, watched: Bool) async -> Result<Bool, Error> {
         do {
             let updates: [String: Any] = if (watched) {
                 // Movie has been marked as watched
-                ["movie_ids.\(movieId)": FieldValue.delete(), "watched_ids.\(movieId)": true, "last_modified_date: ": String(currentTimeInMS())]
+                ["movie_ids": FieldValue.arrayRemove([movieId]), "watched_ids": FieldValue.arrayUnion([movieId]), "last_modified_date: ": String(currentTimeInMS())]
             } else {
                 // Movie has been removed from watched
-                ["movie_ids.\(movieId)": true, "watched_ids.\(movieId)": FieldValue.delete(), "last_modified_date: ": String(currentTimeInMS())]
+                ["movie_ids": FieldValue.arrayUnion([movieId]), "watched_ids": FieldValue.arrayRemove([movieId]), "last_modified_date: ": String(currentTimeInMS())]
             }
             
-            let result = try await FirebaseService.shared.put(updates: updates, docId: logId, collection: "logs").get()
+            let result = try await fb.put(updates: updates, docId: logId, collection: "logs").get()
             
             return .success(result)
         } catch {
@@ -39,10 +46,10 @@ class MovieRepository {
         }
     }
     
-    static func getWatchNextMovie(userId: String) async -> Result<String, Error> {
+    func getWatchNextMovie(userId: String) async -> Result<String, Error> {
         do {
             // Get log data
-            let logs = try await LogRepository.getLogs(userId: userId, showPrivate: true).get()
+            let logs = try await LogRepository(fb: fb).getLogs(userId: userId, showPrivate: true).get()
             
             if (logs.isEmpty) {
                 return .failure(FirebaseError.notFound)
@@ -55,7 +62,7 @@ class MovieRepository {
                 let userPriority = if (log.owner?.userId == userId) {
                     log.owner!.priority!
                 } else {
-                    log.collaborators?[userId]?["priority"] as Int?
+                    log.order?[userId]
                 }
                 
                 if (userPriority != nil && userPriority! < highestPriority && (log.movieIds != nil && log.movieIds!.isEmpty)) {
@@ -74,9 +81,9 @@ class MovieRepository {
         }
     }
     
-    static func searchMovie(query: String, page: Int) async -> Result<MovieSearchData, Error> {
+    func searchMovie(query: String, page: Int) async -> Result<MovieSearchData, Error> {
         do {
-            let result = try await MovieService.shared.searchMovie(query: query, includeAdult: false, language: "en-US", page: page).get()
+            let result = try await movieService.searchMovie(query: query, includeAdult: false, language: "en-US", page: page).get()
             
             return .success(result)
         } catch {
@@ -84,9 +91,9 @@ class MovieRepository {
         }
     }
     
-    static func getMovieById(movieId: String) async -> Result<MovieData, Error> {
+    func getMovieById(movieId: String) async -> Result<MovieData, Error> {
         do {
-            let result = try await MovieService.shared.getMovieByID(movieId: movieId).get()
+            let result = try await movieService.getMovieByID(movieId: movieId).get()
             
             return .success(result)
         } catch {
@@ -94,9 +101,19 @@ class MovieRepository {
         }
     }
     
-    static func getMovieHalfSheet(movieId: String) async -> Result<String, Error> {
+    func getMovieHalfSheet(movieId: String) async -> Result<String, Error> {
         do {
-            let result = try await MovieService.shared.getMovieHalfSheet(movieId: movieId).get()
+            let result = try await movieService.getMovieHalfSheet(movieId: movieId).get()
+            
+            return .success(result)
+        } catch {
+            return .failure(error)
+        }
+    }
+    
+    func getMoviePoster(movieId: String) async -> Result<String, Error> {
+        do {
+            let result = try await movieService.getMoviePoster(movieId: movieId).get()
             
             return .success(result)
         } catch {

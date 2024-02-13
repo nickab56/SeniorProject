@@ -9,8 +9,13 @@ import FirebaseFirestore
 import Foundation
 
 class LogRepository {
+    let fb: FirebaseService
     
-    static func addLog(name: String, isVisible: Bool, ownerId: String) async -> Result<Bool, Error> {
+    init(fb: FirebaseService) {
+        self.fb = fb
+    }
+    
+    func addLog(name: String, isVisible: Bool, ownerId: String) async -> Result<Bool, Error> {
         do {
             let date = String(currentTimeInMS())
             let ownerData = Owner(userId: ownerId, priority: 0)
@@ -22,12 +27,13 @@ class LogRepository {
                 owner: ownerData,
                 movieIds: [],
                 watchedIds: [],
-                collaborators: [:]
+                collaborators: [],
+                order: [:]
             )
-            let result = try await FirebaseService.shared.post(data: logData, collection: "logs").get()
+            let result = try await fb.post(data: logData, collection: "logs").get()
             
             // Update log to include logId
-            _ = try await FirebaseService.shared.put(updates: ["log_id": result], docId: result, collection: "logs").get()
+            _ = try await fb.put(updates: ["log_id": result], docId: result, collection: "logs").get()
             
             return .success(true)
         } catch {
@@ -35,9 +41,9 @@ class LogRepository {
         }
     }
     
-    static func getLog(logId: String) async -> Result<LogData, Error> {
+    func getLog(logId: String) async -> Result<LogData, Error> {
         do {
-            let result = try await FirebaseService.shared.get(type: LogData(), docId: logId, collection: "logs").get()
+            let result = try await fb.get(type: LogData(), docId: logId, collection: "logs").get()
             
             return .success(result)
         } catch {
@@ -45,9 +51,9 @@ class LogRepository {
         }
     }
     
-    static func getLogs(userId: String, showPrivate: Bool) async -> Result<[LogData], Error> {
+    func getLogs(userId: String, showPrivate: Bool) async -> Result<[LogData], Error> {
         do {
-            let logRef = FirebaseService.shared.db.collection("logs")
+            let logRef = fb.db.collection("logs")
             let logData: [LogData] = try await withThrowingTaskGroup(of: [LogData].self) { group in
                 // Query for user-owned logs
                 group.addTask {
@@ -57,7 +63,7 @@ class LogRepository {
                         } else {
                             logRef.whereField("owner.user_id", isEqualTo: userId).whereField("is_visible", isEqualTo: true)
                         }
-                        return try await FirebaseService.shared.getBatch(type: LogData(), query: q).get()
+                        return try await self.fb.getBatch(type: LogData(), query: q).get()
                     } catch {
                         throw error
                     }
@@ -67,11 +73,11 @@ class LogRepository {
                 group.addTask {
                     do {
                         let q = if (showPrivate) {
-                            logRef.whereField("collaborators.\(userId)", isEqualTo: true)
+                            logRef.whereField("collaborators", arrayContains: userId)
                         } else {
-                            logRef.whereField("collaborators.\(userId)", isEqualTo: true).whereField("is_visible", isEqualTo: true)
+                            logRef.whereField("collaborators", arrayContains: userId).whereField("is_visible", isEqualTo: true)
                         }
-                        return try await FirebaseService.shared.getBatch(type: LogData(), query: q).get()
+                        return try await self.fb.getBatch(type: LogData(), query: q).get()
                     } catch {
                         throw error
                     }
@@ -92,12 +98,12 @@ class LogRepository {
         }
     }
     
-    static func updateLog(logId: String, updateData: [String: Any]) async -> Result<Bool, Error> {
+    func updateLog(logId: String, updateData: [String: Any]) async -> Result<Bool, Error> {
         do {
             var updateDataObj: [String: Any] = updateData
             updateDataObj["last_modified_date"] = String(currentTimeInMS())
             
-            let result = try await FirebaseService.shared.put(updates: updateDataObj, docId: logId, collection: "logs").get()
+            let result = try await fb.put(updates: updateDataObj, docId: logId, collection: "logs").get()
             
             return .success(result)
         } catch {
@@ -105,9 +111,9 @@ class LogRepository {
         }
     }
     
-    static func deleteLog(logId: String) async -> Result<Bool, Error> {
+    func deleteLog(logId: String) async -> Result<Bool, Error> {
         do {
-            let result = try await FirebaseService.shared.delete(doc: LogData(), docId: logId, collection: "logs").get()
+            let result = try await fb.delete(doc: LogData(), docId: logId, collection: "logs").get()
             
             return .success(result)
         } catch {
@@ -115,19 +121,19 @@ class LogRepository {
         }
     }
     
-    static func updateUserLogOrder(userId: String, logIds: [(String, Bool)]) async -> Result<Bool, Error> { // Boolean represents whether user owns this log
+    func updateUserLogOrder(userId: String, logIds: [(String, Bool)]) async -> Result<Bool, Error> { // Boolean represents whether user owns this log
         do {
             let result = try await withThrowingTaskGroup(of: Bool.self) { group in
                 for (index, item) in logIds.enumerated() {
                     let updates = if (item.1) {
                         ["owner.priority": index]
                     } else {
-                        ["collaborators.\(userId).priority": index]
+                        ["order.\(userId)": index]
                     }
                     
                     group.addTask {
                         do {
-                            return try await FirebaseService.shared.put(updates: updates, docId: userId, collection: "logs").get()
+                            return try await self.fb.put(updates: updates, docId: userId, collection: "logs").get()
                         } catch {
                             throw error
                         }
@@ -149,14 +155,16 @@ class LogRepository {
         }
     }
     
-    static func addCollaborators(logId: String, collaborators: [String]) async -> Result<Bool, Error> {
+    func addCollaborators(logId: String, collaborators: [String]) async -> Result<Bool, Error> {
         do {
-            var collabs: [String: [String: Int]] = [:]
+            var updates: [String: Any] = [:]
             for collaborator in collaborators {
-                collabs["collaborators.\(collaborator)"] = ["priority": 0]
+                updates["order.\(collaborator)"] = 0
             }
             
-            let result = try await FirebaseService.shared.put(updates: collabs, docId: logId, collection: "logs").get()
+            updates["collaborators"] = FieldValue.arrayUnion(collaborators)
+            
+            let result = try await fb.put(updates: updates, docId: logId, collection: "logs").get()
             
             return .success(result)
         } catch {
@@ -164,14 +172,16 @@ class LogRepository {
         }
     }
     
-    static func removeCollaborators(logId: String, collaborators: [String]) async -> Result<Bool, Error> {
+    func removeCollaborators(logId: String, collaborators: [String]) async -> Result<Bool, Error> {
         do {
-            var collabs: [String: Any] = [:]
+            var updates: [String: Any] = [:]
             for collaborator in collaborators {
-                collabs["collaborators.\(collaborator)"] = FieldValue.delete()
+                updates["order.\(collaborator)"] = FieldValue.delete()
             }
             
-            let result = try await FirebaseService.shared.put(updates: collabs, docId: logId, collection: "logs").get()
+            updates["collaborators"] = FieldValue.arrayRemove(collaborators)
+            
+            let result = try await fb.put(updates: updates, docId: logId, collection: "logs").get()
             
             return .success(result)
         } catch {
