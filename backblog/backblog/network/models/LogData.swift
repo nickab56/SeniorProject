@@ -24,10 +24,11 @@ struct LogData: Identifiable, Codable, Equatable {
     var owner: Owner?
     var movieIds: [String]?
     var watchedIds: [String]?
-    var collaborators: Dictionary<String, Dictionary<String, Int>>?
+    var collaborators: [String]?
+    var order: Dictionary<String, Int>?
     
     enum CodingKeys: String, CodingKey {
-        case name, collaborators, owner
+        case name, collaborators, owner, order
         case logId = "log_id"
         case creationDate = "creation_date"
         case lastModifiedDate = "last_modified_date"

@@ -1,19 +1,19 @@
 import SwiftUI
 
 struct LogItemView: View {
-    let log: LogType
-    let maxCharacters = 20
-
-    @State private var posterURL: URL?
-    @State private var isLoading = true
+    @StateObject var vm: LogViewModel
+    
+    init(log: LogType) {
+        _vm = StateObject(wrappedValue: LogViewModel(log: log))
+    }
 
     var body: some View {
         ZStack {
-            if isLoading {
+            if vm.isLoading {
                 Rectangle()
                     .foregroundColor(.gray)
                     .aspectRatio(1, contentMode: .fill)
-            } else if let posterURL = posterURL {
+            } else if let posterURL = vm.posterURL {
                 AsyncImage(url: posterURL) { phase in
                     switch phase {
                     case .empty:
@@ -40,13 +40,13 @@ struct LogItemView: View {
             }
 
             VStack {
-                let txt = switch log {
+                let txt = switch vm.log {
                 case .localLog(let local):
                     local.name ?? ""
                 case .log(let log):
                     log.name ?? ""
                 }
-                Text(truncateText(txt))
+                Text(vm.truncateText(txt))
                     .font(.title)
                     .bold()
                     .foregroundColor(.white)
@@ -54,56 +54,7 @@ struct LogItemView: View {
         }
         .cornerRadius(15)
         .onAppear {
-            fetchMoviePoster()
-        }
-    }
-
-    private func fetchMoviePoster() {
-        if (!logContainsMovies()) {
-            isLoading = false
-            return
-        }
-        
-        guard let movieId: String = switch log {
-        case .localLog(let local):
-            (local.movie_ids?.allObjects.first as? LocalMovieData)?.movie_id
-        case .log(let log):
-            log.movieIds?.first
-        } else {
-            isLoading = false
-            return
-        }
-
-        Task {
-            let result = await MovieService.shared.getMoviePoster(movieId: movieId)
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let posterPath):
-                    if let posterURL = URL(string: "https://image.tmdb.org/t/p/w500\(posterPath)") {
-                        self.posterURL = posterURL
-                    }
-                case .failure:
-                    print("Failed to load movie poster")
-                }
-                isLoading = false
-            }
-        }
-    }
-
-    private func logContainsMovies() -> Bool {
-        return switch log {
-        case .localLog(let local):
-            local.movie_ids?.count ?? 0 > 0
-        case .log(let log):
-            log.movieIds?.count ?? 0 > 0
-        }
-    }
-
-    private func truncateText(_ text: String) -> String {
-        if text.count > maxCharacters {
-            return String(text.prefix(maxCharacters)) + "..."
-        } else {
-            return text
+            vm.fetchMoviePoster()
         }
     }
 }

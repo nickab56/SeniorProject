@@ -10,21 +10,17 @@ import SwiftUI
 import CoreData
 
 struct SettingsView: View {
-    @Binding var userData: UserData?
+    @ObservedObject var vm: SocialViewModel
     
+    // Settings Form
     @State private var usernameText: String = ""
     @State private var oldPasswordText: String = ""
     @State private var newPasswordText: String = ""
-    @State private var avatarSelection: Int
     @State private var showingAvatarSelection: Bool = false
-    @State private var isUnauthorized = false
+    
+    // Message
     @State private var saveMessage: String = ""
     @State private var messageColor: Color = Color.red
-    
-    init(userData: Binding<UserData?>) {
-        _userData = userData
-        _avatarSelection = State(initialValue: userData.wrappedValue?.avatarPreset ?? 1)
-    }
     
     var body: some View {
         ZStack {
@@ -47,7 +43,7 @@ struct SettingsView: View {
                     
                     HStack(spacing: 50){
                         // Display user's avatar
-                        Image(uiImage: UIImage(named: getAvatarId(avatarPreset: avatarSelection)) ?? UIImage())
+                        Image(uiImage: UIImage(named: getAvatarId(avatarPreset: vm.avatarSelection)) ?? UIImage())
                             .resizable()
                             .scaledToFit()
                             .frame(width: 120, height: 120)
@@ -73,7 +69,7 @@ struct SettingsView: View {
                         Spacer()
                     }.padding(.top, 10)
                     
-                    TextField(userData?.username ?? "Username", text: $usernameText)
+                    TextField(vm.userData?.username ?? "Username", text: $usernameText)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding(.horizontal, 15)
                         .padding(.bottom, 10)
@@ -112,7 +108,7 @@ struct SettingsView: View {
                     
                     Button(action: {
                         // Update user
-                        updateUser(username: usernameText, newPassword: newPasswordText, password: oldPasswordText)
+                        vm.updateUser(username: usernameText, newPassword: newPasswordText, password: oldPasswordText)
                     }) {
                         Text("SAVE")
                             .foregroundColor(.white)
@@ -123,7 +119,7 @@ struct SettingsView: View {
                     .padding(.top, 5)
                     
                     Button(action: {
-                        logout()
+                        vm.logout()
                     }) {
                         Text("LOG OUT")
                             .foregroundColor(.red)
@@ -142,84 +138,12 @@ struct SettingsView: View {
         }
         .sheet(isPresented: $showingAvatarSelection) {
             AvatarSelectionView { selectedAvatarPreset in
-                self.showingAvatarSelection = false
-                self.avatarSelection = selectedAvatarPreset
+                showingAvatarSelection = false
+                vm.avatarSelection = selectedAvatarPreset
             }
         }
-        .navigationDestination(isPresented: $isUnauthorized) {
+        .navigationDestination(isPresented: $vm.isUnauthorized) {
             SearchView()
-        }
-    }
-    
-    private func updateUser(username: String, newPassword: String, password: String) {
-        DispatchQueue.main.async {
-            Task {
-                do {
-                    guard let userId = FirebaseService.shared.auth.currentUser?.uid else {
-                        isUnauthorized = true
-                        return
-                    }
-
-                    // Check if password field is empty
-                    if (!password.isEmpty) {
-                        if (!username.isEmpty || !newPassword.isEmpty || avatarSelection != userData?.avatarPreset) {
-                            var updates: [String: Any] = [:]
-                            
-                            // Add updated fields
-                            if (!username.isEmpty) {
-                                updates["username"] = username
-                            }
-                            if (!newPassword.isEmpty) {
-                                updates["password"] = password
-                            }
-                            if (avatarSelection != userData?.avatarPreset) {
-                                updates["avatar_preset"] = avatarSelection
-                            }
-                            
-                            // Call update user
-                            _ = try await UserRepository.updateUser(userId: userId, password: password, updateData: updates).get()
-                            
-                            // Successful, update userData
-                            userData = try await UserRepository.getUser(userId: userId).get()
-                            
-                            saveMessage = "Successfully updated settings!"
-                            messageColor = Color.green
-                        } else {
-                            // No changes were made
-                            saveMessage = "Please make changes before saving."
-                            messageColor = Color.red
-                        }
-                    } else {
-                        // Password field is empty
-                        saveMessage = "Please enter your current password."
-                        messageColor = Color.red
-                    }
-                } catch {
-                    saveMessage = "Error, please try again later."
-                    messageColor = Color.red
-                }
-            }
-        }
-    }
-    
-    private func logout() {
-        DispatchQueue.main.async {
-            Task {
-                do {
-                    guard let _ = FirebaseService.shared.auth.currentUser?.uid else {
-                        isUnauthorized = true
-                        return
-                    }
-
-                    _ = try FirebaseService.shared.logout().get()
-                    
-                    // Logout successful
-                    isUnauthorized = false
-                } catch {
-                    saveMessage = "Error, please try logging out later."
-                    messageColor = Color.red
-                }
-            }
         }
     }
 }

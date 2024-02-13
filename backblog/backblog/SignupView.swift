@@ -9,13 +9,10 @@ import SwiftUI
 import FirebaseAuth
 
 struct SignupView: View {
-    @Binding var isLoggedInToSocial: Bool
-    @State private var signupSuccessful = false
+    @ObservedObject var vm: AuthViewModel
     @State private var username = ""
     @State private var password = ""
     @State private var displayName = ""
-    @State private var signupMessage = ""
-    @State private var messageColor = Color.red
 
     var body: some View {
             ZStack {
@@ -44,8 +41,8 @@ struct SignupView: View {
                         .foregroundColor(.gray)
                         .padding(.bottom, 20)
                     
-                    Text(signupMessage)
-                        .foregroundColor(messageColor)
+                    Text(vm.signupMessage)
+                        .foregroundColor(vm.messageColor)
                         .padding()
 
                     TextField("Email or Username", text: $username)
@@ -67,14 +64,14 @@ struct SignupView: View {
 
                     Button("Continue") {
                         if username.isEmpty || password.isEmpty || displayName.isEmpty {
-                            signupMessage = "Please fill all fields"
-                            messageColor = Color.red
+                            vm.signupMessage = "Please fill all fields"
+                            vm.messageColor = Color.red
                         } else {
                             if password.count < 6 {
-                                signupMessage = "Password must be at least 6 characters"
-                                messageColor = Color.red
+                                vm.signupMessage = "Password must be at least 6 characters"
+                                vm.messageColor = Color.red
                             } else {
-                                attemptSignup(email: username, password: password, displayName: displayName)
+                                vm.attemptSignup(email: username, password: password, displayName: displayName)
                             }
                         }
                     }
@@ -89,42 +86,11 @@ struct SignupView: View {
                 }
                 .padding()
             }
-            .navigationDestination(isPresented: $isLoggedInToSocial) {
+            .navigationDestination(isPresented: $vm.isLoggedInToSocial) {
                 SocialView()
             }
-            .navigationDestination(isPresented: $signupSuccessful) {
-                LoginView(isLoggedInToSocial: $isLoggedInToSocial)
+            .navigationDestination(isPresented: $vm.signupSuccessful) {
+                LoginView(vm: vm)
             }
-    }
-    
-    private func attemptSignup(email: String, password: String, displayName: String) {
-        DispatchQueue.main.async {
-            Task {
-                do {
-                    // Check if username already exists
-                    let exists = try await UserRepository.usernameExists(username: displayName).get()
-                    
-                    if (exists) {
-                        signupMessage = "Username already exists"
-                        messageColor = Color.red
-                        return
-                    }
-                    
-                    // Register
-                    let result = try await FirebaseService.shared.register(email: email, password: password).get()
-                    
-                    // Store additional user data in firestore
-                    _ = try await UserRepository.addUser(userId: result, username: displayName, avatarPreset: 1).get()
-                    
-                    // Update status
-                    signupSuccessful = true
-                    signupMessage = "Signup Successful"
-                    messageColor = Color.green
-                } catch {
-                    signupMessage = "Signup Failed: \(error.localizedDescription)"
-                    messageColor = Color.red
-                }
-            }
-        }
     }
 }

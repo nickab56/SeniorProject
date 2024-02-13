@@ -9,6 +9,7 @@
 
 import SwiftUI
 import CoreData
+import Firebase
 
 @main
 struct backblogApp: App {
@@ -18,6 +19,14 @@ struct backblogApp: App {
     //let persistenceController = PersistenceController.preview
 
     @State private var showingSplash = true
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
+    class AppDelegate: NSObject, UIApplicationDelegate {
+        func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+            FirebaseApp.configure()
+            return true
+        }
+    }
 
     var body: some Scene {
         WindowGroup {

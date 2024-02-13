@@ -9,11 +9,13 @@ struct LandingView: View {
     private var logs: FetchedResults<LocalLogData>
     
     @StateObject private var logsViewModel = LogsViewModel()
+    @StateObject private var authViewModel: AuthViewModel
     @State private var isLoggedInToSocial = false
 
     init() {
         NavConfigUtility.configureNavigationBar()
         NavConfigUtility.configureTabBar()
+        _authViewModel = StateObject(wrappedValue: AuthViewModel())
     }
 
     var body: some View {
@@ -39,7 +41,7 @@ struct LandingView: View {
                 if isLoggedInToSocial {
                     SocialView()
                 } else {
-                    LoginView(isLoggedInToSocial: $isLoggedInToSocial)
+                    LoginView(vm: authViewModel)
                 }
             }
             .tabItem {
@@ -66,7 +68,7 @@ struct LandingView: View {
 
                                 if let unwatchedMovies = unwatchedMovies, !unwatchedMovies.isEmpty {
                                     // If there are unwatched movies, show the WhatsNextView for the first log
-                                    WhatsNextView(log: firstLog, logsViewModel: logsViewModel)
+                                    WhatsNextView(log: firstLog, vm: logsViewModel)
                                         .padding(.top, -20)
                                 } else {
                                     // If there are no unwatched movies, show "All Caught Up" message

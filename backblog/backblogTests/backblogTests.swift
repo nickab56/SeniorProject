@@ -6,6 +6,8 @@
 //
 
 import XCTest
+import Firebase
+import FirebaseFirestoreSwift
 @testable import backblog
 
 final class backblogTests: XCTestCase {

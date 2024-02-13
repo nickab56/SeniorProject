@@ -13,8 +13,6 @@ import Foundation
 import SwiftUI
 
 class FirebaseService {
-    let fbConfig: Void = FirebaseApp.configure()
-    static let shared = FirebaseService()
     let db = Firestore.firestore()
     let auth = FirebaseAuth.Auth.auth()
     
