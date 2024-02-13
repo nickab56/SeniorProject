@@ -10,6 +10,8 @@ struct LogDetailsView: View {
     @State private var editCollaboratorSheet = false
     
     @State private var watchedMovies: [(MovieData, String)] = []
+    
+    @State private var showingDeleteConfirmation = false
 
 
     var body: some View {
@@ -142,7 +144,7 @@ struct LogDetailsView: View {
 
                     
                 Button("Delete Log") {
-                    deleteLog()
+                    showingDeleteConfirmation = true
                 }
                 .padding()
                 .foregroundColor(.white)
@@ -163,6 +165,16 @@ struct LogDetailsView: View {
                     }
             }
         }
+        .alert(isPresented: $showingDeleteConfirmation) { // Confirmation alert
+                    Alert(
+                        title: Text("Delete Log"),
+                        message: Text("Are you sure you want to permanently delete this log?"),
+                        primaryButton: .destructive(Text("Delete")) {
+                            deleteLog()
+                        },
+                        secondaryButton: .cancel()
+                    )
+                }
         .animation(.easeInOut, value: showingWatchedNotification)
         .onAppear {
             fetchMovies()
