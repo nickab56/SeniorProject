@@ -12,7 +12,7 @@ class LogsViewModel: ObservableObject {
     @Published var refreshTrigger: Bool = false
     
     // What's Next
-    @Published var nextMovie: LocalMovieData?  // The next movie to watch
+    @Published var nextMovie: String?  // The next movie to watch
     @Published var movieTitle: String = "Loading..."
     @Published var movieDetails: String = "Loading details..."
     @Published var halfSheetImage: Image = Image("img_placeholder_poster")
@@ -28,10 +28,9 @@ class LogsViewModel: ObservableObject {
     }
     
     func loadNextUnwatchedMovie(log: LocalLogData) {
-        // Assuming movie_ids and watched_ids are Set<LocalMovieData>
-        let unwatchedMovies = log.movie_ids as? Set<LocalMovieData> ?? Set()
-        let watchedMovies = log.watched_ids as? Set<LocalMovieData> ?? Set()
-        let nextUnwatchedMovie = unwatchedMovies.subtracting(watchedMovies).first
+        let unwatchedMovies = log.movie_ids ?? []
+        
+        let nextUnwatchedMovie = unwatchedMovies.first
 
         nextMovie = nextUnwatchedMovie  // Update the state to reflect the next unwatched movie
 
@@ -46,8 +45,8 @@ class LogsViewModel: ObservableObject {
         }
     }
 
-    func loadMovieDetails(movie: LocalMovieData) {
-        guard let movieId = movie.movie_id else { return }
+    func loadMovieDetails(movie: String?) {
+        guard let movieId = movie else { return }
         
         Task {
             // Fetch movie details (adapt this part to your data fetching logic)
@@ -76,8 +75,9 @@ class LogsViewModel: ObservableObject {
         guard let movie = nextMovie else { return }
 
         withAnimation {
-            log.removeFromMovie_ids(movie)
-            log.addToWatched_ids(movie)
+            log.watched_ids?.append(movie)
+            let index = log.movie_ids?.firstIndex(of: movie)
+            log.movie_ids?.remove(at: index ?? 0)
 
             do {
                 try viewContext.save()
