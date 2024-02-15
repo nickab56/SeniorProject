@@ -84,7 +84,7 @@ struct LogSelectionView: View {
     }
 
     private func isDuplicateInLog(logId: Int64) -> Bool {
-        if let log = logs.first(where: { $0.log_id == logId }), let movieIds = log.movie_ids as? Set<LocalMovieData>, movieIds.map({ $0.movie_id }).contains("\(selectedMovieId)") {
+        if let log = logs.first(where: { $0.log_id == logId }), let movieIds = log.movie_ids, movieIds.map({ $0 }).contains("\(selectedMovieId)") {
             return true // The movie is already in the log
         }
         return false // The movie is not in the log
@@ -99,20 +99,13 @@ struct LogSelectionView: View {
     }
     
     private func addMovieToLog(movieId: Int, log: LocalLogData) {
-        guard let movieIds = log.movie_ids as? Set<LocalMovieData> else {
-            return
-        }
-        let existingMovieIds = movieIds.map { $0.movie_id }
+        var existingMovieIds = log.movie_ids ?? []
         
         // Check if movie is already in the log
-        if existingMovieIds.contains("\(movieId)") {
-            
-        } else {
+        if !existingMovieIds.contains("\(movieId)") {
             // Add movie to log
-            let newMovieData = LocalMovieData(context: viewContext)
-            newMovieData.movie_id = String(movieId)
-            
-            log.addToMovie_ids(newMovieData)
+            existingMovieIds.append(String(movieId))
+            log.movie_ids = existingMovieIds
             
             do {
                 try viewContext.save()
