@@ -39,6 +39,10 @@ struct LogDetailsView: View {
                     Spacer()
                 }
                 
+                CollaboratorsView(collaborators: ["avatar1", "avatar2", "avatar3", "avatar4", "avatar5"]) // Example static data
+                    .padding(.horizontal)
+                    .padding(.bottom)
+                
                 HStack {
                     Text("Unwatched: \(vm.movies.count)")
                         .fontWeight(.bold)
@@ -48,6 +52,7 @@ struct LogDetailsView: View {
                     Text("Watched: \(vm.watchedMovies.count)")
                         .fontWeight(.bold)
                         .foregroundColor(.gray)
+                        .padding(.leading, -20)
                         .padding()
 
                     Spacer()
@@ -141,6 +146,7 @@ struct LogDetailsView: View {
                             }
                         }
                     }
+                    .padding(.top, -30)
                     .listStyle(.plain)
                     .background(Color.clear)
                 }
@@ -226,5 +232,80 @@ struct MovieRow: View {
             }
             .padding(.vertical, 5)
         }
+    }
+}
+
+struct AvatarView: View {
+    var imageName: String
+
+    var body: some View {
+        Image(imageName)
+            .resizable()
+            .scaledToFill()
+            .frame(width: 40, height: 40)
+            .clipShape(Circle())
+            .overlay(Circle().stroke(Color.white, lineWidth: 2))
+    }
+}
+
+struct CollaboratorsView: View {
+    var collaborators: [String] // Assuming this array contains image names for the collaborators
+    @State private var expanded = false // State to manage the expanded view
+
+    var body: some View {
+        HStack(spacing: 0) {
+            if collaborators.count > 4 && !expanded {
+                // Condensed view with one avatar and a small '+' button overlayed at the bottom right
+                AvatarView(imageName: collaborators.first ?? "")
+                    .overlay(
+                        expandButtonOverlay,
+                        alignment: .bottomTrailing // Positions the '+' button at the bottom right of the avatar
+                    )
+            } else {
+                // Expanded view with all avatars
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: -15) { // Negative spacing for overlapping effect
+                        ForEach(collaborators.indices, id: \.self) { index in
+                            AvatarView(imageName: collaborators[index])
+                                .overlay(
+                                    index == collaborators.count - 1 ? condenseButtonOverlay : nil,
+                                    alignment: .bottomTrailing
+                                )
+                        }
+                    }
+                    .padding(.leading, 10) // Adds some padding to the left to adjust alignment
+                }
+                .frame(height: 40)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var expandButtonOverlay: some View {
+        Button(action: {
+            withAnimation {
+                expanded = true // Expand to show all collaborators
+            }
+        }) {
+            Circle()
+                .fill(Color.blue)
+                .frame(width: 20, height: 20) // Smaller '+' button
+                .overlay(Text("+").font(.system(size: 12)).foregroundColor(.white))
+        }
+        .padding(5)
+    }
+
+    private var condenseButtonOverlay: some View {
+        Button(action: {
+            withAnimation {
+                expanded = false
+            }
+        }) {
+            Circle()
+                .fill(Color.gray)
+                .frame(width: 20, height: 20) // Smaller 'x' button
+                .overlay(Text("–").font(.system(size: 12)).foregroundColor(.white)) // '–' gives a more visually balanced look than 'x'
+        }
+        .padding(5)
     }
 }
