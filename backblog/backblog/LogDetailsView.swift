@@ -249,22 +249,20 @@ struct AvatarView: View {
 }
 
 struct CollaboratorsView: View {
-    var collaborators: [String] // Assuming this array contains image names for the collaborators
-    @State private var expanded = false // State to manage the expanded view
+    var collaborators: [String]
+    @State private var expanded = false
 
     var body: some View {
         HStack(spacing: 0) {
             if collaborators.count > 4 && !expanded {
-                // Condensed view with one avatar and a small '+' button overlayed at the bottom right
                 AvatarView(imageName: collaborators.first ?? "")
                     .overlay(
                         expandButtonOverlay,
-                        alignment: .bottomTrailing // Positions the '+' button at the bottom right of the avatar
+                        alignment: .bottomTrailing
                     )
             } else {
-                // Expanded view with all avatars
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: -15) { // Negative spacing for overlapping effect
+                    HStack(spacing: -15) {
                         ForEach(collaborators.indices, id: \.self) { index in
                             AvatarView(imageName: collaborators[index])
                                 .overlay(
@@ -273,7 +271,7 @@ struct CollaboratorsView: View {
                                 )
                         }
                     }
-                    .padding(.leading, 10) // Adds some padding to the left to adjust alignment
+                    .padding(.leading, 10)
                 }
                 .frame(height: 40)
             }
@@ -284,12 +282,12 @@ struct CollaboratorsView: View {
     private var expandButtonOverlay: some View {
         Button(action: {
             withAnimation {
-                expanded = true // Expand to show all collaborators
+                expanded = true
             }
         }) {
             Circle()
                 .fill(Color.blue)
-                .frame(width: 20, height: 20) // Smaller '+' button
+                .frame(width: 20, height: 20)
                 .overlay(Text("+").font(.system(size: 12)).foregroundColor(.white))
         }
         .padding(5)
@@ -303,8 +301,8 @@ struct CollaboratorsView: View {
         }) {
             Circle()
                 .fill(Color.gray)
-                .frame(width: 20, height: 20) // Smaller 'x' button
-                .overlay(Text("–").font(.system(size: 12)).foregroundColor(.white)) // '–' gives a more visually balanced look than 'x'
+                .frame(width: 20, height: 20)
+                .overlay(Text("–").font(.system(size: 12)).foregroundColor(.white))
         }
         .padding(5)
     }
