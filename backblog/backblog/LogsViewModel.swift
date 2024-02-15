@@ -42,7 +42,6 @@ class LogsViewModel: ObservableObject {
             // Handle case where there are no unwatched movies
             movieTitle = "All Caught Up!"
             movieDetails = "You've watched all the movies in this log."
-            halfSheetImage = Image("default-placeholder") // Use an appropriate placeholder image
         }
     }
 

@@ -8,6 +8,9 @@ struct LogDetailsView: View {
     @State private var editCollaboratorSheet = false
     @StateObject var vm: LogViewModel
     
+    @State private var showDeleteConfirmation = false
+
+    
     init(log: LogType) {
         self.log = log
         _vm = StateObject(wrappedValue: LogViewModel(log: log))
@@ -144,8 +147,7 @@ struct LogDetailsView: View {
 
                     
                 Button("Delete Log") {
-                    vm.deleteLog()
-                    dismiss()
+                    showDeleteConfirmation = true
                 }
                 .padding()
                 .foregroundColor(.white)
@@ -153,6 +155,7 @@ struct LogDetailsView: View {
                 .cornerRadius(10)
                 .padding(.bottom, 20)
                 .accessibility(identifier: "Delete Log")
+
             }
             if vm.showingWatchedNotification {
                 WatchedNotificationView()
@@ -165,6 +168,13 @@ struct LogDetailsView: View {
                         }
                     }
             }
+        }
+        .alert("Are you sure you want to permanently delete this log?", isPresented: $showDeleteConfirmation) {
+            Button("Yes", role: .destructive) {
+                vm.deleteLog()
+                dismiss()
+            }
+            Button("No", role: .cancel) { }
         }
         .animation(.easeInOut, value: vm.showingWatchedNotification)
         .onAppear {
