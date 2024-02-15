@@ -4,6 +4,7 @@ import CoreData
 struct LogDetailsView: View {
     let log: LogType
     
+    @Environment(\.dismiss) var dismiss
     @State private var editCollaboratorSheet = false
     @StateObject var vm: LogViewModel
     
@@ -144,6 +145,7 @@ struct LogDetailsView: View {
                     
                 Button("Delete Log") {
                     vm.deleteLog()
+                    dismiss()
                 }
                 .padding()
                 .foregroundColor(.white)

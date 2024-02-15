@@ -9,7 +9,6 @@ import Foundation
 import SwiftUI
 
 class LogsViewModel: ObservableObject {
-    @Environment(\.managedObjectContext) private var viewContext
     @Published var refreshTrigger: Bool = false
     
     // What's Next
@@ -20,6 +19,8 @@ class LogsViewModel: ObservableObject {
     
     private let fb = FirebaseService()
     private let movieService = MovieService()
+    private let viewContext = PersistenceController.shared.container.viewContext
+    
     let movieRepo: MovieRepository
     
     init() {
