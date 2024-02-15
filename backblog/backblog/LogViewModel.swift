@@ -9,8 +9,7 @@ import Foundation
 import SwiftUI
 
 class LogViewModel: ObservableObject {
-    @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) var presentationMode
+    private let viewContext = PersistenceController.shared.container.viewContext
     @Published var movies: [(MovieData, String)] = [] // Pair of MovieData and half-sheet URL
     @Published var watchedMovies: [(MovieData, String)] = []
     @Published var showingWatchedNotification = false
@@ -136,7 +135,6 @@ class LogViewModel: ObservableObject {
             case .localLog(let log):
                 viewContext.delete(log)
                 try viewContext.save()
-                presentationMode.wrappedValue.dismiss()
             case .log(let log):
                 DispatchQueue.main.async { [self] in
                     Task {
