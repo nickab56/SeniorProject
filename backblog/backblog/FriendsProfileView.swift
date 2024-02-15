@@ -13,6 +13,9 @@ struct FriendsProfileView: View {
     @StateObject var viewModel: FriendsProfileViewModel
     @State private var selectedTab = "Logs"
     
+    @State private var showActionSheet = false
+    @State private var showBlockConfirmation = false
+    
     init(friendId: String) {
         _viewModel = StateObject(wrappedValue: FriendsProfileViewModel(friendId: friendId))
     }
@@ -23,15 +26,16 @@ struct FriendsProfileView: View {
                 Spacer()
                 
                 Button(action: {
-                    // TODO: Present action sheet
+                    self.showActionSheet = true
                 }) {
-                    Image(systemName: "person.fill")
+                    Image(systemName: "person.fill.xmark")
+                        .imageScale(.large)
                         .foregroundColor(.white)
                 }
-                .frame(width: 60, height: 60)
-                .cornerRadius(25)
-                .padding(.horizontal, 10)
-                .padding(.top, 10)
+                .frame(width: 80, height: 80)
+                .cornerRadius(40)
+                .padding(.horizontal, 15)
+                .padding(.top, 15)
             }
             HStack {
                 // Display user's avatar
@@ -114,7 +118,32 @@ struct FriendsProfileView: View {
                     .padding(.bottom, 175)
                 }
             }
-        }.padding(.top, 80)
+        }
+        .actionSheet(isPresented: $showActionSheet) {
+            ActionSheet(
+                title: Text("Select an Action"),
+                buttons: [
+                    .destructive(Text("Remove Friend")) {
+                        // Code to remove the friend
+                    },
+                    .destructive(Text("Block User")) {
+                        self.showBlockConfirmation = true // Show block confirmation alert
+                    },
+                    .cancel()
+                ]
+            )
+        }
+        .alert(isPresented: $showBlockConfirmation) { // Confirmation alert
+            Alert(
+                title: Text("Block User"),
+                message: Text("Are you sure you want to remove and block this friend?"),
+                primaryButton: .destructive(Text("Block")) {
+                    // Code to block the user
+                },
+                secondaryButton: .cancel()
+            )
+        }
+        .padding(.top, 80)
         .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .edgesIgnoringSafeArea(.all)
     }
