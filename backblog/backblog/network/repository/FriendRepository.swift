@@ -9,9 +9,9 @@ import FirebaseFirestore
 import Foundation
 
 class FriendRepository {
-    let fb: FirebaseService
+    let fb: FirebaseProtocol
     
-    init(fb: FirebaseService) {
+    init(fb: FirebaseProtocol) {
         self.fb = fb
     }
     
@@ -93,7 +93,7 @@ class FriendRepository {
                 // Sender Id and Target Id are not nil, continue
                 
                 // Update user's document first
-                guard let userId = fb.auth.currentUser?.uid else {
+                guard let userId = fb.getUserId() else {
                     return .failure(FirebaseError.nullProperty)
                 }
                 

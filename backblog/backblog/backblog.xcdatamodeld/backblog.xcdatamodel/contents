@@ -7,17 +7,15 @@
         <attribute name="creation_date" optional="YES" attributeType="String"/>
         <attribute name="last_modified_date" optional="YES" attributeType="String"/>
         <attribute name="log_id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="movie_ids" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="orderIndex" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="movie_ids" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LocalMovieData" inverseName="movie_ids" inverseEntity="LocalMovieData"/>
+        <attribute name="watched_ids" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
         <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LocalOwnerData" inverseName="owner" inverseEntity="LocalOwnerData"/>
-        <relationship name="watched_ids" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LocalMovieData" inverseName="watched_ids" inverseEntity="LocalMovieData"/>
     </entity>
     <entity name="LocalMovieData" representedClassName="LocalMovieData" syncable="YES" codeGenerationType="class">
         <attribute name="in_log" optional="YES" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="movie_id" optional="YES" attributeType="String"/>
-        <relationship name="movie_ids" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LocalLogData" inverseName="movie_ids" inverseEntity="LocalLogData"/>
-        <relationship name="watched_ids" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LocalLogData" inverseName="watched_ids" inverseEntity="LocalLogData"/>
     </entity>
     <entity name="LocalOwnerData" representedClassName="LocalOwnerData" syncable="YES" codeGenerationType="class">
         <attribute name="priority" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

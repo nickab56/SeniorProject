@@ -13,8 +13,8 @@ struct MovieDetailsView: View {
     @StateObject var vm: MoviesViewModel
     @State private var blurAmount: CGFloat = 0
     
-    init(movieId: String) {
-        _vm = StateObject(wrappedValue: MoviesViewModel(movieId: movieId))
+    init (movieId: String) {
+        _vm = StateObject(wrappedValue: MoviesViewModel(movieId: movieId, fb: FirebaseService(), movieService: MovieService()))
     }
 
     var body: some View {

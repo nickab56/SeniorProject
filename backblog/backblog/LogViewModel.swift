@@ -21,13 +21,15 @@ class LogViewModel: ObservableObject {
     
     var log: LogType
     
-    let fb = FirebaseService()
-    private let movieService = MovieService()
+    private var fb: FirebaseProtocol
+    private var movieService: MovieService
     private var logRepo: LogRepository
     private var movieRepo: MovieRepository
     
-    init(log: LogType) {
+    init(log: LogType, fb: FirebaseProtocol, movieService: MovieService) {
         self.log = log
+        self.fb = fb
+        self.movieService = movieService
         self.logRepo = LogRepository(fb: fb)
         self.movieRepo = MovieRepository(fb: fb, movieService: movieService)
     }
@@ -40,20 +42,18 @@ class LogViewModel: ObservableObject {
         watchedMovies = []
 
         // Fetch unwatched movies
-        if let unwatchedMovieEntities = localLog.movie_ids as? Set<LocalMovieData> {
-            for movieEntity in unwatchedMovieEntities {
-                Task {
-                    await fetchMovieDetails(movieId: movieEntity.movie_id ?? "", isWatched: false)
-                }
+        let unwatchedMovieEntities = localLog.movie_ids ?? []
+        for movieEntity in unwatchedMovieEntities {
+            Task {
+                await fetchMovieDetails(movieId: movieEntity, isWatched: false)
             }
         }
 
         // Fetch watched movies
-        if let watchedMovieEntities = localLog.watched_ids as? Set<LocalMovieData> {
-            for movieEntity in watchedMovieEntities {
-                Task {
-                    await fetchMovieDetails(movieId: movieEntity.movie_id ?? "", isWatched: true)
-                }
+        let watchedMovieEntities = localLog.watched_ids ?? []
+        for movieEntity in watchedMovieEntities {
+            Task {
+                await fetchMovieDetails(movieId: movieEntity, isWatched: true)
             }
         }
     }
@@ -87,9 +87,14 @@ class LogViewModel: ObservableObject {
             watchedMovies.append(movieTuple)
 
             // Update Core Data model
-            if let movieEntity = (localLog.movie_ids as? Set<LocalMovieData>)?.first(where: { $0.movie_id == String(movieId) }) {
-                localLog.removeFromMovie_ids(movieEntity)
-                localLog.addToWatched_ids(movieEntity)
+            let movieEntity = localLog.movie_ids?.first(where: { $0 == String(movieId) })
+            if (movieEntity != nil) {
+                var existingWatchedIds = localLog.watched_ids ?? []
+                existingWatchedIds.append(movieEntity!)
+                localLog.watched_ids = existingWatchedIds
+                
+                let index = localLog.movie_ids?.firstIndex(of: movieEntity ?? "")
+                localLog.movie_ids?.remove(at: index ?? 0)
 
                 do {
                     try viewContext.save()
@@ -110,9 +115,14 @@ class LogViewModel: ObservableObject {
             movies.append(movieTuple)
 
             // Update Core Data model
-            if let movieEntity = (localLog.watched_ids as? Set<LocalMovieData>)?.first(where: { $0.movie_id == String(movieId) }) {
-                localLog.removeFromWatched_ids(movieEntity)
-                localLog.addToMovie_ids(movieEntity)
+            let movieEntity = localLog.watched_ids?.first(where: { $0 == String(movieId) })
+            if (movieEntity != nil) {
+                var existingMovieIds = localLog.movie_ids ?? []
+                existingMovieIds.append(movieEntity!)
+                localLog.movie_ids = existingMovieIds
+                
+                let index = localLog.watched_ids?.firstIndex(of: movieEntity ?? "")
+                localLog.watched_ids?.remove(at: index ?? 0)
 
                 do {
                     try viewContext.save()
@@ -138,7 +148,7 @@ class LogViewModel: ObservableObject {
             case .log(let log):
                 DispatchQueue.main.async { [self] in
                     Task {
-                        guard (fb.auth.currentUser?.uid) != nil else {
+                        guard (fb.getUserId()) != nil else {
                             return
                         }
                         do {
@@ -163,7 +173,7 @@ class LogViewModel: ObservableObject {
         
         guard let movieId: String = switch log {
         case .localLog(let local):
-            (local.movie_ids?.allObjects.first as? LocalMovieData)?.movie_id
+            local.movie_ids?.first
         case .log(let log):
             log.movieIds?.first
         } else {

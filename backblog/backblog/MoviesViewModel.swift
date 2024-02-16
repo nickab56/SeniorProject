@@ -14,14 +14,16 @@ class MoviesViewModel: ObservableObject {
     
     var movieId: String
     
-    let fb = FirebaseService()
-    private var movieService = MovieService()
+    private var fb: FirebaseProtocol
+    private var movieService: MovieService
     
     private var moviesRepo: MovieRepository
     
-    init(movieId: String) {
+    init(movieId: String, fb: FirebaseProtocol, movieService: MovieService) {
         self.movieId = movieId
         self.moviesRepo = MovieRepository(fb: fb, movieService: movieService)
+        self.fb = fb
+        self.movieService = movieService
     }
     
     // fetches the movie details using the id using repo function.
