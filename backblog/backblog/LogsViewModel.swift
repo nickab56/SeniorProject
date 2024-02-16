@@ -17,13 +17,15 @@ class LogsViewModel: ObservableObject {
     @Published var movieDetails: String = "Loading details..."
     @Published var halfSheetImage: Image = Image("img_placeholder_poster")
     
-    private let fb = FirebaseService()
-    private let movieService = MovieService()
+    private var fb: FirebaseProtocol
+    private var movieService: MovieService
     private let viewContext = PersistenceController.shared.container.viewContext
     
     let movieRepo: MovieRepository
     
-    init() {
+    init(fb: FirebaseProtocol, movieService: MovieService) {
+        self.fb = fb
+        self.movieService = movieService
         self.movieRepo = MovieRepository(fb: fb, movieService: movieService)
     }
     

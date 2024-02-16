@@ -12,7 +12,11 @@ import FirebaseAuth
 import Foundation
 import SwiftUI
 
-class FirebaseService {
+class FirebaseService: FirebaseProtocol {
+    func getCollectionRef(refName: String) -> CollectionReference? {
+        return db.collection(refName)
+    }
+    
     let db = Firestore.firestore()
     let auth = FirebaseAuth.Auth.auth()
     
@@ -192,5 +196,9 @@ class FirebaseService {
         } catch {
             return .failure(error)
         }
+    }
+    
+    func getUserId() -> String? {
+        return auth.currentUser?.uid
     }
 }

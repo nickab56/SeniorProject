@@ -13,7 +13,7 @@ struct LogDetailsView: View {
     
     init(log: LogType) {
         self.log = log
-        _vm = StateObject(wrappedValue: LogViewModel(log: log))
+        _vm = StateObject(wrappedValue: LogViewModel(log: log, fb: FirebaseService(), movieService: MovieService()))
     }
 
 

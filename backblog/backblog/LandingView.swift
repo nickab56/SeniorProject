@@ -8,14 +8,14 @@ struct LandingView: View {
         animation: .default)
     private var logs: FetchedResults<LocalLogData>
     
-    @StateObject private var logsViewModel = LogsViewModel()
+    @StateObject private var logsViewModel = LogsViewModel(fb: FirebaseService(), movieService: MovieService())
     @StateObject private var authViewModel: AuthViewModel
     @State private var isLoggedInToSocial = false
 
     init() {
         NavConfigUtility.configureNavigationBar()
         NavConfigUtility.configureTabBar()
-        _authViewModel = StateObject(wrappedValue: AuthViewModel())
+        _authViewModel = StateObject(wrappedValue: AuthViewModel(fb: FirebaseService()))
     }
 
     var body: some View {

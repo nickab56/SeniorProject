@@ -17,7 +17,7 @@ struct FriendsProfileView: View {
     @State private var showBlockConfirmation = false
     
     init(friendId: String) {
-        _viewModel = StateObject(wrappedValue: FriendsProfileViewModel(friendId: friendId))
+        _viewModel = StateObject(wrappedValue: FriendsProfileViewModel(friendId: friendId, fb: FirebaseService()))
     }
     
     var body: some View {
@@ -106,7 +106,7 @@ struct FriendsProfileView: View {
                             }
                             ForEach(viewModel.friends) { friendId in 
                                 FriendListElement(
-                                    friendId: friendId.userId ?? "", userId: viewModel.fb.auth.currentUser?.uid ?? "", username: friendId.username ?? "", avatarPreset: friendId.avatarPreset ?? 1)
+                                    friendId: friendId.userId ?? "", userId: viewModel.getUserId(), username: friendId.username ?? "", avatarPreset: friendId.avatarPreset ?? 1)
                                     .padding(.horizontal)
                             }
                         } else {

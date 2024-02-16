@@ -12,12 +12,14 @@ class SearchViewModel: ObservableObject {
     @Published var halfSheetImageUrls: [Int: URL?] = [:]
     @Published var errorMessage: String? = nil
     
-    private let fb = FirebaseService()
-    private let movieService = MovieService()
+    private var fb: FirebaseProtocol
+    private var movieService: MovieService
     
     private let movieRepo: MovieRepository
     
-    init() {
+    init(fb: FirebaseProtocol, movieService: MovieService) {
+        self.fb = fb
+        self.movieService = movieService
         self.movieRepo = MovieRepository(fb: fb, movieService: movieService)
     }
     

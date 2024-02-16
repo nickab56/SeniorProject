@@ -21,13 +21,15 @@ class LogViewModel: ObservableObject {
     
     var log: LogType
     
-    let fb = FirebaseService()
-    private let movieService = MovieService()
+    private var fb: FirebaseProtocol
+    private var movieService: MovieService
     private var logRepo: LogRepository
     private var movieRepo: MovieRepository
     
-    init(log: LogType) {
+    init(log: LogType, fb: FirebaseProtocol, movieService: MovieService) {
         self.log = log
+        self.fb = fb
+        self.movieService = movieService
         self.logRepo = LogRepository(fb: fb)
         self.movieRepo = MovieRepository(fb: fb, movieService: movieService)
     }
@@ -146,7 +148,7 @@ class LogViewModel: ObservableObject {
             case .log(let log):
                 DispatchQueue.main.async { [self] in
                     Task {
-                        guard (fb.auth.currentUser?.uid) != nil else {
+                        guard (fb.getUserId()) != nil else {
                             return
                         }
                         do {

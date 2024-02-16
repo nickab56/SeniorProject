@@ -13,7 +13,7 @@ struct MovieDetailsView: View {
     @StateObject var vm: MoviesViewModel
     
     init (movieId: String) {
-        _vm = StateObject(wrappedValue: MoviesViewModel(movieId: movieId))
+        _vm = StateObject(wrappedValue: MoviesViewModel(movieId: movieId, fb: FirebaseService(), movieService: MovieService()))
     }
 
     var body: some View {
