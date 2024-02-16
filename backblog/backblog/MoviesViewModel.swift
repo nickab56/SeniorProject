@@ -40,4 +40,12 @@ class MoviesViewModel: ObservableObject {
             }
         }
     }
+    
+    func formatReleaseYear(from dateString: String?) -> String {
+        guard let dateString = dateString, let year = dateString.split(separator: "-").first else {
+            return "Unknown year"
+        }
+        return String(year)
+    }
+    
 }
