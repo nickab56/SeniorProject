@@ -180,6 +180,7 @@ struct LogDetailsView: View {
                 vm.deleteLog()
                 dismiss()
             }
+            .accessibility(identifier: "ConfirmDeleteLog")
             Button("No", role: .cancel) { }
         }
         .animation(.easeInOut, value: vm.showingWatchedNotification)

@@ -32,13 +32,13 @@ final class SocialView_UITests: XCTestCase {
         let usernameTextField = app.textFields["usernameTextField"]
         XCTAssertTrue(usernameTextField.waitForExistence(timeout: 5), "Username text field should be present")
         usernameTextField.tap()
-        usernameTextField.typeText("apple@apple.com")
+        usernameTextField.typeText("nick.abegg@email.com")
 
         // Tap on the password secure text field and enter the password
         let passwordSecureField = app.secureTextFields["passwordSecureField"]
         XCTAssertTrue(passwordSecureField.waitForExistence(timeout: 5), "Password secure text field should be present")
         passwordSecureField.tap()
-        passwordSecureField.typeText("apple123")
+        passwordSecureField.typeText("password")
 
         // Tap on the login button to attempt to log in
         let loginButton = app.buttons["loginButton"]
