@@ -11,6 +11,7 @@ import SwiftUI
 
 struct MovieDetailsView: View {
     @StateObject var vm: MoviesViewModel
+    @State private var blurAmount: CGFloat = 0
     
     init (movieId: String) {
         _vm = StateObject(wrappedValue: MoviesViewModel(movieId: movieId, fb: FirebaseService(), movieService: MovieService()))
@@ -27,8 +28,19 @@ struct MovieDetailsView: View {
                 ProgressView("Loading...")
             } else if let movie = vm.movieData {
                 ScrollView {
-                    // TODO: figure out how to not have the text not come in center but align on the left
-                    VStack {
+                    if let backdropPath = movie.backdropPath, let url = URL(string: "https://image.tmdb.org/t/p/w1280" + backdropPath) {
+                        AsyncImage(url: url) { image in
+                            image.resizable()
+                                .aspectRatio(contentMode: .fill)
+                        } placeholder: {
+                            Color.gray
+                        }
+                        .clipped()
+                        .padding(.top, -100)
+                        .frame(height: 100)
+                        .edgesIgnoringSafeArea(.top)
+                    }
+                    VStack(alignment: .leading) {
                         HStack {
                             if let posterPath = movie.posterPath, let url = URL(string: "https://image.tmdb.org/t/p/w500" + posterPath) {
                                 AsyncImage(url: url) { image in
@@ -41,7 +53,7 @@ struct MovieDetailsView: View {
                                 .cornerRadius(10)
                                 .padding(.top)
                             }
-                            VStack{
+                            VStack(alignment: .leading) {
                                 // Movie Title
                                 Text(movie.title ?? "N/A")
                                     .font(.title)
@@ -50,33 +62,41 @@ struct MovieDetailsView: View {
                                     .accessibility(identifier: "movieTitle")
                                 
                                 // Release Date
-                                if let releaseDate = movie.releaseDate {
-                                    Text("\(releaseDate)")
-                                        .foregroundColor(.gray)
-                                        .accessibility(identifier: "movieReleaseDate")
-                                }
+                                Text(vm.formatReleaseYear(from: movie.releaseDate))
+                                    .foregroundColor(.white)
+                                    .accessibility(identifier: "movieReleaseDate")
                                 
                                 // Runtime
                                 if let runtime = movie.runtime {
                                     Text("\(runtime) minutes")
                                         .foregroundColor(.white)
-                                        .padding(.bottom, 1)
                                         .accessibility(identifier: "movieRunTime")
-                                }
-                                
-                                // Genres
-                                // TODO: need to a way to make genres hashable so that we can put a circle around each of the genres to match figma.
-                                if let genres = movie.genres, !genres.isEmpty {
-                                    Text("Genres: " + genres.map { $0.name ?? "N/A" }.joined(separator: ", "))
-                                        .foregroundColor(.white)
-                                        .padding(.bottom, 1)
                                 }
 
                             }
+                            .padding(.top, -60)
                         }
                         
+                        ScrollView(.horizontal, showsIndicators: false) { // Horizontal scroll view without indicators
+                            HStack(spacing: 10) { // HStack with spacing for genre bubbles
+                                if let genres = movie.genres, !genres.isEmpty {
+                                    ForEach(genres, id: \.id) { genre in
+                                        Text(genre.name ?? "N/A")
+                                            .foregroundColor(.white)
+                                            .padding(7)
+                                            .background(Color.clear) // Clear background
+                                            .overlay(
+                                                Capsule().stroke(Color.white, lineWidth: 1) // White border
+                                            )
+                                    }
+                                }
+                            }
+                            .padding(.vertical, 1)
+                        }
+                        .padding(.leading, 10)
+                        
                         Button(action: {
-                            // TODO: need to figure out how to depending on where you click if say watched or add to log
+                            // Action for the button
                         }) {
                             Text("Add to Log / Watch")
                                 .foregroundColor(.white)
@@ -85,13 +105,13 @@ struct MovieDetailsView: View {
                         .background(Color(hex: "3891E1"))
                         .cornerRadius(25)
                         .padding(.top, 5)
+                        .padding(.leading, 20)
 
                         // Overview
                         Text(movie.overview ?? "No overview available.")
                             .foregroundColor(.white)
                             .padding()
 
-                        
                         // Director
                         if let crew = movie.credits?.crew, let director = crew.first(where: { $0.job == "Director" }) {
                             Text("**Director:** \(director.name ?? "N/A")")
@@ -115,7 +135,6 @@ struct MovieDetailsView: View {
                             }.padding()
                                 .accessibility(identifier: "movieCast")
                         }
-
                     }
                 }
             } else if vm.errorMessage != nil {
