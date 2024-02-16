@@ -8,9 +8,9 @@
 import Foundation
 
 class UserRepository {
-    let fb: FirebaseService
+    let fb: FirebaseProtocol
     
-    init(fb: FirebaseService) {
+    init(fb: FirebaseProtocol) {
         self.fb = fb
     }
     
@@ -45,9 +45,9 @@ class UserRepository {
     
     func getUserByUsername(username: String) async -> Result<UserData, Error> {
         do {
-            let q = fb.db.collection("users").whereField("username", isEqualTo: username)
+            let q = fb.getCollectionRef(refName: "users")?.whereField("username", isEqualTo: username)
             
-            let result = try await fb.get(type: UserData(), query: q).get()
+            let result = try await fb.get(type: UserData(), query: q!).get()
             
             return .success(result)
         } catch {
@@ -57,9 +57,9 @@ class UserRepository {
     
     func usernameExists(username: String) async -> Result<Bool, Error> {
         do {
-            let q = fb.db.collection("users").whereField("username", isEqualTo: username)
+            let q = fb.getCollectionRef(refName: "users")?.whereField("username", isEqualTo: username)
             
-            let result = try await fb.exists(query: q).get()
+            let result = try await fb.exists(query: q!).get()
             
             return .success(result)
         } catch {
@@ -92,8 +92,8 @@ class UserRepository {
     
     func getLogRequests(userId: String) async -> Result<[LogRequestData], Error> {
         do {
-            let q = fb.db.collection("log_requests").whereField("target_id", isEqualTo: userId).whereField("is_complete", isEqualTo: false)
-            let result = try await fb.getBatch(type: LogRequestData(), query: q).get()
+            let q = fb.getCollectionRef(refName: "log_requests")?.whereField("target_id", isEqualTo: userId).whereField("is_complete", isEqualTo: false)
+            let result = try await fb.getBatch(type: LogRequestData(), query: q!).get()
             
             return .success(result)
         } catch {
@@ -103,8 +103,8 @@ class UserRepository {
     
     func getFriendRequests(userId: String) async -> Result<[FriendRequestData], Error> {
         do {
-            let q = fb.db.collection("friend_requests").whereField("target_id", isEqualTo: userId).whereField("is_complete", isEqualTo: false)
-            let result = try await fb.getBatch(type: FriendRequestData(), query: q).get()
+            let q = fb.getCollectionRef(refName: "friend_requests")?.whereField("target_id", isEqualTo: userId).whereField("is_complete", isEqualTo: false)
+            let result = try await fb.getBatch(type: FriendRequestData(), query: q!).get()
             
             return .success(result)
         } catch {

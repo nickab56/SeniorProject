@@ -11,12 +11,9 @@ import CoreData
 
 struct SocialView: View {
     @StateObject var vm: SocialViewModel
-    @State private var showingNotification = false
-    @State private var notificationMessage = ""
-    @State private var showingSendFriendReqSheet = false
     
     init() {
-        _vm = StateObject(wrappedValue: SocialViewModel())
+        _vm = StateObject(wrappedValue: SocialViewModel(fb: FirebaseService()))
     }
     
     var body: some View {
@@ -93,7 +90,7 @@ struct SocialView: View {
                     Spacer()
                     
                     Button(action: {
-                        showingSendFriendReqSheet = true
+                        vm.showingSendFriendReqSheet = true
                     }) {
                         Image(systemName: "person.badge.plus")
                             .foregroundColor(.white)
@@ -117,7 +114,7 @@ struct SocialView: View {
                             }
                             
                             ForEach(vm.friendRequests, id: \.0) { friendReq in
-                                RequestList(viewModel: vm, notificationActive: $showingNotification, notificationMessage: $notificationMessage, reqId: friendReq.0.requestId ?? "", reqUserId: friendReq.1.userId ?? "", reqType: "friend", reqUsername: friendReq.1.username ?? "", avatarPreset: friendReq.1.avatarPreset ?? 1)
+                                RequestList(viewModel: vm, notificationActive: $vm.showingNotification, notificationMessage: $vm.notificationMessage, reqId: friendReq.0.requestId ?? "", reqUserId: friendReq.1.userId ?? "", reqType: "friend", reqUsername: friendReq.1.username ?? "", avatarPreset: friendReq.1.avatarPreset ?? 1)
                                     .padding(.horizontal)
                             }
                         }
@@ -133,7 +130,7 @@ struct SocialView: View {
                             }
                             
                             ForEach(vm.logRequests, id: \.0) { logReq in
-                                RequestList(viewModel: vm, notificationActive: $showingNotification, notificationMessage: $notificationMessage, reqId: logReq.0.requestId ?? "", reqUserId: logReq.1.userId ?? "", reqType: "log", reqUsername: logReq.1.username ?? "", avatarPreset: logReq.1.avatarPreset ?? 1 )
+                                RequestList(viewModel: vm, notificationActive: $vm.showingNotification, notificationMessage: $vm.notificationMessage, reqId: logReq.0.requestId ?? "", reqUserId: logReq.1.userId ?? "", reqType: "log", reqUsername: logReq.1.username ?? "", avatarPreset: logReq.1.avatarPreset ?? 1 )
                                     .padding(.horizontal)
                             }
                         }
@@ -148,7 +145,7 @@ struct SocialView: View {
                                     .frame(height: 1)
                                     .foregroundColor(.gray)
                             }
-                            ForEach(vm.friends) { friendId in FriendListElement(friendId: friendId.userId ?? "", userId: vm.fb.auth.currentUser?.uid ?? "", username: friendId.username ?? "", avatarPreset: friendId.avatarPreset ?? 1)
+                            ForEach(vm.friends) { friendId in FriendListElement(friendId: friendId.userId ?? "", userId: vm.getUserId(), username: friendId.username ?? "", avatarPreset: friendId.avatarPreset ?? 1)
                                     .padding(.horizontal)
                             }
                         } else {
@@ -156,7 +153,7 @@ struct SocialView: View {
                                 .foregroundColor(.gray)
                         }
                         
-                        if showingNotification {
+                        if vm.showingNotification {
                             notificationView
                         }
                         
@@ -168,13 +165,13 @@ struct SocialView: View {
         }.padding(.top, 80)
         .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .edgesIgnoringSafeArea(.all)
-        .sheet(isPresented: $showingSendFriendReqSheet) {
-            AddFriendSheetView(viewModel: vm, isPresented: $showingSendFriendReqSheet, notificationMsg: $notificationMessage, notificationActive: $showingNotification)
+        .sheet(isPresented: $vm.showingSendFriendReqSheet) {
+            AddFriendSheetView(viewModel: vm, isPresented: $vm.showingSendFriendReqSheet, notificationMsg: $vm.notificationMessage, notificationActive: $vm.showingNotification)
         }
     }
     
     private var notificationView: some View {
-        Text(notificationMessage)
+        Text(vm.notificationMessage)
             .padding()
             .foregroundColor(.white)
             .background(Color.black.opacity(0.7))
@@ -182,6 +179,7 @@ struct SocialView: View {
             .padding(.bottom, 50)
             .transition(.move(edge: .bottom))
             .accessibility(identifier: "NotificationView")
+            .animation(.easeInOut(duration: 2), value: vm.notificationMessage)
     }
 }
 

@@ -9,10 +9,10 @@ import FirebaseFirestore
 import Foundation
 
 class MovieRepository {
-    let fb: FirebaseService
+    let fb: FirebaseProtocol
     let movieService: MovieService
     
-    init(fb: FirebaseService, movieService: MovieService) {
+    init(fb: FirebaseProtocol, movieService: MovieService) {
         self.fb = fb
         self.movieService = movieService
     }

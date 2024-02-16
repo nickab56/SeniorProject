@@ -54,6 +54,7 @@
 		9777C8CA2B5D90F9000F40EA /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9777C8C92B5D90F9000F40EA /* UserData.swift */; };
 		977922D52B758FA60021ECD9 /* LogType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977922D42B758FA60021ECD9 /* LogType.swift */; };
 		97993F112B67284700CBBCCC /* MovieImageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97993F102B67284700CBBCCC /* MovieImageData.swift */; };
+		979B8EAF2B7EFF7800AEC03C /* FirebaseProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979B8EAE2B7EFF7800AEC03C /* FirebaseProtocol.swift */; };
 		97A8F9502B646C22000A0096 /* MovieService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A8F94F2B646C22000A0096 /* MovieService.swift */; };
 		97A8F9542B647323000A0096 /* MovieAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A8F9532B647323000A0096 /* MovieAccess.swift */; };
 		97BF9EEA2B6B0B4300EE9ABB /* AvatarPresetMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BF9EE92B6B0B4300EE9ABB /* AvatarPresetMapper.swift */; };
@@ -151,6 +152,7 @@
 		9777C8C92B5D90F9000F40EA /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 		977922D42B758FA60021ECD9 /* LogType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogType.swift; sourceTree = "<group>"; };
 		97993F102B67284700CBBCCC /* MovieImageData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieImageData.swift; sourceTree = "<group>"; };
+		979B8EAE2B7EFF7800AEC03C /* FirebaseProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseProtocol.swift; sourceTree = "<group>"; };
 		97A8F94F2B646C22000A0096 /* MovieService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieService.swift; sourceTree = "<group>"; };
 		97A8F9532B647323000A0096 /* MovieAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieAccess.swift; sourceTree = "<group>"; };
 		97BF9EE92B6B0B4300EE9ABB /* AvatarPresetMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarPresetMapper.swift; sourceTree = "<group>"; };
@@ -397,6 +399,7 @@
 				97FCFC742B636F9300F5BFCB /* repository */,
 				97FCFC752B63767900F5BFCB /* FirebaseService.swift */,
 				97A8F94F2B646C22000A0096 /* MovieService.swift */,
+				979B8EAE2B7EFF7800AEC03C /* FirebaseProtocol.swift */,
 			);
 			path = network;
 			sourceTree = "<group>";
@@ -593,6 +596,7 @@
 				34F035AC2B60A95500EB35C7 /* LogItemView.swift in Sources */,
 				97FCFC622B63659800F5BFCB /* MovieSearchData.swift in Sources */,
 				97FCFC762B63767900F5BFCB /* FirebaseService.swift in Sources */,
+				979B8EAF2B7EFF7800AEC03C /* FirebaseProtocol.swift in Sources */,
 				344BA2822B48AC8E002626F1 /* SignupView.swift in Sources */,
 				8108A6422B76A2650069DBEA /* EditCollaboratorSheetView.swift in Sources */,
 				34F035AA2B60A93900EB35C7 /* AddLogSheetView.swift in Sources */,

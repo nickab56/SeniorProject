@@ -9,9 +9,9 @@ import FirebaseFirestore
 import Foundation
 
 class LogRepository {
-    let fb: FirebaseService
+    let fb: FirebaseProtocol
     
-    init(fb: FirebaseService) {
+    init(fb: FirebaseProtocol) {
         self.fb = fb
     }
     
@@ -53,17 +53,17 @@ class LogRepository {
     
     func getLogs(userId: String, showPrivate: Bool) async -> Result<[LogData], Error> {
         do {
-            let logRef = fb.db.collection("logs")
+            let logRef = fb.getCollectionRef(refName: "logs")
             let logData: [LogData] = try await withThrowingTaskGroup(of: [LogData].self) { group in
                 // Query for user-owned logs
                 group.addTask {
                     do {
                         let q = if (showPrivate) {
-                            logRef.whereField("owner.user_id", isEqualTo: userId)
+                            logRef?.whereField("owner.user_id", isEqualTo: userId)
                         } else {
-                            logRef.whereField("owner.user_id", isEqualTo: userId).whereField("is_visible", isEqualTo: true)
+                            logRef?.whereField("owner.user_id", isEqualTo: userId).whereField("is_visible", isEqualTo: true)
                         }
-                        return try await self.fb.getBatch(type: LogData(), query: q).get()
+                        return try await self.fb.getBatch(type: LogData(), query: q!).get()
                     } catch {
                         throw error
                     }
@@ -73,11 +73,11 @@ class LogRepository {
                 group.addTask {
                     do {
                         let q = if (showPrivate) {
-                            logRef.whereField("collaborators", arrayContains: userId)
+                            logRef?.whereField("collaborators", arrayContains: userId)
                         } else {
-                            logRef.whereField("collaborators", arrayContains: userId).whereField("is_visible", isEqualTo: true)
+                            logRef?.whereField("collaborators", arrayContains: userId).whereField("is_visible", isEqualTo: true)
                         }
-                        return try await self.fb.getBatch(type: LogData(), query: q).get()
+                        return try await self.fb.getBatch(type: LogData(), query: q!).get()
                     } catch {
                         throw error
                     }

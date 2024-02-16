@@ -13,12 +13,13 @@ class FriendsProfileViewModel: ObservableObject {
     @Published var userData: UserData?
     @Published var friends: [UserData] = []
     
-    let fb: FirebaseService = FirebaseService()
+    private var fb: FirebaseProtocol
     private var userRepo: UserRepository
     private var friendRepo: FriendRepository
     private var logRepo: LogRepository
     
-    init (friendId: String) {
+    init (friendId: String, fb: FirebaseProtocol) {
+        self.fb = fb
         self.friendId = friendId
         self.userRepo = UserRepository(fb: fb)
         self.friendRepo = FriendRepository(fb: fb)
@@ -63,5 +64,9 @@ class FriendsProfileViewModel: ObservableObject {
                 }
             }
         }
+    }
+    
+    func getUserId() -> String {
+        return fb.getUserId() ?? ""
     }
 }

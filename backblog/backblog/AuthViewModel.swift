@@ -14,10 +14,11 @@ class AuthViewModel: ObservableObject {
     @Published var signupSuccessful: Bool = false
     @Published var messageColor: Color = .red
     
-    let fb: FirebaseService = FirebaseService()
+    private var fb: FirebaseProtocol
     private var userRepo: UserRepository
     
-    init() {
+    init(fb: FirebaseProtocol) {
+        self.fb = fb
         self.userRepo = UserRepository(fb: fb)
     }
     

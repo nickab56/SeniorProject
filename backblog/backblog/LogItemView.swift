@@ -4,7 +4,7 @@ struct LogItemView: View {
     @StateObject var vm: LogViewModel
     
     init(log: LogType) {
-        _vm = StateObject(wrappedValue: LogViewModel(log: log))
+        _vm = StateObject(wrappedValue: LogViewModel(log: log, fb: FirebaseService(), movieService: MovieService()))
     }
 
     var body: some View {

@@ -15,16 +15,22 @@ class SocialViewModel: ObservableObject {
     @Published var friendRequests: [(FriendRequestData, UserData)] = []
     @Published var logRequests: [(LogRequestData, UserData)] = []
     
+    // Notification message
+    @Published var showingNotification = false
+    @Published var notificationMessage = ""
+    @Published var showingSendFriendReqSheet = false
+    
     // Settings
     @Published var isUnauthorized = false
     @Published var avatarSelection = 1
    
-    let fb = FirebaseService()
+    private let fb: FirebaseProtocol
     private let userRepo: UserRepository
     private let logRepo: LogRepository
     private let friendRepo: FriendRepository
     
-    init() {
+    init(fb: FirebaseProtocol) {
+        self.fb = fb
         self.userRepo = UserRepository(fb: fb)
         self.logRepo = LogRepository(fb: fb)
         self.friendRepo = FriendRepository(fb: fb)
@@ -38,7 +44,7 @@ class SocialViewModel: ObservableObject {
     func fetchUserData() {
         DispatchQueue.main.async { [self] in
             Task {
-                guard let userId = fb.auth.currentUser?.uid else {
+                guard let userId = fb.getUserId() else {
                     return
                 }
                 do {
@@ -55,7 +61,7 @@ class SocialViewModel: ObservableObject {
     func fetchLogs() {
         DispatchQueue.main.async { [self] in
             Task {
-                guard let userId = fb.auth.currentUser?.uid else {
+                guard let userId = fb.getUserId() else {
                     return
                 }
                 do {
@@ -71,7 +77,7 @@ class SocialViewModel: ObservableObject {
     func fetchFriends() {
         DispatchQueue.main.async { [self] in
             Task {
-                guard let userId = fb.auth.currentUser?.uid else {
+                guard let userId = fb.getUserId() else {
                     return
                 }
                 do {
@@ -87,7 +93,7 @@ class SocialViewModel: ObservableObject {
     func fetchLogRequests() {
         DispatchQueue.main.async { [self] in
             Task {
-                guard let userId = fb.auth.currentUser?.uid else {
+                guard let userId = fb.getUserId() else {
                     return
                 }
                 do {
@@ -124,7 +130,7 @@ class SocialViewModel: ObservableObject {
     func fetchFriendRequests() {
         DispatchQueue.main.async { [self] in
             Task {
-                guard let userId = fb.auth.currentUser?.uid else {
+                guard let userId = fb.getUserId() else {
                     return
                 }
                 do {
@@ -170,23 +176,19 @@ class SocialViewModel: ObservableObject {
                     }
                     
                     // Successful
-                    /*withAnimation {
-                        notificationMessage = "Successfully updated request!"
-                        notificationActive = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            notificationActive = false
-                        }
-                    }*/
+                    notificationMessage = "Successfully updated request!"
+                    showingNotification = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [self] in
+                        showingNotification = false
+                    }
                 } catch {
                     print("Error updating request: \(error.localizedDescription)")
                     
-                    /*withAnimation {
-                        notificationMessage = "Error updating request"
-                        notificationActive = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            notificationActive = false
-                        }
-                    }*/
+                    notificationMessage = "Error updating request"
+                    showingNotification = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        self.showingNotification = false
+                    }
                 }
             }
         }
@@ -195,7 +197,7 @@ class SocialViewModel: ObservableObject {
     func sendFriendRequest(username: String) {
         DispatchQueue.main.async { [self] in
             Task {
-                guard let userId = fb.auth.currentUser?.uid else {
+                guard let userId = fb.getUserId() else {
                     return
                 }
                 
@@ -205,49 +207,41 @@ class SocialViewModel: ObservableObject {
                     
                     let userFriends = result.friends ?? [:]
                     if (userFriends.contains(where: { $0.key == userId })) {
-                        /*withAnimation {
-                            notificationMsg = "You are already friends with this user!"
-                            notificationActive = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                notificationActive = false
-                            }
-                        }*/
+                        notificationMessage = "You are already friends with this user!"
+                        showingNotification = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            self.showingNotification = false
+                        }
                         return
                     }
                     
                     // Check if target sent a request to this user
                     guard let targetId = result.userId else {
-                        /*withAnimation {
-                            notificationMsg = "User not found!"
-                            notificationActive = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                notificationActive = false
-                            }
-                        }*/
+                        notificationMessage = "User not found!"
+                        showingNotification = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            self.showingNotification = false
+                        }
                         return
                     }
                     let targetRequests = try await userRepo.getFriendRequests(userId: targetId).get()
                     if ((targetRequests.firstIndex(where: { $0.senderId == targetId && $0.targetId == userId })) != nil) {
-                        /*withAnimation {
-                            notificationMsg = "This user has already sent you a friend request!"
-                            notificationActive = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                notificationActive = false
-                            }
-                        }*/
+                        notificationMessage = "This user has already sent you a friend request!"
+                        showingNotification = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            self.showingNotification = false
+                        }
                         return
                     }
                     
                     // Check if user already sent a request to this target
                     let userRequests = try await userRepo.getFriendRequests(userId: userId).get()
                     if ((userRequests.firstIndex(where: { $0.senderId == userId && $0.targetId == targetId })) != nil) {
-                        /*withAnimation {
-                            notificationMsg = "Friend request already sent!"
-                            notificationActive = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                notificationActive = false
-                            }
-                        }*/
+                        notificationMessage = "Friend request already sent!"
+                        showingNotification = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            self.showingNotification = false
+                        }
                         return
                     }
                     
@@ -255,22 +249,18 @@ class SocialViewModel: ObservableObject {
                     _ = try await friendRepo.addFriendRequest(senderId: userId, targetId: targetId, requestDate: String(currentTimeInMS())).get()
                     
                     // Success message
-                    /*withAnimation {
-                        notificationMsg = "Successfully sent request!"
-                        notificationActive = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            notificationActive = false
-                        }
-                    }*/
+                    notificationMessage = "Successfully sent request!"
+                    showingNotification = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        self.showingNotification = false
+                    }
                 } catch {
                     print("Error sending friend request: \(error.localizedDescription)")
-                    /*withAnimation {
-                        notificationMsg = "User not found!"
-                        notificationActive = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            notificationActive = false
-                        }
-                    }*/
+                    notificationMessage = "User not found!"
+                    showingNotification = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        self.showingNotification = false
+                    }
                 }
             }
         }
@@ -280,7 +270,7 @@ class SocialViewModel: ObservableObject {
         DispatchQueue.main.async { [self] in
             Task {
                 do {
-                    guard let userId = fb.auth.currentUser?.uid else {
+                    guard let userId = fb.getUserId() else {
                         isUnauthorized = true
                         return
                     }
@@ -331,7 +321,7 @@ class SocialViewModel: ObservableObject {
         DispatchQueue.main.async { [self] in
             Task {
                 do {
-                    guard let _ = fb.auth.currentUser?.uid else {
+                    guard let _ = fb.getUserId() else {
                         isUnauthorized = true
                         return
                     }
@@ -346,5 +336,9 @@ class SocialViewModel: ObservableObject {
                 }
             }
         }
+    }
+    
+    func getUserId() -> String {
+        return fb.getUserId() ?? ""
     }
 }

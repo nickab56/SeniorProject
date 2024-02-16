@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SearchView: View {
-    @StateObject private var vm = SearchViewModel()
+    @StateObject private var vm = SearchViewModel(fb: FirebaseService(), movieService: MovieService())
     @State private var searchText = ""
     @State private var isSearching = false
 
