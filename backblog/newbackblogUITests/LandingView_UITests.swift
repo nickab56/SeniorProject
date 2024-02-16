@@ -49,6 +49,8 @@ final class LandingView_UITests: XCTestCase {
         XCTAssertTrue(createLogButton.waitForExistence(timeout: 5), "Create Log button should be visible after entering log name")
         createLogButton.tap()
         
+        sleep(2)
+        
         // Then: We should be returned to the landing page, and there should be a new log named "Log 1".
         let newLogEntry = app.staticTexts["Log 1"]
         XCTAssertTrue(newLogEntry.waitForExistence(timeout: 5), "Newly created log named 'Log 1' should exist on the landing page")
@@ -67,6 +69,8 @@ final class LandingView_UITests: XCTestCase {
 
         // When: We tap on the "addLogButton" to navigate to the new log creation screen.
         addLogButton.tap()
+        
+        sleep(2)
 
         // And: Instead of creating a new log, we decide to tap the "cancelAddLogButton".
         let cancelAddLogButton = app.buttons["cancelAddLogButton"]
@@ -124,9 +128,17 @@ final class LandingView_UITests: XCTestCase {
                 deletionWaitExpectation.fulfill()
             }
             wait(for: [deletionWaitExpectation], timeout: 2)
+        
+        sleep(2)
+        
+        let confirmDeleteLogButton = app.buttons["ConfirmDeleteLog"]
+        XCTAssertTrue(confirmDeleteLogButton.exists, "Confirm Delete Log button should be visible after selecting delete a log")
+        confirmDeleteLogButton.tap()
+        
+        sleep(2)
 
-            // Then: "Log 1" should no longer exist in the app.
-            XCTAssertFalse(app.staticTexts["Log 1"].exists, "Log 1 should be deleted and no longer visible in the app")
+        // Then: "Log 1" should no longer exist in the app.
+        XCTAssertFalse(app.staticTexts["Log 1"].exists, "Log 1 should be deleted and no longer visible in the app")
     }
     
     func test_LandingView_NavBar_NavigateNavBar() {
@@ -173,6 +185,8 @@ final class LandingView_UITests: XCTestCase {
         let addLogButton = app.buttons["addLogButton"]
         XCTAssertTrue(addLogButton.waitForExistence(timeout: 5), "Add Log button should be visible")
         addLogButton.tap()
+        
+        sleep(2)
 
         let newLogNameTextField = app.textFields["newLogNameTextField"]
         XCTAssertTrue(newLogNameTextField.waitForExistence(timeout: 5), "New Log Name text field should be visible")
@@ -217,12 +231,17 @@ final class LandingView_UITests: XCTestCase {
         movieSearchField.tap()
         movieSearchField.typeText("Star Wars\n")
 
-        sleep(1)
+        sleep(3)
         
-        // Tap the "Add to Log" button for the searched movie
-        let addToLogButton = app.buttons["AddToLogButton"].firstMatch
-        XCTAssertTrue(addToLogButton.waitForExistence(timeout: 5), "Add to Log button should appear for searched movie")
-        addToLogButton.tap()
+        // Assuming `app` is your XCUIApplication instance
+        let addToLogButtons = app.buttons.matching(identifier: "AddToLogButton")
+        XCTAssertTrue(addToLogButtons.count > 1, "There should be at least two movies listed")
+
+        // Access the second 'Add to Log' button, as 'Star Wars' is now the second movie
+        let secondAddToLogButton = addToLogButtons.element(boundBy: 1)
+        XCTAssertTrue(secondAddToLogButton.waitForExistence(timeout: 5), "Add to Log button for the second movie should appear")
+        secondAddToLogButton.tap()
+
 
         // Select the log
         let testLogButton = app.buttons["MultipleSelectionRow_Test Log"]
@@ -260,6 +279,8 @@ final class LandingView_UITests: XCTestCase {
         XCTAssertTrue(addLogButton.waitForExistence(timeout: 5), "Add Log button should be visible")
         addLogButton.tap()
         
+        sleep(1)
+        
         let newLogNameTextField = app.textFields["newLogNameTextField"]
         newLogNameTextField.tap()
         newLogNameTextField.typeText("Test Log\n")
@@ -277,12 +298,17 @@ final class LandingView_UITests: XCTestCase {
         movieSearchField.tap()
         movieSearchField.typeText("Star Wars\n")
 
-        sleep(1)
+        sleep(2)
         
-        // Tap the "Add to Log" button for the searched movie
-        let addToLogButton = app.buttons["AddToLogButton"].firstMatch
-        XCTAssertTrue(addToLogButton.waitForExistence(timeout: 5), "Add to Log button should appear for searched movie")
-        addToLogButton.tap()
+        // Assuming `app` is your XCUIApplication instance
+        let addToLogButtons = app.buttons.matching(identifier: "AddToLogButton")
+        XCTAssertTrue(addToLogButtons.count > 1, "There should be at least two movies listed")
+
+        // Access the second 'Add to Log' button, as 'Star Wars' is now the second movie
+        let secondAddToLogButton = addToLogButtons.element(boundBy: 1)
+        XCTAssertTrue(secondAddToLogButton.waitForExistence(timeout: 5), "Add to Log button for the second movie should appear")
+        secondAddToLogButton.tap()
+
 
         // Select the log
         let testLogButton = app.buttons["MultipleSelectionRow_Test Log"]

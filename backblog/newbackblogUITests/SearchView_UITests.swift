@@ -99,12 +99,17 @@ final class SearchView_UITests: XCTestCase {
         movieSearchField.tap()
         movieSearchField.typeText("Star Wars\n")
         
-        sleep(1)
+        sleep(2)
         
-        // Tap the "Add to Log" button for the searched movie
-        let addToLogButton = app.buttons["AddToLogButton"].firstMatch
-        XCTAssertTrue(addToLogButton.waitForExistence(timeout: 5), "Add to Log button should appear for searched movie")
-        addToLogButton.tap()
+        // Assuming `app` is your XCUIApplication instance
+        let addToLogButtons = app.buttons.matching(identifier: "AddToLogButton")
+        XCTAssertTrue(addToLogButtons.count > 1, "There should be at least two movies listed")
+
+        // Access the second 'Add to Log' button, as 'Star Wars' is now the second movie
+        let secondAddToLogButton = addToLogButtons.element(boundBy: 1)
+        XCTAssertTrue(secondAddToLogButton.waitForExistence(timeout: 5), "Add to Log button for the second movie should appear")
+        secondAddToLogButton.tap()
+
 
         // Select a log from the list
         let logSelection = app.buttons["Log 1"]
@@ -157,12 +162,17 @@ final class SearchView_UITests: XCTestCase {
         movieSearchField.tap()
         movieSearchField.typeText("Star Wars\n")
         
-        sleep(1)
+        sleep(2)
         
-        // Tap the "Add to Log" button for the searched movie
-        let addToLogButton = app.buttons["AddToLogButton"].firstMatch
-        XCTAssertTrue(addToLogButton.waitForExistence(timeout: 5), "Add to Log button should appear for searched movie")
-        addToLogButton.tap()
+        // Assuming `app` is your XCUIApplication instance
+        let addToLogButtons = app.buttons.matching(identifier: "AddToLogButton")
+        XCTAssertTrue(addToLogButtons.count > 1, "There should be at least two movies listed")
+
+        // Access the second 'Add to Log' button, as 'Star Wars' is now the second movie
+        let secondAddToLogButton = addToLogButtons.element(boundBy: 1)
+        XCTAssertTrue(secondAddToLogButton.waitForExistence(timeout: 5), "Add to Log button for the second movie should appear")
+        secondAddToLogButton.tap()
+
 
         // Select the first log
         let log1Button = app.buttons["Log 1"]
@@ -244,6 +254,8 @@ final class SearchView_UITests: XCTestCase {
     func test_AddMovieToLogWithoutDuplication() throws {
         let app = XCUIApplication()
         app.launch()
+        
+        sleep(1)
 
         // Create a new log
         app.tabBars["Tab Bar"].buttons["Hdr"].tap()

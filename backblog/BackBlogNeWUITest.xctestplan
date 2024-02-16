@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "96F963A5-830F-429B-92A0-99F568E8FB4E",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:backblog.xcodeproj",
+        "identifier" : "34AEBD612B745E4800C6EA87",
+        "name" : "newbackblogUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

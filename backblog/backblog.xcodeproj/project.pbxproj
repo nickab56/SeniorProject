@@ -112,6 +112,7 @@
 		344BA27F2B489F01002626F1 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		344BA2812B48AC8E002626F1 /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
 		344D794D2B7957360030F12D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		344D79522B7FA4B90030F12D /* BackBlogNeWUITest.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = BackBlogNeWUITest.xctestplan; sourceTree = "<group>"; };
 		3466FF2C2B61EA610028034C /* MovieDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsView.swift; sourceTree = "<group>"; };
 		3469C1782B312A4600B8EEFB /* backblog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = backblog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3469C17B2B312A4600B8EEFB /* backblogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = backblogApp.swift; sourceTree = "<group>"; };
@@ -209,6 +210,7 @@
 		3469C16F2B312A4600B8EEFB = {
 			isa = PBXGroup;
 			children = (
+				344D79522B7FA4B90030F12D /* BackBlogNeWUITest.xctestplan */,
 				3469C17A2B312A4600B8EEFB /* backblog */,
 				3469C1902B312A4700B8EEFB /* backblogTests */,
 				3469C19A2B312A4700B8EEFB /* backblogUITests */,
