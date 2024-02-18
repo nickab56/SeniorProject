@@ -63,7 +63,7 @@ class LogRepository {
                         } else {
                             logRef?.whereField("owner.user_id", isEqualTo: userId).whereField("is_visible", isEqualTo: true)
                         }
-                        return try await self.fb.getBatch(type: LogData(), query: q!).get()
+                        return try await self.fb.getBatch(type: LogData(), query: q).get()
                     } catch {
                         throw error
                     }
@@ -77,7 +77,7 @@ class LogRepository {
                         } else {
                             logRef?.whereField("collaborators", arrayContains: userId).whereField("is_visible", isEqualTo: true)
                         }
-                        return try await self.fb.getBatch(type: LogData(), query: q!).get()
+                        return try await self.fb.getBatch(type: LogData(), query: q).get()
                     } catch {
                         throw error
                     }

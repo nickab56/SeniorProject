@@ -21,9 +21,9 @@ class FirebaseService: FirebaseProtocol {
     let auth = FirebaseAuth.Auth.auth()
     
     // From query
-    func get<T: Decodable>(type: T, query: Query) async -> Result<T, Error> {
+    func get<T: Decodable>(type: T, query: Query?) async -> Result<T, Error> {
         do {
-            let snap = try await query.getDocuments()
+            let snap = try await query!.getDocuments()
             
             guard let doc = snap.documents.first else {
                 // Doc not found
@@ -39,9 +39,9 @@ class FirebaseService: FirebaseProtocol {
         }
     }
     
-    func exists(query: Query) async -> Result<Bool, Error> {
+    func exists(query: Query?) async -> Result<Bool, Error> {
         do {
-            let snap = try await query.getDocuments()
+            let snap = try await query!.getDocuments()
             
             guard snap.documents.first != nil else {
                 // Doc not found
@@ -75,9 +75,9 @@ class FirebaseService: FirebaseProtocol {
         }
     }
     
-    func getBatch<T: Decodable>(type: T, query: Query) async -> Result<[T], Error> {
+    func getBatch<T: Decodable>(type: T, query: Query?) async -> Result<[T], Error> {
         do {
-            let snap = try await query.getDocuments()
+            let snap = try await query!.getDocuments()
             
             let result = try snap.documents.map { doc in
                 do {

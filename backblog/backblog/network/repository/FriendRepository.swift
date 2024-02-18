@@ -48,11 +48,7 @@ class FriendRepository {
             let result = try await fb.get(type: UserData(), docId: userId, collection: "users").get()
             
             // Successful. Continue by iterating through all the friends
-            guard let friendsMap = result.friends else {
-                return .failure(FirebaseError.nullProperty)
-            }
-            
-            let friendIds = Array(friendsMap.keys)
+            let friendIds = Array((result.friends ?? [:]).keys)
 
             let friendData: [UserData] = try await withThrowingTaskGroup(of: UserData.self) { group in
                 for friend in friendIds {
