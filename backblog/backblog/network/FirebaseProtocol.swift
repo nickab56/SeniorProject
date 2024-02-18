@@ -12,10 +12,10 @@ import Foundation
 
 // Define a protocol for FirebaseService
 protocol FirebaseProtocol {
-    func get<T: Decodable>(type: T, query: Query) async -> Result<T, Error>
-    func exists(query: Query) async -> Result<Bool, Error>
+    func get<T: Decodable>(type: T, query: Query?) async -> Result<T, Error>
+    func exists(query: Query?) async -> Result<Bool, Error>
     func get<T: Decodable>(type: T, docId: String, collection: String) async -> Result<T, Error>
-    func getBatch<T: Decodable>(type: T, query: Query) async -> Result<[T], Error>
+    func getBatch<T: Decodable>(type: T, query: Query?) async -> Result<[T], Error>
     func post<T: Codable>(data: T, collection: String) async -> Result<String, Error>
     func put<T: Codable>(doc: T, docId: String, collection: String) async -> Result<T, Error>
     func put(updates: [String: Any], docId: String, collection: String) async -> Result<Bool, Error>

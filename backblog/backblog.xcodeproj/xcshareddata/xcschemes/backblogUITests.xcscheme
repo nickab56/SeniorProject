@@ -29,7 +29,7 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:BackBlogNeWUITest.xctestplan"
+            reference = "container:newbackblogUITests/BackBlogNeWUITest.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>
