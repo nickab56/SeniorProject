@@ -9,6 +9,8 @@ struct LogDetailsView: View {
     @StateObject var vm: LogViewModel
     
     @State private var showDeleteConfirmation = false
+    
+    @State private var editLogSheet = false
 
     
     init(log: LogType) {
@@ -71,7 +73,7 @@ struct LogDetailsView: View {
                     .cornerRadius(8)
                     
                     Button(action: {
-                        // waiting for functionailty
+                        editLogSheet = true
                     }) {
                         Image(systemName: "pencil")
                             .padding()
@@ -80,6 +82,9 @@ struct LogDetailsView: View {
                     .background(Color.clear)
                     .foregroundColor(.white)
                     .cornerRadius(8)
+                    .sheet(isPresented: $editLogSheet) {
+                        EditLogSheetView(isPresented: $editLogSheet, vm: vm)
+                    }
                     
                     Spacer()
                     
