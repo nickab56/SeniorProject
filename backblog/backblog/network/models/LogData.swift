@@ -13,7 +13,7 @@ struct LogData: Identifiable, Codable, Equatable {
     }
     
     var id: String {
-        logId ?? "null"
+        logId ?? ""
     }
     
     var logId: String?
@@ -38,9 +38,13 @@ struct LogData: Identifiable, Codable, Equatable {
     }
 }
 
-struct Owner: Codable {
+struct Owner: Codable, Equatable {
     var userId: String?
     var priority: Int?
+    
+    static func == (lhs: Owner, rhs: Owner) -> Bool {
+        return lhs.userId == rhs.userId
+    }
     
     private enum CodingKeys: String, CodingKey {
         case userId = "user_id"

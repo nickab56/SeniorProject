@@ -7,7 +7,11 @@
 
 import Foundation
 
-struct MovieImageData: Codable {
+struct MovieImageData: Codable, Equatable {
+    static func == (lhs: MovieImageData, rhs: MovieImageData) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
     var backdrops: [Image]?
     var logos: [Image]?
     var posters: [Image]?
