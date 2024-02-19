@@ -76,10 +76,19 @@ class LogsViewModel: ObservableObject {
         guard let movie = nextMovie else { return }
 
         withAnimation {
-            log.watched_ids?.append(movie)
-            let index = log.movie_ids?.firstIndex(of: movie)
-            log.movie_ids?.remove(at: index ?? 0)
+            // Add the movie to the watched list
+            if log.watched_ids == nil {
+                log.watched_ids = [movie]
+            } else {
+                log.watched_ids?.append(movie)
+            }
 
+            // Remove the movie from the unwatched list
+            if let index = log.movie_ids?.firstIndex(of: movie) {
+                log.movie_ids?.remove(at: index)
+            }
+
+            // Save changes to the data store
             do {
                 try viewContext.save()
                 loadNextUnwatchedMovie(log: log)  // Refresh the view to show the next unwatched movie
@@ -88,6 +97,7 @@ class LogsViewModel: ObservableObject {
             }
         }
     }
+
 }
 
 // ImageLoader for fetching images from URLs

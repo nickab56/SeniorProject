@@ -151,6 +151,7 @@ struct SocialView: View {
                         } else {
                             Text("No friends found.")
                                 .foregroundColor(.gray)
+                                .accessibility(identifier: "NoFriendsText")
                         }
                         
                         if vm.showingNotification {

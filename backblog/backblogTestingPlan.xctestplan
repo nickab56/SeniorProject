@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "7CD306CE-E815-479E-8954-FD53D7B38E29",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:backblog.xcodeproj",
+        "identifier" : "3469C18C2B312A4700B8EEFB",
+        "name" : "backblogTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:backblog.xcodeproj",
+        "identifier" : "34AEBD612B745E4800C6EA87",
+        "name" : "newbackblogUITests"
+      }
+    }
+  ],
+  "version" : 1
+}
