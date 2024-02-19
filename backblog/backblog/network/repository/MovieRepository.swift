@@ -65,7 +65,7 @@ class MovieRepository {
                     log.order?[userId]
                 }
                 
-                if (userPriority != nil && userPriority! < highestPriority && (log.movieIds != nil && log.movieIds!.isEmpty)) {
+                if (userPriority != nil && userPriority! < highestPriority && (log.movieIds != nil && !log.movieIds!.isEmpty)) {
                     highestPriority = userPriority!
                     priorityLog = log
                 }
