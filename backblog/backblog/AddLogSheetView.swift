@@ -60,7 +60,7 @@ struct AddLogSheetView: View {
                             .padding(.vertical, 5)
                         }
 
-                        if !showingAllFriends && friends.count > 5 {
+                        if !showingAllFriends && friends.count > 4 {
                             Button("View More") {
                                 withAnimation {
                                     showingAllFriends = true

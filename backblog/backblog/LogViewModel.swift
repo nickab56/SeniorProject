@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import CoreData
 
 class LogViewModel: ObservableObject {
     private let viewContext = PersistenceController.shared.container.viewContext
@@ -213,5 +214,55 @@ class LogViewModel: ObservableObject {
             return text
         }
     }
+    
+    // Function to remove a movie from a local log
+    func removeMovie(movieId: Int) {
+        guard case .localLog(let localLog) = log else { return }
+
+        if let index = movies.firstIndex(where: { $0.0.id == movieId }) {
+            movies.remove(at: index)
+
+            // Update Core Data model
+            if let movieIndex = localLog.movie_ids?.firstIndex(of: String(movieId)) {
+                localLog.movie_ids?.remove(at: movieIndex)
+
+                do {
+                    try viewContext.save()
+                } catch {
+                    print("Error removing movie from Core Data: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
+    // Function to reorder movies within a local log
+    func reorderMovies(from source: IndexSet, to destination: Int) {
+        guard case .localLog(let localLog) = log, let movieIds = localLog.movie_ids else { return }
+
+        // Reorder movies array
+        movies.move(fromOffsets: source, toOffset: destination)
+
+        // Reorder Core Data model's movie_ids
+        var reorderedMovieIds = movieIds
+        reorderedMovieIds.move(fromOffsets: source, toOffset: destination)
+        localLog.movie_ids = reorderedMovieIds
+
+        do {
+            try viewContext.save()
+        } catch {
+            print("Error reordering movies in Core Data: \(error.localizedDescription)")
+        }
+    }
+    
+    func updateLogName(newName: String) {
+        guard case .localLog(let localLog) = log else { return }
+        localLog.name = newName
+        do {
+            try viewContext.save()
+        } catch {
+            print("Error saving updated log name: \(error.localizedDescription)")
+        }
+    }
+
 }
 

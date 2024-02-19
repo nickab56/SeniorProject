@@ -7,8 +7,13 @@ struct EditCollaboratorSheetView: View {
     @State private var showingAllFriends = false // To toggle the full list of friends
     @State private var searchText = "" // For the search bar
     
-    let collaborators = ["Alice", "Bob", "Charlie"]
-    let friends = ["Dave", "Eva", "Frank", "George", "Hannah", "Ian", "Jill", "Kevin", "Luna", "Mike", "Nora", "Oscar", "Patty", "Quinn", "Rachel", "Steve", "Tina", "Uma", "Vince", "Wendy", "Xander", "Yvonne", "Zack"]
+    @State public var collaborators = ["Alice", "Bob", "Charlie"]
+    public var allFriends = ["Dave", "Eva", "Frank", "George", "Hannah", "Ian", "Jill", "Kevin", "Luna", "Mike", "Nora", "Oscar", "Patty", "Quinn", "Rachel", "Steve", "Tina", "Uma", "Vince", "Wendy", "Xander", "Yvonne", "Zack"]
+    
+    // Computed property to get the list of friends not already collaborators
+    var friends: [String] {
+        allFriends.filter { !collaborators.contains($0) }
+    }
     
     // Filtered or limited list of friends based on search text and showingAllFriends flag
     var filteredFriends: [String] {
@@ -22,9 +27,7 @@ struct EditCollaboratorSheetView: View {
         }
     }
     
-    
     var body: some View {
-        // TODO: need to add proper functionality to this action sheet
         NavigationView {
             Form {
                 Section(header: Text("Current Collaborators")) {
@@ -34,6 +37,7 @@ struct EditCollaboratorSheetView: View {
                             Text(collaborator)
                         }
                     }
+                    .onDelete(perform: removeCollaborator)
                 }
                 
                 Section(header: Text("Add Collaborators")) {
@@ -48,7 +52,7 @@ struct EditCollaboratorSheetView: View {
                                 Text(friend)
                                 Spacer()
                                 Button(action: {
-                                    // Placeholder action for future functionality
+                                    addCollaborator(friend: friend)
                                 }) {
                                     Image(systemName: "plus.circle.fill")
                                         .foregroundColor(Color.blue)
@@ -69,7 +73,7 @@ struct EditCollaboratorSheetView: View {
                     .transition(.opacity) // Apply a fade-in transition
                 }
                 
-                Section{
+                Section {
                     Button(action: {
                         isPresented = false
                     }) {
@@ -85,11 +89,22 @@ struct EditCollaboratorSheetView: View {
                             .multilineTextAlignment(.center)
                             .foregroundColor(.red)
                     }
-                    
                 }
             }
             .navigationBarTitle("Edit Collaborators", displayMode: .inline)
         }
         .preferredColorScheme(.dark)
+    }
+    
+    func addCollaborator(friend: String) {
+        withAnimation {
+            collaborators.append(friend)
+        }
+    }
+    
+    func removeCollaborator(at offsets: IndexSet) {
+        withAnimation {
+            collaborators.remove(atOffsets: offsets)
+        }
     }
 }
