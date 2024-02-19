@@ -51,7 +51,7 @@ class MockFirebaseService: FirebaseProtocol {
                         UserData(userId: "mockUserId2", username: "mockUsername2", joinDate: "future", avatarPreset: 2, friends: [:], blocked: [:]) as! T])
             case is LogData.Type:
                 let ownerData = Owner(userId: "mockUserId", priority: 0)
-                return .success([LogData(logId: "log123", name: "My Log", creationDate: "old", lastModifiedDate: "now", isVisible: true, owner: ownerData, movieIds: [], watchedIds: [],
+                return .success([LogData(logId: "log123", name: "My Log", creationDate: "old", lastModifiedDate: "now", isVisible: true, owner: ownerData, movieIds: ["11"], watchedIds: [],
                     collaborators: [], order: [:]) as! T,
                                  LogData(logId: "log456", name: "My Second Log", creationDate: "oldish", lastModifiedDate: "now", isVisible: false, owner: ownerData, movieIds: [], watchedIds: [],
                                      collaborators: [], order: [:]) as! T])
