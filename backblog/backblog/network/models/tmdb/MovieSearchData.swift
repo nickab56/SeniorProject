@@ -7,7 +7,14 @@
 
 import Foundation
 
-struct MovieSearchData: Codable {
+struct MovieSearchData: Codable, Equatable {
+    static func == (lhs: MovieSearchData, rhs: MovieSearchData) -> Bool {
+        return lhs.page == rhs.page &&
+        lhs.totalPages == rhs.totalPages &&
+        lhs.totalResults == rhs.totalResults &&
+        lhs.results?.count == rhs.results?.count
+    }
+    
     var page: Int?
     var results: [MovieSearchResult]?
     var totalPages: Int?

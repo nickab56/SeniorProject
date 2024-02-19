@@ -4,7 +4,7 @@
 //
 //  Created by Jake Buhite on 2/18/24.
 //
-/*
+
 import XCTest
 @testable import backblog
 
@@ -121,22 +121,22 @@ class FriendRepositoryTests: XCTestCase {
     }
     
     func testUpdateFriendRequestAcceptedSuccess() async {
-        let userData = UserData(userId: "mockUserId", username: "mockUsername", joinDate: "now", avatarPreset: 1, friends: ["bob123": true, "dude123": true], blocked: [:])
+        let reqId = "req123"
         
         do {
-            let result = try await friendRepoSucceed.getFriends(userId: userData.userId!).get()
+            let result = try await friendRepoSucceed.updateFriendRequest(friendRequestId: reqId, isAccepted: true).get()
             
-            XCTAssert(result.count == userData.friends?.count)
+            XCTAssert(result)
         } catch {
             XCTFail("Error: \(error)")
         }
     }
     
     func testUpdateFriendRequestAcceptedThrowsError() async {
-        let userData = UserData(userId: "mockUserId", username: "mockUsername", joinDate: "now", avatarPreset: 1, friends: ["bob123": true, "dude123": true], blocked: [:])
+        let reqId = "req123"
         
         do {
-            _ = try await friendRepoError.getFriends(userId: userData.userId!).get()
+            _ = try await friendRepoError.updateFriendRequest(friendRequestId: reqId, isAccepted: true).get()
             XCTFail("Function should not have returned successfully")
         } catch {
             XCTAssert(error.localizedDescription == "Mock error")
@@ -144,31 +144,122 @@ class FriendRepositoryTests: XCTestCase {
     }
     
     func testUpdateFriendRequestRejectedSuccess() async {
-        let userData = UserData(userId: "mockUserId", username: "mockUsername", joinDate: "now", avatarPreset: 1, friends: ["bob123": true, "dude123": true], blocked: [:])
+        let reqId = "req123"
         
         do {
-            let result = try await friendRepoSucceed.getFriends(userId: userData.userId!).get()
+            let result = try await friendRepoSucceed.updateFriendRequest(friendRequestId: reqId, isAccepted: false).get()
             
-            XCTAssert(result.count == userData.friends?.count)
+            XCTAssert(result)
         } catch {
             XCTFail("Error: \(error)")
         }
     }
     
     func testUpdateFriendRequestRejectedThrowsError() async {
-        let userData = UserData(userId: "mockUserId", username: "mockUsername", joinDate: "now", avatarPreset: 1, friends: ["bob123": true, "dude123": true], blocked: [:])
+        let reqId = "req123"
         
         do {
-            _ = try await friendRepoError.getFriends(userId: userData.userId!).get()
+            _ = try await friendRepoError.updateFriendRequest(friendRequestId: reqId, isAccepted: false).get()
             XCTFail("Function should not have returned successfully")
         } catch {
             XCTAssert(error.localizedDescription == "Mock error")
         }
     }
-
-    // updateFriendRequest
-    // updateLogRequest
-    // removeFriend
-    // blockUser
+    
+    func testUpdateLogRequestAcceptedSuccess() async {
+        let reqId = "req123"
+        
+        do {
+            let result = try await friendRepoSucceed.updateLogRequest(logRequestId: reqId, isAccepted: true).get()
+            
+            XCTAssert(result)
+        } catch {
+            XCTFail("Error: \(error)")
+        }
+    }
+    
+    func testUpdateLogRequestAcceptedThrowsError() async {
+        let reqId = "req123"
+        
+        do {
+            _ = try await friendRepoError.updateLogRequest(logRequestId: reqId, isAccepted: true).get()
+            XCTFail("Function should not have returned successfully")
+        } catch {
+            XCTAssert(error.localizedDescription == "Mock error")
+        }
+    }
+    
+    func testUpdateLogRequestRejectedSuccess() async {
+        let reqId = "req123"
+        
+        do {
+            let result = try await friendRepoSucceed.updateLogRequest(logRequestId: reqId, isAccepted: false).get()
+            
+            XCTAssert(result)
+        } catch {
+            XCTFail("Error: \(error)")
+        }
+    }
+    
+    func testUpdateLogRequestRejectedThrowsError() async {
+        let reqId = "req123"
+        
+        do {
+            _ = try await friendRepoError.updateLogRequest(logRequestId: reqId, isAccepted: false).get()
+            XCTFail("Function should not have returned successfully")
+        } catch {
+            XCTAssert(error.localizedDescription == "Mock error")
+        }
+    }
+    
+    func testRemoveFriendSuccess() async {
+        let userId = "mockUserId"
+        let removedId = "removedUserId"
+        
+        do {
+            let result = try await friendRepoSucceed.removeFriend(userId: userId, friendId: removedId).get()
+            
+            XCTAssert(result)
+        } catch {
+            XCTFail("Error: \(error)")
+        }
+    }
+    
+    func testRemoveFriendThrowsError() async {
+        let userId = "mockUserId"
+        let removedId = "removedUserId"
+        
+        do {
+            _ = try await friendRepoError.removeFriend(userId: userId, friendId: removedId).get()
+            XCTFail("Function should not have returned successfully")
+        } catch {
+            XCTAssert(error.localizedDescription == "Mock error")
+        }
+    }
+    
+    func testBlockUserSuccess() async {
+        let userId = "mockUserId"
+        let blockedId = "blockedUserId"
+        
+        do {
+            let result = try await friendRepoSucceed.blockUser(userId: userId, blockedId: blockedId).get()
+            
+            XCTAssert(result)
+        } catch {
+            XCTFail("Error: \(error)")
+        }
+    }
+    
+    func testBlockUserThrowsError() async {
+        let userId = "mockUserId"
+        let blockedId = "blockedUserId"
+        
+        do {
+            _ = try await friendRepoError.blockUser(userId: userId, blockedId: blockedId).get()
+            XCTFail("Function should not have returned successfully")
+        } catch {
+            XCTAssert(error.localizedDescription == "Mock error")
+        }
+    }
 }
-*/
+
