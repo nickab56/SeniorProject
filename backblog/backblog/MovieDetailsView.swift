@@ -12,6 +12,7 @@ import SwiftUI
 struct MovieDetailsView: View {
     @StateObject var vm: MoviesViewModel
     @State private var blurAmount: CGFloat = 0
+    @State private var showingLogSelection = false
     
     init (movieId: String) {
         _vm = StateObject(wrappedValue: MoviesViewModel(movieId: movieId, fb: FirebaseService(), movieService: MovieService()))
@@ -96,9 +97,9 @@ struct MovieDetailsView: View {
                         .padding(.leading, 10)
                         
                         Button(action: {
-                            // Action for the button
+                            self.showingLogSelection = true
                         }) {
-                            Text("Add to Log / Watch")
+                            Text("Add to Log")
                                 .foregroundColor(.white)
                         }
                         .frame(width: 350, height: 40)
@@ -144,6 +145,11 @@ struct MovieDetailsView: View {
         .onAppear {
             vm.fetchMovieDetails()
         }
+        .sheet(isPresented: $showingLogSelection, content: {
+            if Int(vm.movieId) != nil {
+                LogSelectionView(selectedMovieId: Int(vm.movieId)!, showingSheet: $showingLogSelection)
+            }
+        })
         .navigationBarTitleDisplayMode(.inline)
     }
 }

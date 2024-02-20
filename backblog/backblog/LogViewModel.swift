@@ -20,7 +20,7 @@ class LogViewModel: ObservableObject {
     @Published var isLoading = true
     private let maxCharacters = 20
     
-    var log: LogType
+    @Published var log: LogType
     
     private var fb: FirebaseProtocol
     private var movieService: MovieService
@@ -43,18 +43,44 @@ class LogViewModel: ObservableObject {
         watchedMovies = []
 
         // Fetch unwatched movies
-        let unwatchedMovieEntities = localLog.movie_ids ?? []
+        var unwatchedMovieEntities = localLog.movie_ids?.allObjects as? [LocalMovieData] ?? []
+        unwatchedMovieEntities.sort { $0.movie_index < $1.movie_index }
+
+        // Dispatch group to wait for all tasks to complete
+        let group = DispatchGroup()
+
         for movieEntity in unwatchedMovieEntities {
+            group.enter()
             Task {
-                await fetchMovieDetails(movieId: movieEntity, isWatched: false)
+                await fetchMovieDetails(movieId: movieEntity.movie_id ?? "", isWatched: false)
+                group.leave()
             }
         }
 
         // Fetch watched movies
-        let watchedMovieEntities = localLog.watched_ids ?? []
+        var watchedMovieEntities = localLog.watched_ids?.allObjects as? [LocalMovieData] ?? []
+        watchedMovieEntities.sort { $0.movie_index < $1.movie_index }
+
         for movieEntity in watchedMovieEntities {
+            group.enter()
             Task {
-                await fetchMovieDetails(movieId: movieEntity, isWatched: true)
+                await fetchMovieDetails(movieId: movieEntity.movie_id ?? "", isWatched: true)
+                group.leave()
+            }
+        }
+
+        // Notify when all tasks are completed
+        group.notify(queue: .main) {
+            self.movies.sort { entityA, entityB in
+                let i = unwatchedMovieEntities.firstIndex(where: { $0.movie_id == String(entityA.0.id ?? 0) } ) ?? Int.max
+                let i2 = unwatchedMovieEntities.firstIndex(where: { $0.movie_id == String(entityB.0.id ?? 0) } ) ?? Int.max
+                return i < i2
+            }
+            
+            self.watchedMovies.sort { entityA, entityB in
+                let i = watchedMovieEntities.firstIndex(where: { $0.movie_id == String(entityA.0.id ?? 0) } ) ?? Int.max
+                let i2 = watchedMovieEntities.firstIndex(where: { $0.movie_id == String(entityB.0.id ?? 0) } ) ?? Int.max
+                return i < i2
             }
         }
     }
@@ -88,14 +114,13 @@ class LogViewModel: ObservableObject {
             watchedMovies.append(movieTuple)
 
             // Update Core Data model
-            let movieEntity = localLog.movie_ids?.first(where: { $0 == String(movieId) })
+            let movieIds = localLog.movie_ids?.allObjects as? [LocalMovieData] ?? []
+            let movieEntity = movieIds.first(where: { $0.movie_id == String(movieId) })
             if (movieEntity != nil) {
-                var existingWatchedIds = localLog.watched_ids ?? []
-                existingWatchedIds.append(movieEntity!)
-                localLog.watched_ids = existingWatchedIds
+                localLog.removeFromMovie_ids(movieEntity!)
                 
-                let index = localLog.movie_ids?.firstIndex(of: movieEntity ?? "")
-                localLog.movie_ids?.remove(at: index ?? 0)
+                movieEntity?.movie_index = Int64(localLog.watched_ids?.count ?? 0)
+                localLog.addToWatched_ids(movieEntity!)
 
                 do {
                     try viewContext.save()
@@ -116,14 +141,13 @@ class LogViewModel: ObservableObject {
             movies.append(movieTuple)
 
             // Update Core Data model
-            let movieEntity = localLog.watched_ids?.first(where: { $0 == String(movieId) })
+            let movieIds = localLog.watched_ids?.allObjects as? [LocalMovieData] ?? []
+            let movieEntity = movieIds.first(where: { $0.movie_id == String(movieId) })
             if (movieEntity != nil) {
-                var existingMovieIds = localLog.movie_ids ?? []
-                existingMovieIds.append(movieEntity!)
-                localLog.movie_ids = existingMovieIds
+                localLog.removeFromWatched_ids(movieEntity!)
                 
-                let index = localLog.watched_ids?.firstIndex(of: movieEntity ?? "")
-                localLog.watched_ids?.remove(at: index ?? 0)
+                movieEntity?.movie_index = Int64(localLog.movie_ids?.count ?? 0)
+                localLog.addToMovie_ids(movieEntity!)
 
                 do {
                     try viewContext.save()
@@ -174,7 +198,7 @@ class LogViewModel: ObservableObject {
         
         guard let movieId: String = switch log {
         case .localLog(let local):
-            local.movie_ids?.first
+            (local.movie_ids?.allObjects as? [LocalMovieData])?.sorted(by: { $0.movie_index < $1.movie_index }).first?.movie_id
         case .log(let log):
             log.movieIds?.first
         } else {
@@ -223,8 +247,9 @@ class LogViewModel: ObservableObject {
             movies.remove(at: index)
 
             // Update Core Data model
-            if let movieIndex = localLog.movie_ids?.firstIndex(of: String(movieId)) {
-                localLog.movie_ids?.remove(at: movieIndex)
+            let movieArr = localLog.movie_ids?.allObjects as? [LocalMovieData] ?? []
+            if let movieEntity = movieArr.first(where: { $0.movie_id == String(movieId) }) {
+                localLog.removeFromMovie_ids(movieEntity)
 
                 do {
                     try viewContext.save()
@@ -237,15 +262,16 @@ class LogViewModel: ObservableObject {
 
     // Function to reorder movies within a local log
     func reorderMovies(from source: IndexSet, to destination: Int) {
-        guard case .localLog(let localLog) = log, let movieIds = localLog.movie_ids else { return }
+        guard case .localLog(let localLog) = log else { return }
+        let movieIds = localLog.movie_ids
 
         // Reorder movies array
         movies.move(fromOffsets: source, toOffset: destination)
 
         // Reorder Core Data model's movie_ids
-        var reorderedMovieIds = movieIds
+        var reorderedMovieIds = movieIds?.allObjects as? [LocalMovieData] ?? []
         reorderedMovieIds.move(fromOffsets: source, toOffset: destination)
-        localLog.movie_ids = reorderedMovieIds
+        localLog.movie_ids = NSSet(array: reorderedMovieIds)
 
         do {
             try viewContext.save()
@@ -264,5 +290,42 @@ class LogViewModel: ObservableObject {
         }
     }
 
+    // EDIT LOG SHEET VIEW
+    func deleteDraftMovie(movies: [(MovieData, String)], at offsets: IndexSet) -> [(MovieData, String)] {
+        var newMovies = movies
+        newMovies.remove(atOffsets: offsets)
+        return newMovies
+    }
+
+    func moveDraftMovies(movies: [(MovieData, String)], from source: IndexSet, to destination: Int) -> [(MovieData, String)] {
+        var newMovies = movies
+        newMovies.move(fromOffsets: source, toOffset: destination)
+        return newMovies
+    }
+
+    func saveChanges(draftLogName: String, movies: [(MovieData, String)]) {
+        // Apply changes from draft state to the view model
+        updateLogName(newName: draftLogName)
+        
+        // Update view model
+        self.movies = movies
+        
+        // Update log object
+        guard case .localLog(let localLog) = log else { return }
+        var updatedArray: [LocalMovieData] = []
+        for (index, e) in movies.enumerated() {
+            let movieData = LocalMovieData(context: self.viewContext)
+            movieData.movie_id = String(e.0.id ?? 0)
+            movieData.movie_index = Int64(index)
+            updatedArray.append(movieData)
+        }
+        
+        localLog.movie_ids = NSSet(array: updatedArray)
+        do {
+            try viewContext.save()
+        } catch {
+            print("Error saving changes to Core Data: \(error.localizedDescription)")
+        }
+    }
 }
 
