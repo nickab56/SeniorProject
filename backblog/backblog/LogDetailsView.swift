@@ -18,7 +18,7 @@ struct LogDetailsView: View {
 
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
                 .edgesIgnoringSafeArea(.all)
 

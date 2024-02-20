@@ -176,3 +176,5 @@ struct MovieDetailsView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
+
+
