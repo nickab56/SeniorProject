@@ -8,8 +8,6 @@ struct LogDetailsView: View {
     @State private var editCollaboratorSheet = false
     @StateObject var vm: LogViewModel
     
-    @State private var showDeleteConfirmation = false
-    
     @State private var editLogSheet = false
 
     
@@ -83,7 +81,9 @@ struct LogDetailsView: View {
                     .foregroundColor(.white)
                     .cornerRadius(8)
                     .sheet(isPresented: $editLogSheet) {
-                        EditLogSheetView(isPresented: $editLogSheet, vm: vm)
+                        EditLogSheetView(isPresented: $editLogSheet, vm: vm, onLogDeleted: {
+                            dismiss()
+                        })
                     }
                     
                     Spacer()
@@ -156,16 +156,6 @@ struct LogDetailsView: View {
                     .background(Color.clear)
                 }
 
-                    
-                Button("Delete Log") {
-                    showDeleteConfirmation = true
-                }
-                .padding()
-                .foregroundColor(.white)
-                .background(Color.red)
-                .cornerRadius(10)
-                .padding(.bottom, 20)
-                .accessibility(identifier: "Delete Log")
 
             }
             if vm.showingWatchedNotification {
@@ -180,14 +170,7 @@ struct LogDetailsView: View {
                     }
             }
         }
-        .alert("Are you sure you want to permanently delete this log?", isPresented: $showDeleteConfirmation) {
-            Button("Yes", role: .destructive) {
-                vm.deleteLog()
-                dismiss()
-            }
-            .accessibility(identifier: "ConfirmDeleteLog")
-            Button("No", role: .cancel) { }
-        }
+        .preferredColorScheme(.dark)
         .animation(.easeInOut, value: vm.showingWatchedNotification)
         .onAppear {
             vm.fetchMovies()

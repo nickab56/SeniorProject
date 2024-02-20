@@ -30,11 +30,11 @@ class LogsViewModel: ObservableObject {
     }
     
     func loadNextUnwatchedMovie(log: LocalLogData) {
-        let unwatchedMovies = log.movie_ids ?? []
+        let unwatchedMovies = log.movie_ids?.allObjects as? [LocalMovieData] ?? []
         
-        let nextUnwatchedMovie = unwatchedMovies.first
+        let nextUnwatchedMovie = unwatchedMovies.first(where: { $0.movie_index == 0 })
 
-        nextMovie = nextUnwatchedMovie  // Update the state to reflect the next unwatched movie
+        nextMovie = nextUnwatchedMovie?.movie_id  // Update the state to reflect the next unwatched movie
 
         if let nextMovie = nextMovie {
             // Fetch and display movie details
@@ -76,10 +76,19 @@ class LogsViewModel: ObservableObject {
         guard let movie = nextMovie else { return }
 
         withAnimation {
-            log.watched_ids?.append(movie)
-            let index = log.movie_ids?.firstIndex(of: movie)
-            log.movie_ids?.remove(at: index ?? 0)
+            // Add the movie to the watched list
+            let unwatchedMovies = log.movie_ids?.allObjects as? [LocalMovieData] ?? []
+            guard let movieData = unwatchedMovies.first(where: { $0.movie_id == movie }) else {
+                return
+            }
+            
+            // Remove the movie from the unwatched list
+            log.removeFromMovie_ids(movieData)
+            
+            movieData.movie_index = Int64(log.watched_ids?.count ?? 0)
+            log.addToWatched_ids(movieData)
 
+            // Save changes to the data store
             do {
                 try viewContext.save()
                 loadNextUnwatchedMovie(log: log)  // Refresh the view to show the next unwatched movie
@@ -88,6 +97,7 @@ class LogsViewModel: ObservableObject {
             }
         }
     }
+
 }
 
 // ImageLoader for fetching images from URLs

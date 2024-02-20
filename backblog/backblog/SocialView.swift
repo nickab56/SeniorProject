@@ -151,6 +151,7 @@ struct SocialView: View {
                         } else {
                             Text("No friends found.")
                                 .foregroundColor(.gray)
+                                .accessibility(identifier: "NoFriendsText")
                         }
                         
                         if vm.showingNotification {
@@ -168,6 +169,7 @@ struct SocialView: View {
         .sheet(isPresented: $vm.showingSendFriendReqSheet) {
             AddFriendSheetView(viewModel: vm, isPresented: $vm.showingSendFriendReqSheet, notificationMsg: $vm.notificationMessage, notificationActive: $vm.showingNotification)
         }
+        .navigationBarBackButtonHidden(true)
     }
     
     private var notificationView: some View {

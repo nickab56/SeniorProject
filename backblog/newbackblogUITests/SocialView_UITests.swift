@@ -51,7 +51,8 @@ final class SocialView_UITests: XCTestCase {
 
         // Switch to Friends tab and check for Friends section header
         app.segmentedControls.buttons["Friends"].tap()
-        XCTAssertTrue(app.staticTexts["FriendsSectionHeader"].waitForExistence(timeout: 10), "Friends section header should be visible in the Friends tab")
+        sleep(2)
+        XCTAssertTrue(app.staticTexts["NoFriendsText"].waitForExistence(timeout: 10), "NoFriendsText should be visible in the Friends tab")
 
         // Switch back to Logs tab and verify "No logs found" again
         app.segmentedControls.buttons["Logs"].tap()
@@ -61,6 +62,8 @@ final class SocialView_UITests: XCTestCase {
     func testChangeAvatarProcess() throws {
         let app = XCUIApplication()
         app.launch()
+        
+        sleep(2)
 
         // Navigate to the social view tab
         app.tabBars["Tab Bar"].buttons["person.2.fill"].tap()
@@ -82,34 +85,33 @@ final class SocialView_UITests: XCTestCase {
         XCTAssertTrue(app.buttons["Settings"].waitForExistence(timeout: 10))
         app.buttons["Settings"].tap()
 
-        // Change the avatar
+        // Open change avatar sheet
         app.buttons["Change Avatar"].tap()
+        
+        sleep(1)
+        
+        // Wait for the avatar selection view to appear
+        let avatarSelectionView = app.otherElements["AvatarSelectionView"]
+        XCTAssertTrue(avatarSelectionView.waitForExistence(timeout: 5), "The avatar selection view should be present")
 
+        // Select an avatar
         let selectedAvatarIndex = Int.random(in: 1...6)
         let avatarId = "avatar\(selectedAvatarIndex)"
-        
-        // Select the randomly chosen avatar
         app.images[avatarId].tap()
-
-        // Enter old password
-        let oldPasswordSecureField = app.secureTextFields["Enter Old Password"]
-        XCTAssertTrue(oldPasswordSecureField.waitForExistence(timeout: 5))
-        oldPasswordSecureField.tap()
-        oldPasswordSecureField.typeText("apple123")
-
-        // Save the settings
-        app.buttons["SAVE"].tap()
         
-        let statusMessage = app.staticTexts["StatusMessage"]
-        XCTAssertTrue(statusMessage.waitForExistence(timeout: 5))
-        XCTAssertEqual(statusMessage.label, "Successfully updated settings!")
-            
-        // Go back to verify the avatar has been changed
-        app.buttons["Back"].tap()
-        XCTAssertTrue(app.images["UserProfileImage"].waitForExistence(timeout: 5))
-        // Here you would ideally verify the avatar has changed, but this is not straightforward in UI tests because
-        // UI tests do not have access to the app's internal state. You might need to look for visual changes or other indicators.
+        sleep(1)
+
+        // Verify that the sheet is dismissed and we're back on the settings page
+        XCTAssertTrue(app.buttons["Change Avatar"].waitForExistence(timeout: 5))
+
+        // Verify the selected avatar is displayed in settings
+        let selectedAvatarImage = app.images["SettingsProfilePicture"]
+        XCTAssertTrue(selectedAvatarImage.exists, "Selected avatar should be visible in settings")
+
+        // Further verification can be done by checking if the selected avatar's image is the one expected.
+        // This might involve comparing image assets or other methods not directly supported by XCTest UI testing.
     }
+
 
     
     

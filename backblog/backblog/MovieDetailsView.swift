@@ -12,6 +12,7 @@ import SwiftUI
 struct MovieDetailsView: View {
     @StateObject var vm: MoviesViewModel
     @State private var blurAmount: CGFloat = 0
+    @State private var showingLogSelection = false
     
     
     init (movieId: String) {
@@ -102,12 +103,41 @@ struct MovieDetailsView: View {
                                 }
                                 .padding(.vertical, 1)
                             }
-                            .padding(.leading, 10)
                             
-                            Button(action: {
-                                // Action for the button
-                            }) {
-                                Text("Add to Log / Watch")
+                            .padding(.vertical, 1)
+                        }
+                        .padding(.leading, 10)
+                        
+                        Button(action: {
+                            self.showingLogSelection = true
+                        }) {
+                            Text("Add to Log")
+                                .foregroundColor(.white)
+                        }
+                        .frame(width: 350, height: 40)
+                        .background(Color(hex: "3891E1"))
+                        .cornerRadius(25)
+                        .padding(.top, 5)
+                        .padding(.leading, 20)
+                        
+                        // Overview
+                        Text(movie.overview ?? "No overview available.")
+                            .foregroundColor(.white)
+                            .padding()
+                        
+                        // Director
+                        if let crew = movie.credits?.crew, let director = crew.first(where: { $0.job == "Director" }) {
+                            Text("**Director:** \(director.name ?? "N/A")")
+                                .foregroundColor(.white)
+                                .padding(.bottom, 15)
+                                .accessibility(identifier: "movieDirector")
+                        }
+                        
+                        // Cast
+                        if let cast = movie.credits?.cast, !cast.isEmpty {
+                            VStack(alignment: .leading) {
+                                Text("Cast:")
+                                    .font(.headline)
                                     .foregroundColor(.white)
                             }
                             .frame(width: 350, height: 40)
@@ -156,6 +186,11 @@ struct MovieDetailsView: View {
         .onAppear {
             vm.fetchMovieDetails()
         }
+        .sheet(isPresented: $showingLogSelection, content: {
+            if Int(vm.movieId) != nil {
+                LogSelectionView(selectedMovieId: Int(vm.movieId)!, showingSheet: $showingLogSelection)
+            }
+        })
         .navigationBarTitleDisplayMode(.inline)
     }
 }

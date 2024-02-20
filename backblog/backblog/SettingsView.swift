@@ -47,6 +47,7 @@ struct SettingsView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 120, height: 120)
+                            .accessibilityIdentifier("SettingsProfilePicture")
                         
                         
                         Button(action: {

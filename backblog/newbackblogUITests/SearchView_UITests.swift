@@ -35,7 +35,7 @@ final class SearchView_UITests: XCTestCase {
         let searchField = app.textFields["movieSearchField"]
         XCTAssertTrue(searchField.waitForExistence(timeout: 5), "Search field should exist")
         searchField.tap()
-        searchField.typeText("Star Wars\n")
+        searchField.typeText("Inception\n")
         
         sleep(2)
 
@@ -97,18 +97,14 @@ final class SearchView_UITests: XCTestCase {
         let movieSearchField = app.textFields["movieSearchField"]
         XCTAssertTrue(movieSearchField.waitForExistence(timeout: 5), "Movie Search field should appear")
         movieSearchField.tap()
-        movieSearchField.typeText("Star Wars\n")
-        
-        sleep(2)
-        
-        // Assuming `app` is your XCUIApplication instance
-        let addToLogButtons = app.buttons.matching(identifier: "AddToLogButton")
-        XCTAssertTrue(addToLogButtons.count > 1, "There should be at least two movies listed")
+        movieSearchField.typeText("Inception\n")
 
-        // Access the second 'Add to Log' button, as 'Star Wars' is now the second movie
-        let secondAddToLogButton = addToLogButtons.element(boundBy: 1)
-        XCTAssertTrue(secondAddToLogButton.waitForExistence(timeout: 5), "Add to Log button for the second movie should appear")
-        secondAddToLogButton.tap()
+        sleep(3)
+        
+        // Tap the "Add to Log" button for the searched movie
+        let addToLogButton = app.buttons["AddToLogButton"].firstMatch
+        XCTAssertTrue(addToLogButton.waitForExistence(timeout: 5), "Add to Log button should appear for searched movie")
+        addToLogButton.tap()
 
 
         // Select a log from the list
@@ -126,13 +122,15 @@ final class SearchView_UITests: XCTestCase {
         XCTAssertTrue(newLogEntry.waitForExistence(timeout: 5), "Newly created log named 'Log 1' should exist on the landing page")
         
         newLogEntry.tap()
-        let movieInLog1 = app.staticTexts["Star Wars"]
+        let movieInLog1 = app.staticTexts["Inception"]
         XCTAssertTrue(movieInLog1.exists, "Movie should be in Log 1")
     }
     
     func test_AddMovieToMultipleLogs_MovieInBothLogs() throws {
         let app = XCUIApplication()
         app.launch()
+        
+        sleep(2)
 
         // Create the first log
         app.tabBars["Tab Bar"].buttons["Hdr"].tap()
@@ -160,18 +158,14 @@ final class SearchView_UITests: XCTestCase {
         let movieSearchField = app.textFields["movieSearchField"]
         XCTAssertTrue(movieSearchField.waitForExistence(timeout: 5), "Movie Search field should appear")
         movieSearchField.tap()
-        movieSearchField.typeText("Star Wars\n")
-        
-        sleep(2)
-        
-        // Assuming `app` is your XCUIApplication instance
-        let addToLogButtons = app.buttons.matching(identifier: "AddToLogButton")
-        XCTAssertTrue(addToLogButtons.count > 1, "There should be at least two movies listed")
+        movieSearchField.typeText("Inception\n")
 
-        // Access the second 'Add to Log' button, as 'Star Wars' is now the second movie
-        let secondAddToLogButton = addToLogButtons.element(boundBy: 1)
-        XCTAssertTrue(secondAddToLogButton.waitForExistence(timeout: 5), "Add to Log button for the second movie should appear")
-        secondAddToLogButton.tap()
+        sleep(3)
+        
+        // Tap the "Add to Log" button for the searched movie
+        let addToLogButton = app.buttons["AddToLogButton"].firstMatch
+        XCTAssertTrue(addToLogButton.waitForExistence(timeout: 5), "Add to Log button should appear for searched movie")
+        addToLogButton.tap()
 
 
         // Select the first log
@@ -193,7 +187,7 @@ final class SearchView_UITests: XCTestCase {
         let log1Entry = app.staticTexts["Log 1"].firstMatch
         XCTAssertTrue(log1Entry.waitForExistence(timeout: 5), "Log 1 entry should exist")
         log1Entry.tap()
-        let movieInLog1 = app.staticTexts["Star Wars"]
+        let movieInLog1 = app.staticTexts["Inception"]
         XCTAssertTrue(movieInLog1.exists, "Movie should be in Log 1")
 
         // Navigate back and verify the movie is added to the second log
@@ -201,7 +195,7 @@ final class SearchView_UITests: XCTestCase {
         let log2Entry = app.staticTexts["Log 2"].firstMatch
         XCTAssertTrue(log2Entry.waitForExistence(timeout: 5), "Log 2 entry should exist")
         log2Entry.tap()
-        let movieInLog2 = app.staticTexts["Star Wars"]
+        let movieInLog2 = app.staticTexts["Inception"]
         XCTAssertTrue(movieInLog2.exists, "Movie should be in Log 2")
     }
     
@@ -227,7 +221,7 @@ final class SearchView_UITests: XCTestCase {
         let movieSearchField = app.textFields["movieSearchField"]
         XCTAssertTrue(movieSearchField.waitForExistence(timeout: 5), "Movie Search field should appear")
         movieSearchField.tap()
-        movieSearchField.typeText("Star Wars\n")
+        movieSearchField.typeText("Inception\n")
         
         sleep(1)
         

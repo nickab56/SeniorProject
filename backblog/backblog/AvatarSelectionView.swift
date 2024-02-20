@@ -40,5 +40,6 @@ struct AvatarSelectionView: View {
         }
         .padding()
         .preferredColorScheme(.dark) // Force dark mode
+        .accessibility(identifier: "AvatarSelectionView")
     }
 }

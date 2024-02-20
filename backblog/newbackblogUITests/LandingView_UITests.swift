@@ -229,18 +229,14 @@ final class LandingView_UITests: XCTestCase {
 
         let movieSearchField = app.textFields["movieSearchField"]
         movieSearchField.tap()
-        movieSearchField.typeText("Star Wars\n")
+        movieSearchField.typeText("Inception\n")
 
         sleep(3)
         
-        // Assuming `app` is your XCUIApplication instance
-        let addToLogButtons = app.buttons.matching(identifier: "AddToLogButton")
-        XCTAssertTrue(addToLogButtons.count > 1, "There should be at least two movies listed")
-
-        // Access the second 'Add to Log' button, as 'Star Wars' is now the second movie
-        let secondAddToLogButton = addToLogButtons.element(boundBy: 1)
-        XCTAssertTrue(secondAddToLogButton.waitForExistence(timeout: 5), "Add to Log button for the second movie should appear")
-        secondAddToLogButton.tap()
+        // Tap the "Add to Log" button for the searched movie
+        let addToLogButton = app.buttons["AddToLogButton"].firstMatch
+        XCTAssertTrue(addToLogButton.waitForExistence(timeout: 5), "Add to Log button should appear for searched movie")
+        addToLogButton.tap()
 
 
         // Select the log
@@ -259,8 +255,8 @@ final class LandingView_UITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["WhatsNextDetails"].waitForExistence(timeout: 5))
 
         // Verify details
-        XCTAssertEqual(app.staticTexts["WhatsNextTitle"].label, "Star Wars")
-        XCTAssertEqual(app.staticTexts["WhatsNextDetails"].label, "121 min · 1977")
+        XCTAssertEqual(app.staticTexts["WhatsNextTitle"].label, "Inception")
+        XCTAssertEqual(app.staticTexts["WhatsNextDetails"].label, "148 min · 2010")
 
         // Step 4: Mark the movie as watched
         let watchedButton = app.buttons["checkButton"]
@@ -296,18 +292,14 @@ final class LandingView_UITests: XCTestCase {
 
         let movieSearchField = app.textFields["movieSearchField"]
         movieSearchField.tap()
-        movieSearchField.typeText("Star Wars\n")
+        movieSearchField.typeText("Inception\n")
 
-        sleep(2)
+        sleep(3)
         
-        // Assuming `app` is your XCUIApplication instance
-        let addToLogButtons = app.buttons.matching(identifier: "AddToLogButton")
-        XCTAssertTrue(addToLogButtons.count > 1, "There should be at least two movies listed")
-
-        // Access the second 'Add to Log' button, as 'Star Wars' is now the second movie
-        let secondAddToLogButton = addToLogButtons.element(boundBy: 1)
-        XCTAssertTrue(secondAddToLogButton.waitForExistence(timeout: 5), "Add to Log button for the second movie should appear")
-        secondAddToLogButton.tap()
+        // Tap the "Add to Log" button for the searched movie
+        let addToLogButton = app.buttons["AddToLogButton"].firstMatch
+        XCTAssertTrue(addToLogButton.waitForExistence(timeout: 5), "Add to Log button should appear for searched movie")
+        addToLogButton.tap()
 
 
         // Select the log
@@ -338,8 +330,8 @@ final class LandingView_UITests: XCTestCase {
 
         print(app.debugDescription)
         
-        let starWarsWatchedRow = app.buttons["MovieRow_StarWars"]
-        XCTAssertTrue(starWarsWatchedRow.waitForExistence(timeout: 5), "'Star Wars' should be listed in the watched section")
+        let inceptionWatchedRow = app.buttons["MovieRow_Inception"]
+        XCTAssertTrue(inceptionWatchedRow.waitForExistence(timeout: 5), "'Inception' should be listed in the watched section")
     }
 
     

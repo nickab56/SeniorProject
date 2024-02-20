@@ -139,6 +139,7 @@
 		3469C19B2B312A4700B8EEFB /* backblogUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = backblogUITests.swift; sourceTree = "<group>"; };
 		3469C19D2B312A4700B8EEFB /* backblogUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = backblogUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		347768DD2B82F7B300150EEF /* EditLogSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLogSheetView.swift; sourceTree = "<group>"; };
+		349BBA9F2B83AABB0009B418 /* backblogTestingPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = backblogTestingPlan.xctestplan; sourceTree = "<group>"; };
 		34AEBD502B6D569400C6EA87 /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 		34AEBD582B70823F00C6EA87 /* LogsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsViewModel.swift; sourceTree = "<group>"; };
 		34AEBD5A2B709C4A00C6EA87 /* AvatarSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarSelectionView.swift; sourceTree = "<group>"; };
@@ -234,6 +235,7 @@
 		3469C16F2B312A4600B8EEFB = {
 			isa = PBXGroup;
 			children = (
+				349BBA9F2B83AABB0009B418 /* backblogTestingPlan.xctestplan */,
 				3469C17A2B312A4600B8EEFB /* backblog */,
 				3469C1902B312A4700B8EEFB /* backblogTests */,
 				3469C19A2B312A4700B8EEFB /* backblogUITests */,
@@ -377,9 +379,9 @@
 				347768DD2B82F7B300150EEF /* EditLogSheetView.swift */,
 				344BA2752B37862E002626F1 /* MyLogsView.swift */,
 				340183492B5DFE1D009D7818 /* WhatsNextView.swift */,
+				34AEBD582B70823F00C6EA87 /* LogsViewModel.swift */,
 				34F035AB2B60A95500EB35C7 /* LogItemView.swift */,
 				8108A6412B76A2650069DBEA /* EditCollaboratorSheetView.swift */,
-				34AEBD582B70823F00C6EA87 /* LogsViewModel.swift */,
 			);
 			name = "Log Displaying";
 			sourceTree = "<group>";
