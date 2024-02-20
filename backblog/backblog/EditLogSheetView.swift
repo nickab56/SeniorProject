@@ -13,13 +13,17 @@ struct EditLogSheetView: View {
     @Binding var isPresented: Bool
     @ObservedObject var vm: LogViewModel
     
+    var onLogDeleted: (() -> Void)?
+    
     @State private var draftLogName: String
     @State private var draftMovies: [(MovieData, String)]
     @State private var showDeleteConfirmation: Bool = false
 
-    init(isPresented: Binding<Bool>, vm: LogViewModel) {
+    // Modified initializer to include onLogDeleted closure
+    init(isPresented: Binding<Bool>, vm: LogViewModel, onLogDeleted: (() -> Void)? = nil) {
         self._isPresented = isPresented
         self.vm = vm
+        self.onLogDeleted = onLogDeleted // Assign the passed closure to the property
 
         // Initialize draftLogName based on the LogType
         switch vm.log {
@@ -78,10 +82,12 @@ struct EditLogSheetView: View {
             .alert("Are you sure you want to delete this log?", isPresented: $showDeleteConfirmation) {
                 Button("Yes", role: .destructive) {
                     vm.deleteLog()
+                    onLogDeleted?() // Call the closure to dismiss LogDetailsView
                     isPresented = false
                 }
                 Button("No", role: .cancel) {}
             }
         }
+        .preferredColorScheme(.dark)
     }
 }
