@@ -41,6 +41,11 @@ struct MovieDetailsView: View {
                         .frame(height: 100)
                         .edgesIgnoringSafeArea(.top)
                     }
+                    
+                    // Inside the ScrollView, before the VStack
+                    if movie.backdropPath == nil && movie.posterPath == nil {
+                        Spacer(minLength: 100) // Adjust the length as needed
+                    }
                     VStack(alignment: .leading) {
                         HStack {
                             if let posterPath = movie.posterPath, let url = URL(string: "https://image.tmdb.org/t/p/w500" + posterPath) {
@@ -61,17 +66,26 @@ struct MovieDetailsView: View {
                                     .foregroundColor(.white)
                                     .bold()
                                     .accessibility(identifier: "movieTitle")
+                                    .padding(.leading, movie.posterPath == nil ? 20 : 0)
                                 
                                 // Release Date
                                 Text(vm.formatReleaseYear(from: movie.releaseDate))
                                     .foregroundColor(.white)
                                     .accessibility(identifier: "movieReleaseDate")
+                                    .padding(.leading, movie.posterPath == nil ? 20 : 0)
                                 
                                 // Runtime
                                 if let runtime = movie.runtime {
-                                    Text("\(runtime) minutes")
-                                        .foregroundColor(.white)
-                                        .accessibility(identifier: "movieRunTime")
+                                    if runtime > 0 {
+                                        Text("\(runtime) minutes")
+                                            .foregroundColor(.white)
+                                            .accessibility(identifier: "movieRunTime")
+                                            .padding(.leading, movie.posterPath == nil ? 20 : 0)
+                                    } else {
+                                        Text("No Runtime Found")
+                                            .foregroundColor(.white)
+                                            .padding(.leading, movie.posterPath == nil ? 20 : 0)
+                                    }
                                 }
 
                             }

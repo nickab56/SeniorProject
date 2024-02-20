@@ -78,7 +78,7 @@ struct SearchView: View {
 
     private func movieImageView(for movieId: Int?) -> some View {
         Group {
-            if let movieId = movieId, let url = vm.halfSheetImageUrls[movieId] {
+            if let movieId = movieId, let url = vm.halfSheetImageUrls[movieId] ?? vm.backdropImageUrls[movieId] {
                 AsyncImage(url: url) { image in
                     image.resizable()
                 } placeholder: {
@@ -93,14 +93,19 @@ struct SearchView: View {
                     .cornerRadius(8)
                     .padding(.leading)
                     .onAppear {
-                        if let movieId = movieId, vm.halfSheetImageUrls[movieId] == nil {
-                            // Only load if not already attempted
-                            vm.loadHalfSheetImage(movieId: movieId)
+                        if let movieId = movieId {
+                            if vm.halfSheetImageUrls[movieId] == nil {
+                                vm.loadHalfSheetImage(movieId: movieId)
+                            }
+                            if vm.backdropImageUrls[movieId] == nil {
+                                vm.loadBackdropImage(movieId: movieId)
+                            }
                         }
                     }
             }
         }
     }
+
 
     private func addButton(for movie: MovieSearchData.MovieSearchResult) -> some View {
         Button(action: {
