@@ -66,7 +66,7 @@ struct LandingView: View {
                                 // Determine if there are any unwatched movies in the first log
                                 let unwatchedMovies = firstLog.movie_ids
 
-                                if let unwatchedMovies = unwatchedMovies, !unwatchedMovies.isEmpty {
+                    if let unwatchedMovies = unwatchedMovies, !unwatchedMovies.allObjects.isEmpty {
                                     // If there are unwatched movies, show the WhatsNextView for the first log
                                     WhatsNextView(log: firstLog, vm: logsViewModel)
                                         .padding(.top, -20)
