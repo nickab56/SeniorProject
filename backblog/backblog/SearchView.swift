@@ -78,33 +78,49 @@ struct SearchView: View {
 
     private func movieImageView(for movieId: Int?) -> some View {
         Group {
-            if let movieId = movieId, let url = vm.halfSheetImageUrls[movieId] ?? vm.backdropImageUrls[movieId] {
-                AsyncImage(url: url) { image in
-                    image.resizable()
-                } placeholder: {
-                    Color.gray
+            if let movieId = movieId {
+                // First, try to load the half sheet image if available
+                if let halfSheetUrl = vm.halfSheetImageUrls[movieId], let url = halfSheetUrl {
+                    AsyncImage(url: url) { image in
+                        image.resizable()
+                    } placeholder: {
+                        Color.gray
+                    }
+                    .frame(width: 180, height: 100)
+                    .cornerRadius(8)
+                    .padding(.leading)
                 }
-                .frame(width: 180, height: 100)
-                .cornerRadius(8)
-                .padding(.leading)
+                // If no half sheet image, then try to load the backdrop image
+                else if let backdropUrl = vm.backdropImageUrls[movieId], let url = backdropUrl {
+                    AsyncImage(url: url) { image in
+                        image.resizable()
+                    } placeholder: {
+                        Color.gray
+                    }
+                    .frame(width: 180, height: 100)
+                    .cornerRadius(8)
+                    .padding(.leading)
+                }
+                // If neither is available, show a gray placeholder
+                else {
+                    Color.gray
+                        .frame(width: 180, height: 100)
+                        .cornerRadius(8)
+                        .padding(.leading)
+                        .onAppear {
+                            vm.loadHalfSheetImage(movieId: movieId)
+                            vm.loadBackdropImage(movieId: movieId)
+                        }
+                }
             } else {
                 Color.gray
                     .frame(width: 180, height: 100)
                     .cornerRadius(8)
                     .padding(.leading)
-                    .onAppear {
-                        if let movieId = movieId {
-                            if vm.halfSheetImageUrls[movieId] == nil {
-                                vm.loadHalfSheetImage(movieId: movieId)
-                            }
-                            if vm.backdropImageUrls[movieId] == nil {
-                                vm.loadBackdropImage(movieId: movieId)
-                            }
-                        }
-                    }
             }
         }
     }
+
 
 
     private func addButton(for movie: MovieSearchData.MovieSearchResult) -> some View {
