@@ -84,11 +84,18 @@ struct LogSelectionView: View {
     }
 
     private func isDuplicateInLog(logId: Int64) -> Bool {
-        if let log = logs.first(where: { $0.log_id == logId }), let movieIds = log.movie_ids, movieIds.contains("\(selectedMovieId)") {
-            return true // The movie is already in the log
+        if let log = logs.first(where: { $0.log_id == logId }) {
+            if let movieIds = log.movie_ids as? Set<LocalMovieData> { // Cast NSSet to Set<LocalMovieData>
+                for movie in movieIds {
+                    if movie.movie_id == String(selectedMovieId) {
+                        return true // The movie is already in the log
+                    }
+                }
+            }
         }
         return false // The movie is not in the log
     }
+
 
     private func addMovieToSelectedLogs() {
         selectedLogs.forEach { logId in
