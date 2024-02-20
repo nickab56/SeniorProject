@@ -19,7 +19,7 @@ struct MovieDetailsView: View {
     }
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             // Background
             LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
                 .edgesIgnoringSafeArea(.all)
@@ -28,129 +28,138 @@ struct MovieDetailsView: View {
             if vm.isLoading {
                 ProgressView("Loading...")
             } else if let movie = vm.movieData {
-                ScrollView {
-                    if let backdropPath = movie.backdropPath, let url = URL(string: "https://image.tmdb.org/t/p/w1280" + backdropPath) {
-                        AsyncImage(url: url) { image in
-                            image.resizable()
-                                .aspectRatio(contentMode: .fill)
-                        } placeholder: {
-                            Color.gray
-                        }
-                        .clipped()
-                        .padding(.top, -100)
-                        .frame(height: 100)
-                        .edgesIgnoringSafeArea(.top)
+                if let backdropPath = movie.backdropPath, let url = URL(string: "https://image.tmdb.org/t/p/w1280" + backdropPath) {
+                    AsyncImage(url: url) { image in
+                        image.resizable()
+                            .aspectRatio(contentMode: .fill)
+                    } placeholder: {
+                        Color.gray
                     }
+                    .clipped()
+                    .padding(.top, 100)
+                    .frame(height: 100)
+                    .edgesIgnoringSafeArea(.top)
+                }
+                
+                ScrollView {
                     
                     // Inside the ScrollView, before the VStack
                     if movie.backdropPath == nil && movie.posterPath == nil {
                         Spacer(minLength: 100) // Adjust the length as needed
                     }
+                    ZStack {
+                        
+                        LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                            .edgesIgnoringSafeArea(.all)
+
                     VStack(alignment: .leading) {
-                        HStack {
-                            if let posterPath = movie.posterPath, let url = URL(string: "https://image.tmdb.org/t/p/w500" + posterPath) {
-                                AsyncImage(url: url) { image in
-                                    image.resizable()
-                                        .accessibility(identifier: "moviePoster")
-                                } placeholder: {
-                                    Color.gray
+                            HStack {
+                                if let posterPath = movie.posterPath, let url = URL(string: "https://image.tmdb.org/t/p/w500" + posterPath) {
+                                    AsyncImage(url: url) { image in
+                                        image.resizable()
+                                            .accessibility(identifier: "moviePoster")
+                                    } placeholder: {
+                                        Color.gray
+                                    }
+                                    .frame(width: 120, height: 175)
+                                    .cornerRadius(10)
+                                    .padding(.top)
                                 }
-                                .frame(width: 120, height: 175)
-                                .cornerRadius(10)
-                                .padding(.top)
+                                VStack(alignment: .leading) {
+                                    // Movie Title
+                                    Text(movie.title ?? "N/A")
+                                        .font(.title)
+                                        .foregroundColor(.white)
+                                        .bold()
+                                        .accessibility(identifier: "movieTitle")
+                                        .padding(.leading, movie.posterPath == nil ? 20 : 0)
+                                    
+                                    // Release Date
+                                    Text(vm.formatReleaseYear(from: movie.releaseDate))
+                                        .foregroundColor(.white)
+                                        .accessibility(identifier: "movieReleaseDate")
+                                        .padding(.leading, movie.posterPath == nil ? 20 : 0)
+                                    
+                                    // Runtime
+                                    if let runtime = movie.runtime {
+                                        if runtime > 0 {
+                                            Text("\(runtime) minutes")
+                                                .foregroundColor(.white)
+                                                .accessibility(identifier: "movieRunTime")
+                                                .padding(.leading, movie.posterPath == nil ? 20 : 0)
+                                        } else {
+                                            Text("No Runtime Found")
+                                                .foregroundColor(.white)
+                                                .padding(.leading, movie.posterPath == nil ? 20 : 0)
+                                        }
+                                    }
+                                    
+                                }
+                                .padding(.top, -60)
                             }
-                            VStack(alignment: .leading) {
-                                // Movie Title
-                                Text(movie.title ?? "N/A")
-                                    .font(.title)
-                                    .foregroundColor(.white)
-                                    .bold()
-                                    .accessibility(identifier: "movieTitle")
-                                    .padding(.leading, movie.posterPath == nil ? 20 : 0)
-                                
-                                // Release Date
-                                Text(vm.formatReleaseYear(from: movie.releaseDate))
-                                    .foregroundColor(.white)
-                                    .accessibility(identifier: "movieReleaseDate")
-                                    .padding(.leading, movie.posterPath == nil ? 20 : 0)
-                                
-                                // Runtime
-                                if let runtime = movie.runtime {
-                                    if runtime > 0 {
-                                        Text("\(runtime) minutes")
-                                            .foregroundColor(.white)
-                                            .accessibility(identifier: "movieRunTime")
-                                            .padding(.leading, movie.posterPath == nil ? 20 : 0)
-                                    } else {
-                                        Text("No Runtime Found")
-                                            .foregroundColor(.white)
-                                            .padding(.leading, movie.posterPath == nil ? 20 : 0)
+                            
+                            ScrollView(.horizontal, showsIndicators: false) { // Horizontal scroll view without indicators
+                                HStack(spacing: 10) { // HStack with spacing for genre bubbles
+                                    if let genres = movie.genres, !genres.isEmpty {
+                                        ForEach(genres, id: \.id) { genre in
+                                            Text(genre.name ?? "N/A")
+                                                .foregroundColor(.white)
+                                                .padding(7)
+                                                .background(Color.clear) // Clear background
+                                                .overlay(
+                                                    Capsule().stroke(Color.white, lineWidth: 1) // White border
+                                                )
+                                        }
                                     }
                                 }
-
+                                .padding(.vertical, 1)
                             }
-                            .padding(.top, -60)
-                        }
-                        
-                        ScrollView(.horizontal, showsIndicators: false) { // Horizontal scroll view without indicators
-                            HStack(spacing: 10) { // HStack with spacing for genre bubbles
-                                if let genres = movie.genres, !genres.isEmpty {
-                                    ForEach(genres, id: \.id) { genre in
-                                        Text(genre.name ?? "N/A")
-                                            .foregroundColor(.white)
-                                            .padding(7)
-                                            .background(Color.clear) // Clear background
-                                            .overlay(
-                                                Capsule().stroke(Color.white, lineWidth: 1) // White border
-                                            )
-                                    }
-                                }
-                            }
-                            .padding(.vertical, 1)
-                        }
-                        .padding(.leading, 10)
-                        
-                        Button(action: {
-                            self.showingLogSelection = true
-                        }) {
-                            Text("Add to Log")
-                                .foregroundColor(.white)
-                        }
-                        .frame(width: 350, height: 40)
-                        .background(Color(hex: "3891E1"))
-                        .cornerRadius(25)
-                        .padding(.top, 5)
-                        .padding(.leading, 20)
-
-                        // Overview
-                        Text(movie.overview ?? "No overview available.")
-                            .foregroundColor(.white)
-                            .padding()
-
-                        // Director
-                        if let crew = movie.credits?.crew, let director = crew.first(where: { $0.job == "Director" }) {
-                            Text("**Director:** \(director.name ?? "N/A")")
-                                .foregroundColor(.white)
-                                .padding(.bottom, 15)
-                                .accessibility(identifier: "movieDirector")
-                        }
-
-                        // Cast
-                        if let cast = movie.credits?.cast, !cast.isEmpty {
-                            VStack(alignment: .leading) {
-                                Text("Cast:")
-                                    .font(.headline)
+                            .padding(.leading, 10)
+                            
+                            Button(action: {
+                                self.showingLogSelection = true
+                            }) {
+                                Text("Add to Log")
                                     .foregroundColor(.white)
-                                    .padding(.bottom, 1)
-                                ForEach(cast.prefix(5), id: \.id) { castMember in
-                                    Text(castMember.name ?? "N/A")
+                            }
+                            .frame(width: 350, height: 40)
+                            .background(Color(hex: "3891E1"))
+                            .cornerRadius(25)
+                            .padding(.top, 5)
+                            .padding(.leading, 20)
+                            
+                            // Overview
+                            Text(movie.overview ?? "No overview available.")
+                                .foregroundColor(.white)
+                                .padding()
+                            
+                            // Director
+                            if let crew = movie.credits?.crew, let director = crew.first(where: { $0.job == "Director" }) {
+                                Text("**Director:** \(director.name ?? "N/A")")
+                                    .foregroundColor(.white)
+                                    .padding(.bottom, 15)
+                                    .accessibility(identifier: "movieDirector")
+                            }
+                            
+                            // Cast
+                            if let cast = movie.credits?.cast, !cast.isEmpty {
+                                VStack(alignment: .leading) {
+                                    Text("Cast:")
+                                        .font(.headline)
                                         .foregroundColor(.white)
                                         .padding(.bottom, 1)
-                                }
-                            }.padding()
-                                .accessibility(identifier: "movieCast")
+                                    ForEach(cast.prefix(5), id: \.id) { castMember in
+                                        Text(castMember.name ?? "N/A")
+                                            .foregroundColor(.white)
+                                            .padding(.bottom, 1)
+                                    }
+                                }.padding()
+                                    .accessibility(identifier: "movieCast")
+                            }
                         }
                     }
+                    .padding(.top, 100)
+
                 }
             } else if vm.errorMessage != nil {
                 Text("Failed to load movie details.")
@@ -167,3 +176,5 @@ struct MovieDetailsView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
+
+
