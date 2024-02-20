@@ -3,7 +3,6 @@ import CoreData
 
 struct WhatsNextView: View {
     var log: LocalLogData  // Assuming you're passing the specific log for "What's Next"
-    
     @ObservedObject var vm: LogsViewModel
 
     var body: some View {
@@ -15,12 +14,16 @@ struct WhatsNextView: View {
                 .padding(.leading)
                 .accessibility(identifier: "logNameText")
 
-            vm.halfSheetImage
-                .resizable()
-                .scaledToFit()
-                .cornerRadius(15)
-                .padding(.horizontal, 10)
-                .accessibility(identifier: "logPosterImage")
+            // Movie Image with Navigation Link
+            NavigationLink(destination: MovieDetailsView(movieId: vm.nextMovie ?? "")) {
+                vm.halfSheetImage
+                    .resizable()
+                    .scaledToFit()
+                    .cornerRadius(15)
+                    .padding(.horizontal, 10)
+                    .accessibility(identifier: "logPosterImage")
+            }
+            .buttonStyle(PlainButtonStyle()) // Use PlainButtonStyle to keep the image appearance
 
             HStack {
                 VStack(alignment: .leading) {
