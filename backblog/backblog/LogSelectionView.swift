@@ -97,13 +97,35 @@ struct LogSelectionView: View {
     }
 
 
+
     private func addMovieToSelectedLogs() {
         selectedLogs.forEach { logId in
             if let log = logs.first(where: { $0.log_id == logId }) {
-                addMovieToLog(movieId: selectedMovieId, log: log)
+                // Check if the movie is already in the watched list
+                if let watchedMovie = log.watched_ids as? Set<LocalMovieData>, let movieToMove = watchedMovie.first(where: { $0.movie_id == String(selectedMovieId) }) {
+                    // Move the movie from watched to unwatched list
+                    log.removeFromWatched_ids(movieToMove)
+                    movieToMove.movie_index = Int64(log.movie_ids?.count ?? 0) // Update the index for the unwatched list
+                    log.addToMovie_ids(movieToMove)
+                } else if !isDuplicateInLog(logId: log.log_id) {
+                    // The movie is not in the unwatched or watched list, add a new entry
+                    let newMovie = LocalMovieData(context: viewContext)
+                    newMovie.movie_id = String(selectedMovieId)
+                    newMovie.movie_index = Int64(log.movie_ids?.count ?? 0)
+                    log.addToMovie_ids(newMovie)
+                }
+                
+                // Save changes
+                do {
+                    try viewContext.save()
+                    showingSheet = false
+                } catch {
+                    print("Error updating movie lists: \(error)")
+                }
             }
         }
     }
+
     
     private func addMovieToLog(movieId: Int, log: LocalLogData) {
         let existingMovieIds = log.movie_ids ?? []
