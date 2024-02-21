@@ -11,6 +11,7 @@ import SwiftUI
 
 struct MovieDetailsView: View {
     @StateObject var vm: MoviesViewModel
+    @State private var opacity: Double = 0
     @State private var blurAmount: CGFloat = 0
     @State private var showingLogSelection = false
     
@@ -41,7 +42,24 @@ struct MovieDetailsView: View {
                     .edgesIgnoringSafeArea(.top)
                 }
                 
+                Rectangle()
+                    .foregroundColor(.clear)
+                    .background(.ultraThinMaterial)
+                    .opacity(self.opacity)
+                
                 ScrollView {
+                    
+                    GeometryReader { geo in
+                        Rectangle()
+                            .frame(width: 0, height: 0)
+                            .onAppear(perform: {
+                                self.blurAmount = geo.frame(in: .global).midY
+                            })
+                            .onChange(of: geo.frame(in: .global).maxY) { _, midY in
+                                self.opacity = (midY - blurAmount) / 100
+                                
+                            }
+                    }
                     
                     // Inside the ScrollView, before the VStack
                     if movie.backdropPath == nil && movie.posterPath == nil {
