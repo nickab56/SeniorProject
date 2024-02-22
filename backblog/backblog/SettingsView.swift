@@ -101,14 +101,20 @@ struct SettingsView: View {
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding(.horizontal, 15)
                     
-                    // Status Message
-                    Text(saveMessage)
-                        .foregroundColor(messageColor)
-                        .padding()
-                        .accessibility(identifier: "StatusMessage")
+                    if (vm.getLocalLogCount() > 0) {
+                        Button(action: {
+                            vm.syncLocalLogsToDB()
+                        }) {
+                            Text("SYNC LOGS")
+                                .foregroundColor(.white)
+                        }
+                        .frame(width: 300, height: 50)
+                        .background(Color.blue)
+                        .cornerRadius(50)
+                        .padding(.top, 5)
+                    }
                     
                     Button(action: {
-                        // Update user
                         vm.updateUser(username: usernameText, newPassword: newPasswordText, password: oldPasswordText)
                     }) {
                         Text("SAVE")
@@ -136,6 +142,18 @@ struct SettingsView: View {
                     Spacer()
                 }.padding(.top, 10)
             }
+            
+            if vm.showingNotification {
+                notificationView
+                    .transition(.move(edge: .bottom))
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            withAnimation {
+                                vm.showingNotification = false
+                            }
+                        }
+                    }
+            }
         }
         .sheet(isPresented: $showingAvatarSelection) {
             AvatarSelectionView { selectedAvatarPreset in
@@ -146,5 +164,16 @@ struct SettingsView: View {
         .navigationDestination(isPresented: $vm.isUnauthorized) {
             SearchView()
         }
+    }
+    
+    private var notificationView: some View {
+        Text(vm.notificationMessage)
+            .padding()
+            .background(Color.gray.opacity(0.9))
+            .foregroundColor(Color.white)
+            .cornerRadius(10)
+            .shadow(radius: 10)
+            .zIndex(1) // Ensure the notification view is always on top
+            .accessibility(identifier: "NotificationsView")
     }
 }

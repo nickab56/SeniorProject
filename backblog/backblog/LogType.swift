@@ -8,7 +8,16 @@
 
 import Foundation
 
-enum LogType {
+enum LogType: Identifiable {
     case localLog(LocalLogData)
     case log(LogData)
+    
+    var id: String {
+        switch self {
+        case .localLog(let log):
+            return String(log.log_id)
+        case .log(let log):
+            return log.logId ?? ""
+        }
+    }
 }

@@ -152,6 +152,7 @@ class FriendRepository {
                     do {
                         return try await self.fb.put(updates: updateUser, docId: userId, collection: "users").get()
                     } catch {
+                        print("Error updating userId: \(error)")
                         throw error
                     }
                 }
@@ -160,8 +161,9 @@ class FriendRepository {
                 group.addTask {
                     let updateFriend = ["friends.\(userId)": FieldValue.delete()]
                     do {
-                        return try await self.fb.put(updates: updateFriend, docId: userId, collection: "users").get()
+                        return try await self.fb.put(updates: updateFriend, docId: friendId, collection: "users").get()
                     } catch {
+                        print("Error updating friendId: \(error)")
                         throw error
                     }
                 }
@@ -180,12 +182,17 @@ class FriendRepository {
         }
     }
     
-    // TODO Ensure blocker is removed from friends list, logs involving this user (excluding one he owns)
+    // TODO Ensure blocker is removed from logs involving this user (excluding one he owns)
     // Blocked user must also be removed from the logs that the user above owns
     func blockUser(userId: String, blockedId: String) async -> Result<Bool, Error> {
         do {
+            // Add to blocked
             let updates = ["blocked.\(blockedId)": true]
             let result = try await fb.put(updates: updates, docId: userId, collection: "users").get()
+            
+            // Remove from friends list (both)
+            _ = try await removeFriend(userId: userId, friendId: blockedId).get()
+            _ = try await removeFriend(userId: blockedId, friendId: userId).get()
             
             return .success(result)
         } catch {

@@ -35,52 +35,108 @@ class LogViewModel: ObservableObject {
         self.movieRepo = MovieRepository(fb: fb, movieService: movieService)
     }
     
+    func updateLog() {
+        guard case .log(let fbLog) = log else { return }
+        DispatchQueue.main.async { [self] in
+            Task {
+                do {
+                    guard let logId = fbLog.logId else { return }
+                    log = try await LogType.log(logRepo.getLog(logId: logId).get())
+                    fetchMovies()
+                } catch {
+                    throw error
+                }
+            }
+        }
+    }
+    
     func fetchMovies() {
-        guard case .localLog(let localLog) = log else { return }
-
         // Clear existing data
         movies = []
         watchedMovies = []
+        
+        switch (log) {
+        case .localLog(let localLog):
+            // Fetch unwatched movies
+            var unwatchedMovieEntities = localLog.movie_ids?.allObjects as? [LocalMovieData] ?? []
+            unwatchedMovieEntities.sort { $0.movie_index < $1.movie_index }
 
-        // Fetch unwatched movies
-        var unwatchedMovieEntities = localLog.movie_ids?.allObjects as? [LocalMovieData] ?? []
-        unwatchedMovieEntities.sort { $0.movie_index < $1.movie_index }
+            // Dispatch group to wait for all tasks to complete
+            let group = DispatchGroup()
 
-        // Dispatch group to wait for all tasks to complete
-        let group = DispatchGroup()
-
-        for movieEntity in unwatchedMovieEntities {
-            group.enter()
-            Task {
-                await fetchMovieDetails(movieId: movieEntity.movie_id ?? "", isWatched: false)
-                group.leave()
+            for movieEntity in unwatchedMovieEntities {
+                group.enter()
+                Task {
+                    await fetchMovieDetails(movieId: movieEntity.movie_id ?? "", isWatched: false)
+                    group.leave()
+                }
             }
-        }
 
-        // Fetch watched movies
-        var watchedMovieEntities = localLog.watched_ids?.allObjects as? [LocalMovieData] ?? []
-        watchedMovieEntities.sort { $0.movie_index < $1.movie_index }
+            // Fetch watched movies
+            var watchedMovieEntities = localLog.watched_ids?.allObjects as? [LocalMovieData] ?? []
+            watchedMovieEntities.sort { $0.movie_index < $1.movie_index }
 
-        for movieEntity in watchedMovieEntities {
-            group.enter()
-            Task {
-                await fetchMovieDetails(movieId: movieEntity.movie_id ?? "", isWatched: true)
-                group.leave()
+            for movieEntity in watchedMovieEntities {
+                group.enter()
+                Task {
+                    await fetchMovieDetails(movieId: movieEntity.movie_id ?? "", isWatched: true)
+                    group.leave()
+                }
             }
-        }
 
-        // Notify when all tasks are completed
-        group.notify(queue: .main) {
-            self.movies.sort { entityA, entityB in
-                let i = unwatchedMovieEntities.firstIndex(where: { $0.movie_id == String(entityA.0.id ?? 0) } ) ?? Int.max
-                let i2 = unwatchedMovieEntities.firstIndex(where: { $0.movie_id == String(entityB.0.id ?? 0) } ) ?? Int.max
-                return i < i2
+            // Notify when all tasks are completed
+            group.notify(queue: .main) {
+                self.movies.sort { entityA, entityB in
+                    let i = unwatchedMovieEntities.firstIndex(where: { $0.movie_id == String(entityA.0.id ?? 0) } ) ?? Int.max
+                    let i2 = unwatchedMovieEntities.firstIndex(where: { $0.movie_id == String(entityB.0.id ?? 0) } ) ?? Int.max
+                    return i < i2
+                }
+                
+                self.watchedMovies.sort { entityA, entityB in
+                    let i = watchedMovieEntities.firstIndex(where: { $0.movie_id == String(entityA.0.id ?? 0) } ) ?? Int.max
+                    let i2 = watchedMovieEntities.firstIndex(where: { $0.movie_id == String(entityB.0.id ?? 0) } ) ?? Int.max
+                    return i < i2
+                }
             }
-            
-            self.watchedMovies.sort { entityA, entityB in
-                let i = watchedMovieEntities.firstIndex(where: { $0.movie_id == String(entityA.0.id ?? 0) } ) ?? Int.max
-                let i2 = watchedMovieEntities.firstIndex(where: { $0.movie_id == String(entityB.0.id ?? 0) } ) ?? Int.max
-                return i < i2
+        case .log(let fbLog):
+            // Fetch unwatched movies
+            let unwatchedMovies = fbLog.movieIds ?? []
+
+            // Dispatch group to wait for all tasks to complete
+            let group = DispatchGroup()
+
+            for movieId in unwatchedMovies {
+                group.enter()
+                Task {
+                    await fetchMovieDetails(movieId: movieId, isWatched: false)
+                    group.leave()
+                }
+            }
+
+            // Fetch watched movies
+            let watchedMovies = fbLog.watchedIds ?? []
+
+            for movieId in watchedMovies {
+                group.enter()
+                Task {
+                    await fetchMovieDetails(movieId: movieId, isWatched: true)
+                    group.leave()
+                }
+            }
+
+            // Notify when all tasks are completed
+            group.notify(queue: .main) {
+                self.movies.sort { entityA, entityB in
+                    let i = unwatchedMovies.firstIndex(where: { $0 == String(entityA.0.id ?? 0) } ) ?? Int.max
+                    let i2 = unwatchedMovies.firstIndex(where: { $0 == String(entityB.0.id ?? 0) } ) ?? Int.max
+                    return i < i2
+                }
+                
+                self.watchedMovies.sort { entityA, entityB in
+                    let i = watchedMovies.firstIndex(where: { $0 == String(entityA.0.id ?? 0) } ) ?? Int.max
+                    let i2 = watchedMovies.firstIndex(where: { $0 == String(entityB.0.id ?? 0) } ) ?? Int.max
+                    return i < i2
+                }
             }
         }
     }

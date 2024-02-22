@@ -5,7 +5,7 @@
 //  Created by Jake Buhite on 2/12/24.
 //
 
-import Foundation
+import CoreData
 
 class SocialViewModel: ObservableObject {
     @Published var logs: [LogData] = []
@@ -225,8 +225,8 @@ class SocialViewModel: ObservableObject {
                         return
                     }
                     let targetRequests = try await userRepo.getFriendRequests(userId: targetId).get()
-                    if ((targetRequests.firstIndex(where: { $0.senderId == targetId && $0.targetId == userId })) != nil) {
-                        notificationMessage = "This user has already sent you a friend request!"
+                    if ((targetRequests.firstIndex(where: { $0.senderId == userId && $0.targetId == targetId })) != nil) {
+                        notificationMessage = "Friend request already sent!"
                         showingNotification = true
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                             self.showingNotification = false
@@ -236,8 +236,8 @@ class SocialViewModel: ObservableObject {
                     
                     // Check if user already sent a request to this target
                     let userRequests = try await userRepo.getFriendRequests(userId: userId).get()
-                    if ((userRequests.firstIndex(where: { $0.senderId == userId && $0.targetId == targetId })) != nil) {
-                        notificationMessage = "Friend request already sent!"
+                    if ((userRequests.firstIndex(where: { $0.senderId == targetId && $0.targetId == userId })) != nil) {
+                        notificationMessage = "This user has already sent you a friend request!"
                         showingNotification = true
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                             self.showingNotification = false
@@ -297,21 +297,21 @@ class SocialViewModel: ObservableObject {
                             // Successful, update userData
                             userData = try await userRepo.getUser(userId: userId).get()
                             
-                            //saveMessage = "Successfully updated settings!"
-                            //messageColor = Color.green
+                            notificationMessage = "Successfully updated settings!"
+                            showingNotification = true
                         } else {
                             // No changes were made
-                            //saveMessage = "Please make changes before saving."
-                            //messageColor = Color.red
+                            notificationMessage = "Please make changes before saving."
+                            showingNotification = true
                         }
                     } else {
                         // Password field is empty
-                        //saveMessage = "Please enter your current password."
-                        //messageColor = Color.red
+                        notificationMessage = "Please enter your current password."
+                        showingNotification = true
                     }
                 } catch {
-                    //saveMessage = "Error, please try again later."
-                    //messageColor = Color.red
+                    notificationMessage = "Error, please try again later."
+                    showingNotification = true
                 }
             }
         }
@@ -331,8 +331,8 @@ class SocialViewModel: ObservableObject {
                     // Logout successful
                     isUnauthorized = false
                 } catch {
-                    //saveMessage = "Error, please try logging out later."
-                    //messageColor = Color.red
+                    notificationMessage = "Error, please try logging out later."
+                    showingNotification = true
                 }
             }
         }
@@ -340,5 +340,96 @@ class SocialViewModel: ObservableObject {
     
     func getUserId() -> String {
         return fb.getUserId() ?? ""
+    }
+    
+    func syncLocalLogsToDB() {
+        DispatchQueue.main.async { [self] in
+            Task {
+                let logs = getLocalLogs()
+                
+                do {
+                    _ = try await withThrowingTaskGroup(of: Bool.self) { group in
+                        for (i, e) in logs.enumerated() {
+                            group.addTask {
+                                do {
+                                    let movieIds = (e.movie_ids?.allObjects as? [LocalMovieData])?.compactMap { $0.movie_id } ?? []
+                                    let watchedIds = (e.watched_ids?.allObjects as? [LocalMovieData])?.compactMap { $0.movie_id } ?? []
+                                    return try await self.logRepo.addLog(name: e.name ?? "Log",
+                                                                         ownerId: self.getUserId(),
+                                                                         priority: i,
+                                                                         creationDate: e.creation_date ?? String(currentTimeInMS()),
+                                                                         movieIds: movieIds,
+                                                                         watchedIds: watchedIds).get()
+                                } catch {
+                                    print("Error updating userId: \(error)")
+                                    throw error
+                                }
+                            }
+                        }
+                        
+                        for try await result in group {
+                            if (!result) {
+                                throw FirebaseError.failedTransaction
+                            }
+                        }
+                            
+                        return true
+                    }
+                    
+                    // Logs transferred, delete local logs
+                    resetAllLogs()
+                    
+                    notificationMessage = "Successfully transferred logs!"
+                    showingNotification = true
+                } catch {
+                    notificationMessage = "Error, please try syncing later."
+                    showingNotification = true
+                }
+                
+                // Delete all coredata
+                resetAllLogs()
+            }
+        }
+    }
+    
+    func getLocalLogCount() -> Int {
+        let context = PersistenceController.shared.container.viewContext
+
+        let fetchRequest: NSFetchRequest<LocalLogData> = LocalLogData.fetchRequest()
+        do {
+            let items = try context.fetch(fetchRequest)
+            return items.count
+        } catch let error as NSError {
+            print("Error resetting logs: \(error), \(error.userInfo)")
+        }
+        return 0
+    }
+    
+    private func resetAllLogs() {
+        let context = PersistenceController.shared.container.viewContext
+
+        let fetchRequest: NSFetchRequest<LocalLogData> = LocalLogData.fetchRequest()
+        do {
+            let items = try context.fetch(fetchRequest)
+            for item in items {
+                context.delete(item)
+            }
+            try context.save()
+        } catch let error as NSError {
+            print("Error resetting logs: \(error), \(error.userInfo)")
+        }
+    }
+    
+    private func getLocalLogs() -> [LocalLogData] {
+        let context = PersistenceController.shared.container.viewContext
+
+        let fetchRequest: NSFetchRequest<LocalLogData> = LocalLogData.fetchRequest()
+        do {
+            let items = try context.fetch(fetchRequest)
+            return items
+        } catch let error as NSError {
+            print("Error resetting logs: \(error), \(error.userInfo)")
+        }
+        return []
     }
 }
