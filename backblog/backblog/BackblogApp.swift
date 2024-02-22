@@ -4,7 +4,7 @@
 //
 //  Created by Nick Abegg on 12/18/23.
 //
-//  Description: Entry point to the app. Set up firebase config and roots to landing page.
+//  Description: Entry point to the app. Sets Up firebase config and roots to landing page.
 //  Establishes persistence
 
 import SwiftUI

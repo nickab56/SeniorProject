@@ -19,7 +19,7 @@
 		344BA2822B48AC8E002626F1 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2812B48AC8E002626F1 /* SignupView.swift */; };
 		344D794E2B7957360030F12D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 344D794D2B7957360030F12D /* GoogleService-Info.plist */; };
 		3466FF2D2B61EA610028034C /* MovieDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3466FF2C2B61EA610028034C /* MovieDetailsView.swift */; };
-		3469C17C2B312A4600B8EEFB /* backblogApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C17B2B312A4600B8EEFB /* backblogApp.swift */; };
+		3469C17C2B312A4600B8EEFB /* BackblogApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C17B2B312A4600B8EEFB /* BackblogApp.swift */; };
 		3469C17E2B312A4600B8EEFB /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C17D2B312A4600B8EEFB /* LandingView.swift */; };
 		3469C1802B312A4700B8EEFB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3469C17F2B312A4700B8EEFB /* Assets.xcassets */; };
 		3469C1832B312A4700B8EEFB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3469C1822B312A4700B8EEFB /* Preview Assets.xcassets */; };
@@ -128,7 +128,7 @@
 		344D79522B7FA4B90030F12D /* BackBlogNeWUITest.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = BackBlogNeWUITest.xctestplan; sourceTree = "<group>"; };
 		3466FF2C2B61EA610028034C /* MovieDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsView.swift; sourceTree = "<group>"; };
 		3469C1782B312A4600B8EEFB /* backblog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = backblog.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		3469C17B2B312A4600B8EEFB /* backblogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = backblogApp.swift; sourceTree = "<group>"; };
+		3469C17B2B312A4600B8EEFB /* BackblogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackblogApp.swift; sourceTree = "<group>"; };
 		3469C17D2B312A4600B8EEFB /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 		3469C17F2B312A4700B8EEFB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3469C1822B312A4700B8EEFB /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -263,7 +263,7 @@
 				344D794D2B7957360030F12D /* GoogleService-Info.plist */,
 				3469C17F2B312A4700B8EEFB /* Assets.xcassets */,
 				3469C1862B312A4700B8EEFB /* backblog.xcdatamodeld */,
-				3469C17B2B312A4600B8EEFB /* backblogApp.swift */,
+				3469C17B2B312A4600B8EEFB /* BackblogApp.swift */,
 				3466FF2C2B61EA610028034C /* MovieDetailsView.swift */,
 				97E9067D2B7AE0B8006D3EE1 /* MoviesViewModel.swift */,
 				34AEBD502B6D569400C6EA87 /* SplashScreenView.swift */,
@@ -698,7 +698,7 @@
 				344BA2742B3785ED002626F1 /* CustomTitleView.swift in Sources */,
 				3469C1882B312A4700B8EEFB /* backblog.xcdatamodeld in Sources */,
 				3466FF2D2B61EA610028034C /* MovieDetailsView.swift in Sources */,
-				3469C17C2B312A4600B8EEFB /* backblogApp.swift in Sources */,
+				3469C17C2B312A4600B8EEFB /* BackblogApp.swift in Sources */,
 				97FCFC7B2B6389CB00F5BFCB /* FirebaseError.swift in Sources */,
 				344BA2802B489F01002626F1 /* LoginView.swift in Sources */,
 				9777C8CA2B5D90F9000F40EA /* UserData.swift in Sources */,
