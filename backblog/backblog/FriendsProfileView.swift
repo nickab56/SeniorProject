@@ -25,17 +25,37 @@ struct FriendsProfileView: View {
             HStack {
                 Spacer()
                 
-                Button(action: {
-                    self.showActionSheet = true
-                }) {
-                    Image(systemName: "person.fill.xmark")
-                        .imageScale(.large)
-                        .foregroundColor(.white)
+                // Conditional Add/Remove Friend Button
+                if viewModel.userIsFriend() {
+                    Button(action: {
+                        viewModel.removeFriend()
+                    }) {
+                        Image(systemName: "person.fiil.badge.minus")
+                            .imageScale(.large)
+                            .foregroundColor(.white)
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.top, 15)
+                } else {
+                    Button(action: {
+                        viewModel.sendFriendRequest()
+                    }) {
+                        Image(systemName: "person.fill.badge.plus")
+                            .imageScale(.large)
+                            .foregroundColor(.white)
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.top, 15)
                 }
-                .frame(width: 80, height: 80)
-                .cornerRadius(40)
-                .padding(.horizontal, 15)
-                .padding(.top, 15)
+                Button(action: {
+                                    self.showBlockConfirmation = true
+                                }) {
+                                    Image(systemName: "person.fill.xmark")
+                                        .imageScale(.large)
+                                        .foregroundColor(.white)
+                                }
+                                .padding(.horizontal, 15)
+                                .padding(.top, 15)
             }
             HStack {
                 // Display user's avatar
@@ -138,7 +158,7 @@ struct FriendsProfileView: View {
             }
             Button("Block User", role: .destructive, action: { self.showBlockConfirmation = true })
         }
-        .alert(isPresented: $showBlockConfirmation) { // Confirmation alert
+        .alert(isPresented: $showBlockConfirmation) { // Block User Confirmation Alert
             Alert(
                 title: Text("Block User"),
                 message: Text("Are you sure you want to remove and block this friend?"),
