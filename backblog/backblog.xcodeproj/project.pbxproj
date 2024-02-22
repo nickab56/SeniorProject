@@ -65,6 +65,7 @@
 		9777C8C82B5D8F83000F40EA /* LogRequestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9777C8C72B5D8F83000F40EA /* LogRequestData.swift */; };
 		9777C8CA2B5D90F9000F40EA /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9777C8C92B5D90F9000F40EA /* UserData.swift */; };
 		977922D52B758FA60021ECD9 /* LogType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977922D42B758FA60021ECD9 /* LogType.swift */; };
+		9789D6042B86970B00C279A1 /* LogSelectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9789D6032B86970B00C279A1 /* LogSelectionViewModel.swift */; };
 		97993F112B67284700CBBCCC /* MovieImageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97993F102B67284700CBBCCC /* MovieImageData.swift */; };
 		979B8EAF2B7EFF7800AEC03C /* FirebaseProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979B8EAE2B7EFF7800AEC03C /* FirebaseProtocol.swift */; };
 		97A8F9502B646C22000A0096 /* MovieService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A8F94F2B646C22000A0096 /* MovieService.swift */; };
@@ -177,6 +178,7 @@
 		9777C8C72B5D8F83000F40EA /* LogRequestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogRequestData.swift; sourceTree = "<group>"; };
 		9777C8C92B5D90F9000F40EA /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 		977922D42B758FA60021ECD9 /* LogType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogType.swift; sourceTree = "<group>"; };
+		9789D6032B86970B00C279A1 /* LogSelectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogSelectionViewModel.swift; sourceTree = "<group>"; };
 		97993F102B67284700CBBCCC /* MovieImageData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieImageData.swift; sourceTree = "<group>"; };
 		979B8EAE2B7EFF7800AEC03C /* FirebaseProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseProtocol.swift; sourceTree = "<group>"; };
 		97A8F94F2B646C22000A0096 /* MovieService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieService.swift; sourceTree = "<group>"; };
@@ -365,6 +367,7 @@
 			isa = PBXGroup;
 			children = (
 				340746AD2B62B5EB007711C8 /* LogSelectionView.swift */,
+				9789D6032B86970B00C279A1 /* LogSelectionViewModel.swift */,
 				344BA2772B378709002626F1 /* SearchView.swift */,
 				975B34042B7AB3E8004167D2 /* SearchViewModel.swift */,
 			);
@@ -653,6 +656,7 @@
 				97FCFC622B63659800F5BFCB /* MovieSearchData.swift in Sources */,
 				97FCFC762B63767900F5BFCB /* FirebaseService.swift in Sources */,
 				979B8EAF2B7EFF7800AEC03C /* FirebaseProtocol.swift in Sources */,
+				9789D6042B86970B00C279A1 /* LogSelectionViewModel.swift in Sources */,
 				344BA2822B48AC8E002626F1 /* SignupView.swift in Sources */,
 				8108A6422B76A2650069DBEA /* EditCollaboratorSheetView.swift in Sources */,
 				34F035AA2B60A93900EB35C7 /* AddLogSheetView.swift in Sources */,

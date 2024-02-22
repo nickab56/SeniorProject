@@ -41,6 +41,32 @@ class LogRepository {
         }
     }
     
+    func addLog(name: String, ownerId: String, priority: Int, creationDate: String, movieIds: [String], watchedIds: [String]) async -> Result<Bool, Error> {
+        do {
+            let date = String(currentTimeInMS())
+            let ownerData = Owner(userId: ownerId, priority: priority)
+            let logData = LogData(
+                name: name,
+                creationDate: creationDate,
+                lastModifiedDate: date,
+                isVisible: false,
+                owner: ownerData,
+                movieIds: movieIds,
+                watchedIds: watchedIds,
+                collaborators: [],
+                order: [:]
+            )
+            let result = try await fb.post(data: logData, collection: "logs").get()
+            
+            // Update log to include logId
+            _ = try await fb.put(updates: ["log_id": result], docId: result, collection: "logs").get()
+            
+            return .success(true)
+        } catch {
+            return .failure(error)
+        }
+    }
+    
     func getLog(logId: String) async -> Result<LogData, Error> {
         do {
             let result = try await fb.get(type: LogData(), docId: logId, collection: "logs").get()

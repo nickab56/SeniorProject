@@ -63,7 +63,18 @@ struct FriendsProfileView: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             .accessibility(identifier: "logsFriendsTabPicker")
-
+            
+            if viewModel.showingNotification {
+                notificationView
+                    .transition(.move(edge: .bottom))
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            withAnimation {
+                                viewModel.showingNotification = false
+                            }
+                        }
+                    }
+            }
             
             if selectedTab == "Logs" {
                 ScrollView {
@@ -119,26 +130,20 @@ struct FriendsProfileView: View {
                 }
             }
         }
-        .actionSheet(isPresented: $showActionSheet) {
-            ActionSheet(
-                title: Text("Select an Action"),
-                buttons: [
-                    .destructive(Text("Remove Friend")) {
-                        // Code to remove the friend
-                    },
-                    .destructive(Text("Block User")) {
-                        self.showBlockConfirmation = true // Show block confirmation alert
-                    },
-                    .cancel()
-                ]
-            )
+        .confirmationDialog("Select an Action", isPresented: $showActionSheet) {
+            if (viewModel.userIsFriend()) {
+                Button("Remove Friend", role: .destructive, action: viewModel.removeFriend)
+            } else {
+                Button("Add Friend", role: nil, action: viewModel.sendFriendRequest)
+            }
+            Button("Block User", role: .destructive, action: { self.showBlockConfirmation = true })
         }
         .alert(isPresented: $showBlockConfirmation) { // Confirmation alert
             Alert(
                 title: Text("Block User"),
                 message: Text("Are you sure you want to remove and block this friend?"),
                 primaryButton: .destructive(Text("Block")) {
-                    // Code to block the user
+                    viewModel.blockUser()
                 },
                 secondaryButton: .cancel()
             )
@@ -146,5 +151,17 @@ struct FriendsProfileView: View {
         .padding(.top, 80)
         .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .edgesIgnoringSafeArea(.all)
+    }
+    
+    private var notificationView: some View {
+        Text(viewModel.notificationMessage)
+            .padding()
+            .background(Color.gray.opacity(0.9))
+            .foregroundColor(Color.white)
+            .cornerRadius(10)
+            .shadow(radius: 10)
+            .zIndex(1) // Ensure the notification view is always on top
+            .accessibility(identifier: "NotificationsView")
+            .animation(.easeInOut(duration: 2), value: viewModel.notificationMessage)
     }
 }

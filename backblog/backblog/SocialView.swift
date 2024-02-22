@@ -156,6 +156,14 @@ struct SocialView: View {
                         
                         if vm.showingNotification {
                             notificationView
+                                .transition(.move(edge: .bottom))
+                                .onAppear {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                        withAnimation {
+                                            vm.showingNotification = false
+                                        }
+                                    }
+                                }
                         }
                         
                     }
@@ -175,13 +183,12 @@ struct SocialView: View {
     private var notificationView: some View {
         Text(vm.notificationMessage)
             .padding()
-            .foregroundColor(.white)
-            .background(Color.black.opacity(0.7))
-            .cornerRadius(8)
-            .padding(.bottom, 50)
-            .transition(.move(edge: .bottom))
-            .accessibility(identifier: "NotificationView")
-            .animation(.easeInOut(duration: 2), value: vm.notificationMessage)
+            .background(Color.gray.opacity(0.9))
+            .foregroundColor(Color.white)
+            .cornerRadius(10)
+            .shadow(radius: 10)
+            .zIndex(1) // Ensure the notification view is always on top
+            .accessibility(identifier: "NotificationsView")
     }
 }
 

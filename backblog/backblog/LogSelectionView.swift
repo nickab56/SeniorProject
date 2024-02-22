@@ -1,42 +1,42 @@
 import SwiftUI
 
 struct LogSelectionView: View {
-    let selectedMovieId: Int
+    @StateObject var vm: LogSelectionViewModel
     @Binding var showingSheet: Bool
-    @Environment(\.managedObjectContext) private var viewContext
-    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \LocalLogData.orderIndex, ascending: true)]) var logs: FetchedResults<LocalLogData>
-    @State private var selectedLogs = Set<Int64>()
-    @State private var logsWithDuplicates = Set<Int64>() // Track logs with duplicate movies
-    @State private var showingNotification = false
 
+    init(selectedMovieId: Int, showingSheet: Binding<Bool>) {
+        _showingSheet = showingSheet
+        _vm = StateObject(wrappedValue: LogSelectionViewModel(selectedMovieId: selectedMovieId))
+    }
+    
     var body: some View {
         ZStack {
             NavigationView {
                 Form {
                     Section {
-                        ForEach(logs) { log in
-                            MultipleSelectionRow(title: log.name ?? "Unknown Log", isSelected: selectedLogs.contains(log.log_id)) {
-                                                            handleLogSelection(logId: log.log_id)
-                                                        }
+                        ForEach(vm.logs) { logType in
+                            MultipleSelectionRow(title: vm.getTitle(logType: logType), isSelected: vm.isLogSelected(logType: logType)) {
+                                let logId = vm.getLogId(logType: logType)
+                                vm.handleLogSelection(logId: logId)
+                            }
                             .padding(.vertical, 5)
                         }
                     }
-
                     Section {
                         Button(action: {
-                            if selectedLogs.isEmpty {
+                            if vm.selectedLogs.isEmpty {
                                 showingSheet = false // Consider how to handle new log creation
                             }
                             else {
-                                addMovieToSelectedLogs()
+                                vm.addMovieToSelectedLogs()
                                 showingSheet = false
                             }
                         }) {
-                            Text(selectedLogs.isEmpty ? "New Log" : "Add")
+                            Text(vm.selectedLogs.isEmpty ? "New Log" : "Add")
                                 .frame(maxWidth: .infinity)
                                 .multilineTextAlignment(.center)
                         }
-                        .disabled(!logsWithDuplicates.isEmpty) // Disable "Done" if there are duplicates
+                        .disabled(!vm.logsWithDuplicates.isEmpty) // Disable "Done" if there are duplicates
 
                         Button(action: {
                             showingSheet = false
@@ -51,102 +51,22 @@ struct LogSelectionView: View {
                 .navigationBarTitle("Add to Log", displayMode: .inline)
             }
 
-            if showingNotification {
+            if vm.showingNotification {
                 NotificationView()
                     .transition(.move(edge: .bottom))
                     .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                             withAnimation {
-                                showingNotification = false
+                                vm.showingNotification = false
                             }
                         }
                     }
             }
         }
-        .animation(.easeInOut, value: showingNotification)
+        .animation(.easeInOut, value: vm.showingNotification)
         .preferredColorScheme(.dark)
     }
-
-    private func handleLogSelection(logId: Int64) {
-        if isDuplicateInLog(logId: logId) {
-            // If the movie is already in the log, show notification and don't change selection
-            withAnimation {
-                showingNotification = true
-            }
-        } else {
-            // If the movie is not in the log, toggle selection
-            if selectedLogs.contains(logId) {
-                selectedLogs.remove(logId)
-            } else {
-                selectedLogs.insert(logId)
-            }
-        }
-    }
-
-    private func isDuplicateInLog(logId: Int64) -> Bool {
-        if let log = logs.first(where: { $0.log_id == logId }) {
-            if let movieIds = log.movie_ids as? Set<LocalMovieData> { // Cast NSSet to Set<LocalMovieData>
-                for movie in movieIds {
-                    if movie.movie_id == String(selectedMovieId) {
-                        return true // The movie is already in the log
-                    }
-                }
-            }
-        }
-        return false // The movie is not in the log
-    }
-
-
-
-    private func addMovieToSelectedLogs() {
-        selectedLogs.forEach { logId in
-            if let log = logs.first(where: { $0.log_id == logId }) {
-                // Check if the movie is already in the watched list
-                if let watchedMovie = log.watched_ids as? Set<LocalMovieData>, let movieToMove = watchedMovie.first(where: { $0.movie_id == String(selectedMovieId) }) {
-                    // Move the movie from watched to unwatched list
-                    log.removeFromWatched_ids(movieToMove)
-                    movieToMove.movie_index = Int64(log.movie_ids?.count ?? 0) // Update the index for the unwatched list
-                    log.addToMovie_ids(movieToMove)
-                } else if !isDuplicateInLog(logId: log.log_id) {
-                    // The movie is not in the unwatched or watched list, add a new entry
-                    let newMovie = LocalMovieData(context: viewContext)
-                    newMovie.movie_id = String(selectedMovieId)
-                    newMovie.movie_index = Int64(log.movie_ids?.count ?? 0)
-                    log.addToMovie_ids(newMovie)
-                }
-                
-                // Save changes
-                do {
-                    try viewContext.save()
-                    showingSheet = false
-                } catch {
-                    print("Error updating movie lists: \(error)")
-                }
-            }
-        }
-    }
-
     
-    private func addMovieToLog(movieId: Int, log: LocalLogData) {
-        let existingMovieIds = log.movie_ids ?? []
-        
-        // Check if movie is already in the log
-        if !existingMovieIds.contains("\(movieId)") {
-            // Add movie to log
-            let newMovie = LocalMovieData(context: viewContext)
-            newMovie.movie_id = String(movieId)
-            newMovie.movie_index = Int64(existingMovieIds.count)
-            
-            log.addToMovie_ids(newMovie)
-            
-            do {
-                try viewContext.save()
-                showingSheet = false
-            } catch {
-                print("Error saving movie to log: \(error)")
-            }
-        }
-    }
     struct NotificationView: View {
         var body: some View {
             Text("Movie is already in log")

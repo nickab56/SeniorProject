@@ -3,19 +3,16 @@ import CoreData
 
 struct LogDetailsView: View {
     let log: LogType
-    
     @Environment(\.dismiss) var dismiss
     @State private var editCollaboratorSheet = false
     @StateObject var vm: LogViewModel
     
     @State private var editLogSheet = false
-
     
     init(log: LogType) {
         self.log = log
         _vm = StateObject(wrappedValue: LogViewModel(log: log, fb: FirebaseService(), movieService: MovieService()))
     }
-
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -39,9 +36,11 @@ struct LogDetailsView: View {
                     Spacer()
                 }
                 
-                CollaboratorsView(collaborators: ["avatar1", "avatar2", "avatar3", "avatar4", "avatar5"]) // Example static data
-                    .padding(.horizontal)
-                    .padding(.bottom)
+                if case .log = log {
+                    CollaboratorsView(collaborators: ["avatar1", "avatar2", "avatar3", "avatar4", "avatar5"]) // get collaborators
+                        .padding(.horizontal)
+                        .padding(.bottom)
+                }
                 
                 HStack {
                     Text("Unwatched: \(vm.movies.count)")
@@ -173,7 +172,7 @@ struct LogDetailsView: View {
         .preferredColorScheme(.dark)
         .animation(.easeInOut, value: vm.showingWatchedNotification)
         .onAppear {
-            vm.fetchMovies()
+            vm.updateLog()
         }
         .sheet(isPresented: $editCollaboratorSheet) {
             EditCollaboratorSheetView(isPresented: $editCollaboratorSheet)
