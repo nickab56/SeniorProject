@@ -29,6 +29,8 @@ struct LogDetailsView: View {
     
     @State private var editLogSheet = false
     
+    @State private var showingShuffleConfirmation = false
+    
     /**
      Initializes the `LogDetailsView`, initializing the `LogViewModel`.
      
@@ -117,7 +119,7 @@ struct LogDetailsView: View {
                     Spacer()
                     
                     Button(action: {
-                        // waiting for functionailty
+                        showingShuffleConfirmation = true
                     }) {
                         Image(systemName: "shuffle")
                             .padding()
@@ -210,6 +212,14 @@ struct LogDetailsView: View {
         }
         .sheet(isPresented: $editCollaboratorSheet) {
             EditCollaboratorSheetView(isPresented: $editCollaboratorSheet)
+        }
+        .alert("Shuffle Watched Movies", isPresented: $showingShuffleConfirmation) {
+            Button("Cancel", role: .cancel) {}
+            Button("Shuffle", role: .destructive) {
+                vm.shuffleWatchedMovies()
+            }
+        } message: {
+            Text("Are you sure you want to shuffle the order of the watched movies in this log?")
         }
     }
     

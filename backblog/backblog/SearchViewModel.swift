@@ -99,11 +99,22 @@ class SearchViewModel: ObservableObject {
                     print("Error adding movie to the log: \(error.localizedDescription)")
                 }
             }
-        case .localLog:
-            // Handle local log case if applicable
-            print("Adding movies to local logs is not supported in this context")
+        case .localLog(let localLog):
+            // Create a new LocalMovieData object and add it to the localLog
+            let newMovie = LocalMovieData(context: viewContext)
+            newMovie.movie_id = movieId
+            newMovie.movie_index = Int64(localLog.movie_ids?.count ?? 0)
+            localLog.addToMovie_ids(newMovie)
+
+            do {
+                try viewContext.save()
+                print("Movie added successfully to the local log")
+            } catch {
+                print("Error adding movie to the local log: \(error.localizedDescription)")
+            }
         }
     }
+
 
     
     func formatReleaseYear(from dateString: String?) -> String {

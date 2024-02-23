@@ -535,5 +535,11 @@ class LogViewModel: ObservableObject {
             print("Error saving changes to Core Data: \(error.localizedDescription)")
         }
     }
+    
+    func shuffleWatchedMovies() {
+        watchedMovies.shuffle()
+        // If you're persisting the changes, make sure to update your data model accordingly and save the changes.
+    }
+
 }
 
