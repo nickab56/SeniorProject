@@ -2,7 +2,7 @@ import SwiftUI
 import CoreData
 
 struct WhatsNextView: View {
-    var log: LogType  // Assuming you're passing the specific log for "What's Next"
+    var log: LogType
     @ObservedObject var vm: LogsViewModel
 
     var body: some View {

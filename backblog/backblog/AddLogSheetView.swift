@@ -5,8 +5,8 @@ struct AddLogSheetView: View {
     @Binding var isPresented: Bool
     @Environment(\.managedObjectContext) private var viewContext
     @State private var newLogName = ""
-    @State private var showingAllFriends = false // To toggle the full list of friends
-    @State private var searchText = "" // For the search bar
+    @State private var showingAllFriends = false
+    @State private var searchText = ""
     
     @ObservedObject var logsViewModel: LogsViewModel
 
@@ -70,7 +70,7 @@ struct AddLogSheetView: View {
                             }
                         }
                     }
-                    .transition(.opacity) // Apply a fade-in transition
+                    .transition(.opacity)
                 }
 
                 Button(action: {

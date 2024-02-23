@@ -97,7 +97,7 @@ final class SearchView_UITests: XCTestCase {
         let movieSearchField = app.textFields["movieSearchField"]
         XCTAssertTrue(movieSearchField.waitForExistence(timeout: 5), "Movie Search field should appear")
         movieSearchField.tap()
-        movieSearchField.typeText("Inception\n")  // You can keep the search term or make it more generic
+        movieSearchField.typeText("Inception\n")
 
         sleep(3)
         
@@ -115,13 +115,13 @@ final class SearchView_UITests: XCTestCase {
         app.buttons["Add"].tap()
         
         // 4. Verify a movie is added to the log
-        tabBar.buttons["Hdr"].tap()  // Ensure this is the correct identifier for navigating to the log overview
+        tabBar.buttons["Hdr"].tap()
         
         let newLogEntry = app.staticTexts["Log 1"]
         XCTAssertTrue(newLogEntry.waitForExistence(timeout: 5), "Newly created log named 'Log 1' should exist on the landing page")
         
         newLogEntry.tap()
-        let movieInLog = app.cells.firstMatch  // Assuming each movie is in its own cell
+        let movieInLog = app.cells.firstMatch
         XCTAssertTrue(movieInLog.exists, "There should be a movie in Log 1")
     }
 
@@ -158,7 +158,7 @@ final class SearchView_UITests: XCTestCase {
         let movieSearchField = app.textFields["movieSearchField"]
         XCTAssertTrue(movieSearchField.waitForExistence(timeout: 5), "Movie Search field should appear")
         movieSearchField.tap()
-        movieSearchField.typeText("Inception\n")  // You can keep this or change to a more generic search term
+        movieSearchField.typeText("Inception\n")
 
         sleep(3)
         
@@ -186,15 +186,15 @@ final class SearchView_UITests: XCTestCase {
         let log1Entry = app.staticTexts["Log 1"].firstMatch
         XCTAssertTrue(log1Entry.waitForExistence(timeout: 5), "Log 1 entry should exist")
         log1Entry.tap()
-        let movieInLog1 = app.cells.firstMatch  // Assuming each movie is in its own cell
+        let movieInLog1 = app.cells.firstMatch
         XCTAssertTrue(movieInLog1.exists, "There should be a movie in Log 1")
 
         // Navigate back and verify a movie is added to the second log
-        app.navigationBars.buttons.element(boundBy: 0).tap()  // Adjust based on the actual 'Back' button identifier
+        app.navigationBars.buttons.element(boundBy: 0).tap()
         let log2Entry = app.staticTexts["Log 2"].firstMatch
         XCTAssertTrue(log2Entry.waitForExistence(timeout: 5), "Log 2 entry should exist")
         log2Entry.tap()
-        let movieInLog2 = app.cells.firstMatch  // Assuming each movie is in its own cell
+        let movieInLog2 = app.cells.firstMatch
         XCTAssertTrue(movieInLog2.exists, "There should be a movie in Log 2")
     }
 
