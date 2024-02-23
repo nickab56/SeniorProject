@@ -21,7 +21,7 @@ struct AddFriendSheetView: View {
         NavigationView {
             Form {
                 TextField("Username", text: $username)
-                    .accessibility(identifier: "usernameTextField")
+                    .accessibility(identifier: "addUsernameTextField")
                     .textInputAutocapitalization(.never)
                 
                 Button(action: {

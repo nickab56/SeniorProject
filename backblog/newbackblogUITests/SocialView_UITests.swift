@@ -111,8 +111,47 @@ final class SocialView_UITests: XCTestCase {
         // Further verification can be done by checking if the selected avatar's image is the one expected.
         // This might involve comparing image assets or other methods not directly supported by XCTest UI testing.
     }
-
-
     
-    
+        func testAddFriendUIElements() throws {
+            let app = XCUIApplication()
+            app.launch()
+            
+            sleep(2)
+
+            // Navigate to the social view tab
+            app.tabBars["Tab Bar"].buttons["person.2.fill"].tap()
+
+            // Log in
+            let usernameTextField = app.textFields["usernameTextField"]
+            XCTAssertTrue(usernameTextField.waitForExistence(timeout: 5))
+            usernameTextField.tap()
+            usernameTextField.typeText("apple@apple.com")
+
+            let passwordSecureField = app.secureTextFields["passwordSecureField"]
+            XCTAssertTrue(passwordSecureField.waitForExistence(timeout: 5))
+            passwordSecureField.tap()
+            passwordSecureField.typeText("apple123")
+
+            app.buttons["loginButton"].tap()
+            
+            app.segmentedControls.buttons["Friends"].tap()
+            sleep(2)
+            
+            // Tap on the 'Add Friend' button to open the add friend sheet
+            app.buttons["addFriendButton"].tap() // Ensure this button has an accessibility identifier set in your SwiftUI view.
+            
+            // Check if the text field for entering username is present
+            let addUsernameTextField = app.textFields["addUsernameTextField"]
+            XCTAssertTrue(addUsernameTextField.exists, "Username text field should be present on the Add Friend sheet")
+            
+            // Check if the 'Send Friend Request' button is present
+            let sendFriendRequestButton = app.buttons["sendFriendRequest"]
+            XCTAssertTrue(sendFriendRequestButton.exists, "Send Friend Request button should be present on the Add Friend sheet")
+            
+            // Check if the 'Cancel' button is present
+            let cancelButton = app.buttons["cancelSendFriendRequest"]
+            XCTAssertTrue(cancelButton.exists, "Cancel button should be present on the Add Friend sheet")
+            
+            cancelButton.tap()
+        }
 }
