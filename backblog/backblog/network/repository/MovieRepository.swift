@@ -32,10 +32,10 @@ class MovieRepository {
         do {
             let updates: [String: Any] = if (watched) {
                 // Movie has been marked as watched
-                ["movie_ids": FieldValue.arrayRemove([movieId]), "watched_ids": FieldValue.arrayUnion([movieId]), "last_modified_date: ": String(currentTimeInMS())]
+                ["movie_ids": FieldValue.arrayRemove([movieId]), "watched_ids": FieldValue.arrayUnion([movieId]), "last_modified_date": String(currentTimeInMS())]
             } else {
                 // Movie has been removed from watched
-                ["movie_ids": FieldValue.arrayUnion([movieId]), "watched_ids": FieldValue.arrayRemove([movieId]), "last_modified_date: ": String(currentTimeInMS())]
+                ["movie_ids": FieldValue.arrayUnion([movieId]), "watched_ids": FieldValue.arrayRemove([movieId]), "last_modified_date": String(currentTimeInMS())]
             }
             
             let result = try await fb.put(updates: updates, docId: logId, collection: "logs").get()
@@ -46,7 +46,7 @@ class MovieRepository {
         }
     }
     
-    func getWatchNextMovie(userId: String) async -> Result<(String, String)?, Error> {
+    func getWatchNextMovie(userId: String) async -> Result<(String, LogData)?, Error> {
         do {
             // Get log data
             let logs = try await LogRepository(fb: fb).getLogs(userId: userId, showPrivate: true).get()
@@ -76,9 +76,9 @@ class MovieRepository {
             }
             
             let movieId = priorityLog!.movieIds!.first!
-            let logName = priorityLog!.name ?? "Unknown"
+            let logData = priorityLog!
             
-            return .success((movieId, logName))
+            return .success((movieId, logData))
         } catch {
             return .failure(error)
         }

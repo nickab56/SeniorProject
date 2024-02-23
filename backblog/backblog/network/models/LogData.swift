@@ -3,10 +3,12 @@
 //  backblog
 //
 //  Created by Jake Buhite on 1/21/24.
+//  Updated by Jake Buhite on 2/23/24.
 //
 
 import Foundation
 
+/// Represents the data model for LogData from Firebase.
 struct LogData: Identifiable, Codable, Equatable, Hashable {
     static func == (lhs: LogData, rhs: LogData) -> Bool {
         return lhs.logId == rhs.logId

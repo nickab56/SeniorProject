@@ -78,7 +78,7 @@ struct LandingView: View {
                     .bold()
                     .padding(.top, UIScreen.main.bounds.height * 0.08)
 
-                if let firstLog = vm.logs.first {
+                if let firstLog = vm.priorityLog {
                     if vm.hasWatchNextMovie {
                         // If there are unwatched movies, show the WhatsNextView for the first log
                         WhatsNextView(log: firstLog, vm: vm)

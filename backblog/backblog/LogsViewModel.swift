@@ -25,6 +25,7 @@ class LogsViewModel: ObservableObject {
     @Published var isLoggedInToSocial = false
     
     // What's Next
+    @Published var priorityLog: LogType?
     @Published var nextLogName: String = "Unknown"
     @Published var nextMovie: String?  // The next movie to watch
     @Published var movieTitle: String = "Loading..."
@@ -142,10 +143,11 @@ class LogsViewModel: ObservableObject {
                         }
                         let result = try await self.movieRepo.getWatchNextMovie(userId: userId).get()
                         
-                        if let (nextMovie, nextLogName) = result {
+                        if let (nextMovie, logData) = result {
                             // Fetch and display movie details
                             self.nextMovie = nextMovie
-                            self.nextLogName = nextLogName
+                            self.nextLogName = logData.name ?? "Unknown"
+                            self.priorityLog = LogType.log(logData)
                             self.loadMovieDetails(movie: nextMovie)
                             self.hasWatchNextMovie = true
                         } else {
@@ -181,6 +183,7 @@ class LogsViewModel: ObservableObject {
                 // Fetch and display movie details
                 self.nextLogName = localLog.name ?? "Unknown"
                 self.loadMovieDetails(movie: nextMovie)
+                self.priorityLog = LogType.localLog(localLog)
                 self.hasWatchNextMovie = true
             } else {
                 // Handle case where there are no unwatched movies
@@ -242,7 +245,7 @@ class LogsViewModel: ObservableObject {
             DispatchQueue.main.async {
                 Task {
                     do {
-                        let unwatchedMovies = log.watchedIds ?? []
+                        let unwatchedMovies = log.movieIds ?? []
                         guard let movieId = unwatchedMovies.first(where: { $0 == movie }), let logId = log.logId else {
                             return
                         }

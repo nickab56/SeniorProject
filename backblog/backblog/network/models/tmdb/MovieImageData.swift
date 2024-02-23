@@ -3,10 +3,12 @@
 //  backblog
 //
 //  Created by Jake Buhite on 1/28/24.
+//  Updated by Jake Buhite on 2/23/24.
 //
 
 import Foundation
 
+/// Represents the data model for a movie image response from TMDB.
 struct MovieImageData: Codable, Equatable {
     static func == (lhs: MovieImageData, rhs: MovieImageData) -> Bool {
         return lhs.id == rhs.id
@@ -17,6 +19,7 @@ struct MovieImageData: Codable, Equatable {
     var posters: [Image]?
     var id: Int?
     
+    /// Represents the image object from TMDB.
     struct Image: Codable {
         var aspectRatio: Double?
         var height: Int?
