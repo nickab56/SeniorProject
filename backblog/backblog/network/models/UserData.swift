@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UserData: Identifiable, Codable, Equatable {
+struct UserData: Identifiable, Codable, Equatable, Hashable {
     static func == (lhs: UserData, rhs: UserData) -> Bool {
         return lhs.userId == rhs.userId && lhs.username == rhs.username &&
         lhs.avatarPreset == rhs.avatarPreset
@@ -15,6 +15,10 @@ struct UserData: Identifiable, Codable, Equatable {
     
     var id: String {
         return userId ?? ""
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(userId)
     }
     
     var userId: String?

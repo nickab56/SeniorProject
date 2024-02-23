@@ -41,7 +41,7 @@ class LogRepositoryTests: XCTestCase {
         do {
             let result = try await logRepoSucceed.addLog(name: logName, isVisible: isVisible, ownerId: ownerId).get()
             
-            XCTAssert(result)
+            XCTAssert(result == "MockDocumentID")
         } catch {
             XCTFail("Error: \(error)")
         }

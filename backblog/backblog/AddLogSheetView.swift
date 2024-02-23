@@ -10,13 +10,16 @@ struct AddLogSheetView: View {
     
     @ObservedObject var logsViewModel: LogsViewModel
 
-    let collaborators = ["Alice", "Bob", "Charlie"]
-    let friends = ["Dave", "Eva", "Frank", "George", "Hannah", "Ian", "Jill", "Kevin", "Luna", "Mike", "Nora", "Oscar", "Patty", "Quinn", "Rachel", "Steve", "Tina", "Uma", "Vince", "Wendy", "Xander", "Yvonne", "Zack"]
+    @State public var collaborators: [UserData] = []
+    
+    var friends: [UserData] {
+        logsViewModel.friends.filter { !collaborators.contains($0) }
+    }
 
     // Filtered or limited list of friends based on search text and showingAllFriends flag
-    var filteredFriends: [String] {
+    var filteredFriends: [UserData] {
         let filtered = friends.filter { friend in
-            searchText.isEmpty || friend.lowercased().contains(searchText.lowercased())
+            searchText.isEmpty || (friend.username?.lowercased().contains(searchText.lowercased()) ?? false)
         }
         if showingAllFriends {
             return filtered
@@ -30,51 +33,62 @@ struct AddLogSheetView: View {
             Form {
                 TextField("Log Name", text: $newLogName)
                     .accessibility(identifier: "newLogNameTextField")
-
-                Section(header: Text("Current Collaborators")) {
-                    ForEach(collaborators, id: \.self) { collaborator in
-                        HStack {
-                            Image(systemName: "person.crop.circle")
-                            Text(collaborator)
-                        }
-                    }
-                }
-
-                Section(header: Text("Add Collaborators")) {
-                    TextField("Search Friends", text: $searchText)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding(.bottom, 5)
-
-                    List {
-                        ForEach(filteredFriends, id: \.self) { friend in
+                
+                if (logsViewModel.getUserId() != nil) {
+                    Section(header: Text("Current Collaborators")) {
+                        ForEach(collaborators, id: \.self) { collaborator in
                             HStack {
-                                Image(systemName: "person.crop.circle")
-                                Text(friend)
-                                Spacer()
-                                Button(action: {
-                                    // Placeholder action for future functionality
-                                }) {
-                                    Image(systemName: "plus.circle.fill")
-                                        .foregroundColor(Color.blue)
-                                        .imageScale(.large)
-                                }
+                                Image(uiImage: UIImage(named: getAvatarId(avatarPreset: collaborator.avatarPreset ?? 1)) ?? UIImage())
+                                Text(collaborator.username ?? "Unknown")
                             }
-                            .padding(.vertical, 5)
                         }
+                        .onDelete(perform: removeCollaborator)
+                    }
+                    
+                    Section(header: Text("Add Collaborators")) {
+                        if friends.count == 0 {
+                            Text("No friends found.")
+                        } else {
+                            TextField("Search Friends", text: $searchText)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .padding(.bottom, 5)
 
-                        if !showingAllFriends && friends.count > 4 {
-                            Button("View More") {
-                                withAnimation {
-                                    showingAllFriends = true
+                            List {
+                                ForEach(filteredFriends, id: \.self) { friend in
+                                    HStack {
+                                        Image(uiImage: UIImage(named: getAvatarId(avatarPreset: friend.avatarPreset ?? 1)) ?? UIImage())
+                                        Text(friend.username ?? "Unknown")
+                                        Spacer()
+                                        Button(action: {
+                                            addCollaborator(friend: friend)
+                                        }) {
+                                            Image(systemName: "plus.circle.fill")
+                                                .foregroundColor(Color.blue)
+                                                .imageScale(.large)
+                                        }
+                                    }
+                                    .padding(.vertical, 5)
+                                }
+
+                                if !showingAllFriends && friends.count > 4 {
+                                    Button("View More") {
+                                        withAnimation {
+                                            showingAllFriends = true
+                                        }
+                                    }
                                 }
                             }
+                            .transition(.opacity) // Apply a fade-in transition
                         }
                     }
-                    .transition(.opacity) // Apply a fade-in transition
                 }
 
                 Button(action: {
-                    addNewLog()
+                    if (logsViewModel.getUserId() != nil) {
+                        logsViewModel.addLog(name: newLogName, isVisible: true, collaborators: collaborators.compactMap { $0.userId })
+                    } else {
+                        addNewLocalLog()
+                    }
                     isPresented = false
                 }) {
                     Text("Add Log")
@@ -96,19 +110,36 @@ struct AddLogSheetView: View {
             .navigationBarTitle("New Log", displayMode: .inline)
         }
         .preferredColorScheme(.dark)
+        .onAppear(perform: {
+            if (logsViewModel.getUserId() != nil) {
+                logsViewModel.getFriends()
+            }
+        })
     }
 
-    private func addNewLog() {
+    private func addNewLocalLog() {
         let newLog = LocalLogData(context: viewContext)
         newLog.name = newLogName
         newLog.log_id = Int64(UUID().hashValue)
 
         do {
             try viewContext.save()
-            logsViewModel.fetchLogs() // FIX THIS
+            logsViewModel.fetchLogs() // TODO: FIX THIS
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+    }
+    
+    private func addCollaborator(friend: UserData) {
+        withAnimation {
+            collaborators.append(friend)
+        }
+    }
+    
+    private func removeCollaborator(at offsets: IndexSet) {
+        withAnimation {
+            collaborators.remove(atOffsets: offsets)
         }
     }
 }
