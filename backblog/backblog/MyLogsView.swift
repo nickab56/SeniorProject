@@ -47,8 +47,8 @@ struct MyLogsView: View {
     private func LocalLogs() -> some View {
         let logList: [LocalLogData] = vm.logs.compactMap { logType in logType.toLocalLog() }
         return LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-            ForEach(logList.sorted(by: { $0.orderIndex < $1.orderIndex }), id: \.self) { log in
-                Group {
+            Group {
+                ForEach(logList.sorted(by: { $0.orderIndex < $1.orderIndex }), id: \.self) { log in
                     NavigationLink(destination: LogDetailsView(log: LogType.localLog(log))) {
                         LogItemView(log: LogType.localLog(log))
                             .cornerRadius(15)
@@ -64,14 +64,15 @@ struct MyLogsView: View {
                     .onDrop(of: [.plainText], delegate: DropViewDelegate(logsViewModel: vm, droppedLog: LogType.localLog(log), logs: $vm.logs, draggedLog: $draggedLog, viewContext: viewContext))
                 }
             }
+            .animation(.easeInOut, value: logList)
         }
     }
-    
+
     private func FirebaseLogs() -> some View {
         let logList: [LogData] = vm.logs.compactMap { logType in logType.toLog() }
         return LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-            ForEach(logList, id: \.self) { log in
-                Group {
+            Group {
+                ForEach(logList, id: \.self) { log in
                     NavigationLink(destination: LogDetailsView(log: LogType.log(log))) {
                         LogItemView(log: LogType.log(log))
                             .cornerRadius(15)
@@ -87,8 +88,10 @@ struct MyLogsView: View {
                     .onDrop(of: [.plainText], delegate: DropViewDelegate(logsViewModel: vm, droppedLog: LogType.log(log), logs: $vm.logs, draggedLog: $draggedLog, viewContext: viewContext))
                 }
             }
+            .animation(.easeInOut, value: logList)
         }
     }
+
 
     struct DropViewDelegate: DropDelegate {
         var logsViewModel: LogsViewModel
