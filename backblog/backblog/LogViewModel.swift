@@ -538,7 +538,7 @@ class LogViewModel: ObservableObject {
     
     func shuffleWatchedMovies() {
         watchedMovies.shuffle()
-        // If you're persisting the changes, make sure to update your data model accordingly and save the changes.
+        // Still need to update view and save shuffle changes
     }
 
 }
