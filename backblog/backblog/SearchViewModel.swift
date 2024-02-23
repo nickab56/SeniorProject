@@ -13,6 +13,8 @@ class SearchViewModel: ObservableObject {
     @Published var backdropImageUrls: [Int: URL?] = [:]
     @Published var errorMessage: String? = nil
     
+    private let viewContext = PersistenceController.shared.container.viewContext
+    
     private var fb: FirebaseProtocol
     private var movieService: MovieService
     
@@ -79,6 +81,27 @@ class SearchViewModel: ObservableObject {
                     backdropImageUrls[movieId] = nil // Store nil on failure to indicate no image
                 }
             }
+        }
+    }
+
+    func addMovieToLog(movieId: String, log: LogType) {
+        switch log {
+        case .log(let fbLog):
+            guard let logId = fbLog.logId else { return }
+            
+            Task {
+                let result = await movieRepo.addMovie(logId: logId, movieId: movieId)
+                
+                switch result {
+                case .success:
+                    print("Movie added successfully to the log")
+                case .failure(let error):
+                    print("Error adding movie to the log: \(error.localizedDescription)")
+                }
+            }
+        case .localLog:
+            // Handle local log case if applicable
+            print("Adding movies to local logs is not supported in this context")
         }
     }
 

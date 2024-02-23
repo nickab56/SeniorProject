@@ -25,6 +25,8 @@ struct LogDetailsView: View {
     @State private var editCollaboratorSheet = false
     @StateObject var vm: LogViewModel
     
+    @State private var showingSearchAddToLogView = false
+    
     @State private var editLogSheet = false
     
     /**
@@ -125,8 +127,12 @@ struct LogDetailsView: View {
                     .foregroundColor(.white)
                     .cornerRadius(8)
                     
+                    NavigationLink(destination: SearchAddToLogView(log: log), isActive: $showingSearchAddToLogView) {
+                        EmptyView() // Hidden NavigationLink
+                    }
+
                     Button(action: {
-                        // waiting for functionailty
+                        showingSearchAddToLogView = true // This triggers the navigation
                     }) {
                         Image(systemName: "plus.circle.fill")
                             .padding()
@@ -135,6 +141,7 @@ struct LogDetailsView: View {
                     .background(Color.clear)
                     .foregroundColor(.blue)
                     .cornerRadius(8)
+                    
                 }.padding(.top, -20)
                 
                 if vm.movies.isEmpty && vm.watchedMovies.isEmpty {
