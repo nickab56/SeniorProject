@@ -232,7 +232,7 @@ final class LandingView_UITests: XCTestCase {
 
         let movieSearchField = app.textFields["movieSearchField"]
         movieSearchField.tap()
-        movieSearchField.typeText("Inception\n")  // You can keep this or change to a more generic search term
+        movieSearchField.typeText("Inception\n")
 
         sleep(3)
         
@@ -293,7 +293,7 @@ final class LandingView_UITests: XCTestCase {
 
         let movieSearchField = app.textFields["movieSearchField"]
         movieSearchField.tap()
-        movieSearchField.typeText("Inception\n") // You can keep this or change to a more generic search term
+        movieSearchField.typeText("Inception\n")
 
         sleep(3)
         
@@ -315,7 +315,7 @@ final class LandingView_UITests: XCTestCase {
         sleep(1)
 
         // Step 4: Mark the movie as watched
-        let markAsWatchedButton = app.buttons["checkButton"] // Adjust identifier as needed
+        let markAsWatchedButton = app.buttons["checkButton"]
         markAsWatchedButton.tap()
 
         // Ensure the log is created before proceeding.
@@ -329,7 +329,7 @@ final class LandingView_UITests: XCTestCase {
         XCTAssertTrue(watchedSectionHeader.waitForExistence(timeout: 5), "Watched section header should be visible")
 
         // Verify a movie is listed in the watched section without specifying the movie
-        let watchedMovieRow = app.cells.firstMatch  // Assuming each movie is in its own cell
+        let watchedMovieRow = app.cells.firstMatch
         XCTAssertTrue(watchedMovieRow.exists, "There should be a movie listed in the watched section")
     }
 
@@ -383,11 +383,7 @@ final class LandingView_UITests: XCTestCase {
         // Ensure "Log 1" is created before proceeding.
         let logEntry = app.staticTexts["Test Log"]
         XCTAssertTrue(logEntry.waitForExistence(timeout: 10), "Test Log should be created and visible on the landing page")
-
-        // Given: A log named "Log 1" exists in the app.
-        // (The log creation steps above serve as the 'Given' phase for this test.)
-
-        // When: We tap on the log entry to select it.
+        
         logEntry.tap()
         
         
