@@ -89,7 +89,7 @@ struct EditCollaboratorSheetView: View {
                             }
                         }
                     }
-                    .transition(.opacity) // Apply a fade-in transition
+                    .transition(.opacity)
                 }
                 
                 Section {

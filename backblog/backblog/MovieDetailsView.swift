@@ -133,16 +133,16 @@ struct MovieDetailsView: View {
                                 .padding(.top, -60)
                             }
                             
-                            ScrollView(.horizontal, showsIndicators: false) { // Horizontal scroll view without indicators
-                                HStack(spacing: 10) { // HStack with spacing for genre bubbles
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 10) {
                                     if let genres = movie.genres, !genres.isEmpty {
                                         ForEach(genres, id: \.id) { genre in
                                             Text(genre.name ?? "N/A")
                                                 .foregroundColor(.white)
                                                 .padding(7)
-                                                .background(Color.clear) // Clear background
+                                                .background(Color.clear)
                                                 .overlay(
-                                                    Capsule().stroke(Color.white, lineWidth: 1) // White border
+                                                    Capsule().stroke(Color.white, lineWidth: 1)
                                                 )
                                         }
                                     }
