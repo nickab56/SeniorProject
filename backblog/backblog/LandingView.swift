@@ -90,6 +90,7 @@ struct LandingView: View {
             vm.fetchLogs()
             vm.loadNextUnwatchedMovie()
         }
+        .navigationBarBackButtonHidden(true)
     }
 
 }

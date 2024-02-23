@@ -24,18 +24,39 @@ class LogsViewModel: ObservableObject {
     
     @Published var hasWatchNextMovie = false
     
+    // Add Log Sheet View
+    @Published var friends: [UserData] = []
+    
     private var fb: FirebaseProtocol
     private var movieService: MovieService
     private let viewContext = PersistenceController.shared.container.viewContext
     
     let movieRepo: MovieRepository
     let logRepo: LogRepository
+    let friendRepo: FriendRepository
     
     init(fb: FirebaseProtocol, movieService: MovieService) {
         self.fb = fb
         self.movieService = movieService
         self.logRepo = LogRepository(fb: fb)
         self.movieRepo = MovieRepository(fb: fb, movieService: movieService)
+        self.friendRepo = FriendRepository(fb: fb)
+    }
+    
+    func addLog(name: String, isVisible: Bool, collaborators: [String]) {
+        DispatchQueue.main.async {
+            Task {
+                do {
+                    guard let userId = self.fb.getUserId() else {
+                        return
+                    }
+                    let result = try await self.logRepo.addLog(name: name, isVisible: isVisible, ownerId: userId).get()
+                    _ = try await self.logRepo.addCollaborators(logId: result, collaborators: collaborators).get()
+                } catch {
+                    print("Error creating remote log: \(error)")
+                }
+            }
+        }
     }
     
     func fetchLogs() {
@@ -61,19 +82,20 @@ class LogsViewModel: ObservableObject {
         }
     }
     
-    private func getLocalLogs() -> [LocalLogData] {
-        let context = PersistenceController.shared.container.viewContext
-
-        let fetchRequest: NSFetchRequest<LocalLogData> = LocalLogData.fetchRequest()
-        let sort = NSSortDescriptor(key: #keyPath(LocalLogData.orderIndex), ascending: true)
-        fetchRequest.sortDescriptors = [sort]
-        do {
-            let items = try context.fetch(fetchRequest)
-            return items
-        } catch let error as NSError {
-            print("Error resetting logs: \(error), \(error.userInfo)")
+    func getFriends() {
+        DispatchQueue.main.async {
+            Task {
+                do {
+                    guard let userId = self.fb.getUserId() else {
+                        return
+                    }
+                    let result = try await self.friendRepo.getFriends(userId: userId).get()
+                    self.friends = result
+                } catch {
+                    print("Error getting friends: \(error)")
+                }
+            }
         }
-        return []
     }
     
     func loadNextUnwatchedMovie() {
@@ -230,6 +252,25 @@ class LogsViewModel: ObservableObject {
                 }
             }
         }
+    }
+    
+    func getUserId() -> String? {
+        return fb.getUserId()
+    }
+    
+    private func getLocalLogs() -> [LocalLogData] {
+        let context = PersistenceController.shared.container.viewContext
+
+        let fetchRequest: NSFetchRequest<LocalLogData> = LocalLogData.fetchRequest()
+        let sort = NSSortDescriptor(key: #keyPath(LocalLogData.orderIndex), ascending: true)
+        fetchRequest.sortDescriptors = [sort]
+        do {
+            let items = try context.fetch(fetchRequest)
+            return items
+        } catch let error as NSError {
+            print("Error resetting logs: \(error), \(error.userInfo)")
+        }
+        return []
     }
 
 }

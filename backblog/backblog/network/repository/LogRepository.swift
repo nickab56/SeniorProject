@@ -15,7 +15,7 @@ class LogRepository {
         self.fb = fb
     }
     
-    func addLog(name: String, isVisible: Bool, ownerId: String) async -> Result<Bool, Error> {
+    func addLog(name: String, isVisible: Bool, ownerId: String) async -> Result<String, Error> {
         do {
             let date = String(currentTimeInMS())
             let ownerData = Owner(userId: ownerId, priority: 0)
@@ -35,7 +35,7 @@ class LogRepository {
             // Update log to include logId
             _ = try await fb.put(updates: ["log_id": result], docId: result, collection: "logs").get()
             
-            return .success(true)
+            return .success(result)
         } catch {
             return .failure(error)
         }

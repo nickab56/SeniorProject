@@ -10,7 +10,7 @@ import FirebaseAuth
 
 struct SignupView: View {
     @ObservedObject var vm: AuthViewModel
-    @State private var username = ""
+    @State private var email = ""
     @State private var password = ""
     @State private var displayName = ""
 
@@ -45,7 +45,7 @@ struct SignupView: View {
                         .foregroundColor(vm.messageColor)
                         .padding()
 
-                    TextField("Email or Username", text: $username)
+                    TextField("Email", text: $email)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding(.horizontal)
                         .autocapitalization(.none)
@@ -63,7 +63,7 @@ struct SignupView: View {
                         .accessibility(identifier: "signupDisplayNameTextField")
 
                     Button("Continue") {
-                        if username.isEmpty || password.isEmpty || displayName.isEmpty {
+                        if email.isEmpty || password.isEmpty || displayName.isEmpty {
                             vm.signupMessage = "Please fill all fields"
                             vm.messageColor = Color.red
                         } else {
@@ -71,7 +71,7 @@ struct SignupView: View {
                                 vm.signupMessage = "Password must be at least 6 characters"
                                 vm.messageColor = Color.red
                             } else {
-                                vm.attemptSignup(email: username, password: password, displayName: displayName)
+                                vm.attemptSignup(email: email, password: password, displayName: displayName)
                             }
                         }
                     }
