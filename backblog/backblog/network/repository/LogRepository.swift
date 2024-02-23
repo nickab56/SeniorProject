@@ -118,7 +118,29 @@ class LogRepository {
                 return resultArr
             }
             
-            return .success(logData)
+            let userId = fb.getUserId()
+            
+            // Sort logs by priority
+            let sorted = logData.sorted { log1, log2 in
+                let p1: Int
+                let p2: Int
+                
+                if log1.owner?.userId == userId {
+                    p1 = log1.owner?.priority ?? 0
+                } else {
+                    p1 = log1.order?[userId ?? ""] ?? 0
+                }
+                
+                if log2.owner?.userId == userId {
+                    p2 = log2.owner?.priority ?? 0
+                } else {
+                    p2 = log2.order?[userId ?? ""] ?? 0
+                }
+                
+                return p1 < p2
+            }
+            
+            return .success(sorted)
         } catch {
             return .failure(error)
         }
@@ -159,7 +181,7 @@ class LogRepository {
                     
                     group.addTask {
                         do {
-                            return try await self.fb.put(updates: updates, docId: userId, collection: "logs").get()
+                            return try await self.fb.put(updates: updates, docId: item.0, collection: "logs").get()
                         } catch {
                             throw error
                         }

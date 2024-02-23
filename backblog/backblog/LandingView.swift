@@ -2,19 +2,13 @@ import SwiftUI
 import CoreData
 
 struct LandingView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \LocalLogData.orderIndex, ascending: true)],
-        animation: .default)
-    private var logs: FetchedResults<LocalLogData>
-    
-    @StateObject private var logsViewModel = LogsViewModel(fb: FirebaseService(), movieService: MovieService())
+    @StateObject private var vm: LogsViewModel
     @StateObject private var authViewModel: AuthViewModel
-    @State private var isLoggedInToSocial = false
 
     init() {
         NavConfigUtility.configureNavigationBar()
         NavConfigUtility.configureTabBar()
+        _vm = StateObject(wrappedValue: LogsViewModel(fb: FirebaseService(), movieService: MovieService()))
         _authViewModel = StateObject(wrappedValue: AuthViewModel(fb: FirebaseService()))
     }
 
@@ -38,7 +32,7 @@ struct LandingView: View {
             .accessibility(identifier: "searchViewTab")
 
             NavigationStack {
-                if isLoggedInToSocial {
+                if vm.isLoggedInToSocial {
                     SocialView()
                 } else {
                     LoginView(vm: authViewModel)
@@ -62,42 +56,40 @@ struct LandingView: View {
                     .bold()
                     .padding(.top, UIScreen.main.bounds.height * 0.08)
 
-                if let firstLog = logs.first {
-                                // Determine if there are any unwatched movies in the first log
-                                let unwatchedMovies = firstLog.movie_ids
+                if let firstLog = vm.logs.first {
+                    if vm.hasWatchNextMovie {
+                        // If there are unwatched movies, show the WhatsNextView for the first log
+                        WhatsNextView(log: firstLog, vm: vm)
+                        .padding(.top, -20)
+                    } else {
+                        // If there are no unwatched movies, show "All Caught Up" message
+                        VStack {
+                            Text("All Caught Up!")
+                                .font(.title)
+                                .foregroundColor(.white)
+                                .accessibilityIdentifier("NoNextMovieText")
 
-                    if let unwatchedMovies = unwatchedMovies, !unwatchedMovies.allObjects.isEmpty {
-                                    // If there are unwatched movies, show the WhatsNextView for the first log
-                                    WhatsNextView(log: firstLog, vm: logsViewModel)
-                                        .padding(.top, -20)
-                                } else {
-                                    // If there are no unwatched movies, show "All Caught Up" message
-                                    VStack {
-                                        Text("All Caught Up!")
-                                            .font(.title)
-                                            .foregroundColor(.white)
-                                            .accessibilityIdentifier("NoNextMovieText")
+                            Text("You've watched all the movies in this log.")
+                                .foregroundColor(.gray)
+                        }
+                    }
+                } else {
+                    // If there are no logs, show "No logs available" message
+                    Text("No logs available.")
+                        .foregroundColor(.gray)
+                        .padding()
+                }
 
-                                        Text("You've watched all the movies in this log.")
-                                            .foregroundColor(.gray)
-                                    }
-                                    //.padding(.top, UIScreen.main.bounds.height * 0.1) // Adjust padding as needed
-                                }
-                            } else {
-                                // If there are no logs, show "No logs available" message
-                                Text("No logs available.")
-                                    .foregroundColor(.gray)
-                                    .padding()
-                            }
-
-
-                // Pass LogsViewModel to MyLogsView
-                MyLogsView(logsViewModel: logsViewModel)
+                MyLogsView(vm: vm)
                     .padding(.bottom, 150)
             }
         }
         .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .edgesIgnoringSafeArea(.all)
+        .onAppear {
+            vm.fetchLogs()
+            vm.loadNextUnwatchedMovie()
+        }
     }
 
 }

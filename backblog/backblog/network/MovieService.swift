@@ -57,7 +57,7 @@ struct MovieService {
     }
     
     func getMovieHalfSheet(movieId: String) async -> Result<String, Error> {
-        let endpointExt = "movie/\(movieId)/images?include_image_language=en"
+        let endpointExt = "movie/\(movieId)/images"
         let url = URL(string: baseURL + endpointExt)!
         
         var request = URLRequest(url: url)
@@ -67,6 +67,15 @@ struct MovieService {
         do {
             let (data, _) = try await URLSession.shared.data(for: request)
             if let imageResults = try? JSONDecoder().decode(MovieImageData.self, from: data) {
+                if let backdrop = imageResults.backdrops?.first(where: { $0.iso6391 == "en" }) {
+                    guard let halfsheet = backdrop.filePath else {
+                        return .success("")
+                    }
+                    
+                    return .success(halfsheet)
+                }
+                
+                // No backdrop image from english language, check for others
                 if (imageResults.backdrops == nil || imageResults.backdrops!.count == 0) {
                     return .success("")
                 }
@@ -74,6 +83,7 @@ struct MovieService {
                 guard let halfsheet = imageResults.backdrops?[0].filePath else {
                     return .success("")
                 }
+                
                 return .success(halfsheet)
             } else {
                 return .failure(MovieError.decodingError)
