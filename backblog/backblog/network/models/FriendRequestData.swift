@@ -3,10 +3,12 @@
 //  backblog
 //
 //  Created by Jake Buhite on 1/21/24.
+//  Updated by Jake Buhite on 2/23/24.
 //
 
 import Foundation
 
+/// Represents the data model for FriendRequestData from Firebase.
 struct FriendRequestData: Hashable, Codable, Equatable {
     static func == (lhs: FriendRequestData, rhs: FriendRequestData) -> Bool {
         return lhs.targetId == rhs.targetId && lhs.senderId == rhs.senderId && lhs.requestDate == rhs.requestDate && lhs.isComplete == rhs.isComplete

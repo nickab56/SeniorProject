@@ -198,32 +198,53 @@ class LogViewModel: ObservableObject {
     }
     
     /**
-     Marks a movie as watched, updating the `watchedMovies` array and CoreData model.
+     Marks a movie as watched, updating the `watchedMovies` array and Firebase/CoreData model appropriately.
      
      - Parameters:
          - movieId: The id of the movie to mark as watched.
      */
     func markMovieAsWatched(movieId: Int) {
-        guard case .localLog(let localLog) = log else { return }
+        switch (log) {
+        case .log(let log):
+            if let index = movies.firstIndex(where: { $0.0.id == movieId }) {
+                let movieTuple = movies.remove(at: index)
+                watchedMovies.append(movieTuple)
 
-        if let index = movies.firstIndex(where: { $0.0.id == movieId }) {
-            let movieTuple = movies.remove(at: index)
-            watchedMovies.append(movieTuple)
+                // Update Firebase
+                DispatchQueue.main.async { [self] in
+                    Task {
+                        guard (fb.getUserId()) != nil else {
+                            return
+                        }
+                        do {
+                            _ = try await movieRepo.markMovie(logId: log.logId ?? "", movieId: String(movieId), watched: true).get()
+                            showingWatchedNotification = true
+                        } catch {
+                            print("Error updating watched status in Firebase: \(error.localizedDescription)")
+                        }
+                    }
+                }
+            }
+        case .localLog(let localLog):
+            if let index = movies.firstIndex(where: { $0.0.id == movieId }) {
+                let movieTuple = movies.remove(at: index)
+                watchedMovies.append(movieTuple)
 
-            // Update Core Data model
-            let movieIds = localLog.movie_ids?.allObjects as? [LocalMovieData] ?? []
-            let movieEntity = movieIds.first(where: { $0.movie_id == String(movieId) })
-            if (movieEntity != nil) {
-                localLog.removeFromMovie_ids(movieEntity!)
-                
-                movieEntity?.movie_index = Int64(localLog.watched_ids?.count ?? 0)
-                localLog.addToWatched_ids(movieEntity!)
+                // Update Core Data model
+                let movieIds = localLog.movie_ids?.allObjects as? [LocalMovieData] ?? []
+                let movieEntity = movieIds.first(where: { $0.movie_id == String(movieId) })
+                if (movieEntity != nil) {
+                    localLog.removeFromMovie_ids(movieEntity!)
+                    
+                    movieEntity?.movie_index = Int64(localLog.watched_ids?.count ?? 0)
+                    localLog.addToWatched_ids(movieEntity!)
 
-                do {
-                    try viewContext.save()
-                    showingWatchedNotification = true
-                } catch {
-                    print("Error updating watched status in Core Data: \(error.localizedDescription)")
+                    do {
+                        try viewContext.save()
+                        showingWatchedNotification = true
+                    } catch {
+                        print("Error updating watched status in Core Data: \(error.localizedDescription)")
+                    }
                 }
             }
         }
@@ -236,26 +257,46 @@ class LogViewModel: ObservableObject {
          - movieId: The id of the movie to mark as unwatched.
      */
     func markMovieAsUnwatched(movieId: Int) {
-        guard case .localLog(let localLog) = log else { return }
+        switch (log) {
+        case .log(let log):
+            if let index = watchedMovies.firstIndex(where: { $0.0.id == movieId }) {
+                let movieTuple = watchedMovies.remove(at: index)
+                movies.append(movieTuple)
 
-        // Find the movie in the watchedMovies list
-        if let index = watchedMovies.firstIndex(where: { $0.0.id == movieId }) {
-            let movieTuple = watchedMovies.remove(at: index)
-            movies.append(movieTuple)
+                // Update Firebase
+                DispatchQueue.main.async { [self] in
+                    Task {
+                        guard (fb.getUserId()) != nil else {
+                            return
+                        }
+                        do {
+                            _ = try await movieRepo.markMovie(logId: log.logId ?? "", movieId: String(movieId), watched: false).get()
+                        } catch {
+                            print("Error updating watched status in Firebase: \(error.localizedDescription)")
+                        }
+                    }
+                }
+            }
+        case .localLog(let localLog):
+            // Find the movie in the watchedMovies list
+            if let index = watchedMovies.firstIndex(where: { $0.0.id == movieId }) {
+                let movieTuple = watchedMovies.remove(at: index)
+                movies.append(movieTuple)
 
-            // Update Core Data model
-            let movieIds = localLog.watched_ids?.allObjects as? [LocalMovieData] ?? []
-            let movieEntity = movieIds.first(where: { $0.movie_id == String(movieId) })
-            if (movieEntity != nil) {
-                localLog.removeFromWatched_ids(movieEntity!)
-                
-                movieEntity?.movie_index = Int64(localLog.movie_ids?.count ?? 0)
-                localLog.addToMovie_ids(movieEntity!)
+                // Update Core Data model
+                let movieIds = localLog.watched_ids?.allObjects as? [LocalMovieData] ?? []
+                let movieEntity = movieIds.first(where: { $0.movie_id == String(movieId) })
+                if (movieEntity != nil) {
+                    localLog.removeFromWatched_ids(movieEntity!)
+                    
+                    movieEntity?.movie_index = Int64(localLog.movie_ids?.count ?? 0)
+                    localLog.addToMovie_ids(movieEntity!)
 
-                do {
-                    try viewContext.save()
-                } catch {
-                    print("Error updating unwatched status in Core Data: \(error.localizedDescription)")
+                    do {
+                        try viewContext.save()
+                    } catch {
+                        print("Error updating unwatched status in Core Data: \(error.localizedDescription)")
+                    }
                 }
             }
         }
