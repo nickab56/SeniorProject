@@ -3,10 +3,16 @@
 //  backblog
 //
 //  Created by Jake Buhite on 2/12/24.
+//  Updated by Jake Buhite on 2/23/24.
+//
+//  Description: Manages movie data and fetches movie details from MovieRepository.
 //
 
 import Foundation
 
+/**
+ ViewModel for managing movie data and other state changes for the MovieDetailsView.
+ */
 class MoviesViewModel: ObservableObject {
     @Published var isLoading = true
     @Published var movieData: MovieData?
@@ -19,6 +25,14 @@ class MoviesViewModel: ObservableObject {
     
     private var moviesRepo: MovieRepository
     
+    /**
+     Initializes the MoviesViewModel with the provided parameters.
+     
+     - Parameters:
+         - movieId: The id of the movie for which details are fetched from TMDB.
+         - fb: The FirebaseProtocol for handling Firebase operations
+         - movieService: The MovieService for handling interactions with TMDB.
+     */
     init(movieId: String, fb: FirebaseProtocol, movieService: MovieService) {
         self.movieId = movieId
         self.moviesRepo = MovieRepository(fb: fb, movieService: movieService)
@@ -26,7 +40,9 @@ class MoviesViewModel: ObservableObject {
         self.movieService = movieService
     }
     
-    // fetches the movie details using the id using repo function.
+    /**
+     Fetches movie details using the provided movie id, updating the `movieData` and `errorMessage` properties.
+     */
     func fetchMovieDetails() {
         isLoading = true
         Task {
@@ -43,6 +59,14 @@ class MoviesViewModel: ObservableObject {
         }
     }
     
+    /**
+     Formats the release year from the given date string.
+     
+     - Parameters:
+         - dateString: The data string to extract the year from.
+     
+     - Returns: A formatted string representing the release year.
+     */
     func formatReleaseYear(from dateString: String?) -> String {
         guard let dateString = dateString, let year = dateString.split(separator: "-").first else {
             return "Unknown year"

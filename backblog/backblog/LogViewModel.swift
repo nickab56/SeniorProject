@@ -3,12 +3,24 @@
 //  backblog
 //
 //  Created by Jake Buhite on 2/12/24.
+//  Updated by Jake Buhite on 2/23/24.
+//
+//  Description: Manages the data and business logic of a log, including
+//  its movies and collaborators.
 //
 
 import Foundation
 import SwiftUI
 import CoreData
 
+/**
+ Manages the data and business logic of a log, including its movies and collaborators.
+ 
+ - Parameters:
+     - log: A log wrapped in `LogType`.
+     - fb: The `FirebaseProtocol` for Firebase operations.
+     - movieService: The `MovieService` for handling interactions with TMDB.
+ */
 class LogViewModel: ObservableObject {
     private let viewContext = PersistenceController.shared.container.viewContext
     @Published var movies: [(MovieData, String)] = [] // Pair of MovieData and half-sheet URL
@@ -27,6 +39,14 @@ class LogViewModel: ObservableObject {
     private var logRepo: LogRepository
     private var movieRepo: MovieRepository
     
+    /**
+     Initializes the `LogViewModel` with the specific `LogType`, `FirebaseProtocol`, and `MovieService`.
+     
+     - Parameters:
+         - log: A log wrapped in `LogType`.
+         - fb: The `FirebaseProtocol` for Firebase operations.
+         - movieService: The `MovieService` for handling interactions with TMDB.
+     */
     init(log: LogType, fb: FirebaseProtocol, movieService: MovieService) {
         self.log = log
         self.fb = fb
@@ -35,6 +55,9 @@ class LogViewModel: ObservableObject {
         self.movieRepo = MovieRepository(fb: fb, movieService: movieService)
     }
     
+    /**
+     Updates the log, fetching movies based on the log type.
+     */
     func updateLog() {
         guard case .log(let fbLog) = log else {
             fetchMovies()
@@ -53,6 +76,9 @@ class LogViewModel: ObservableObject {
         }
     }
     
+    /**
+     Fetches movies for the log based on its type, updating the `movies` and `watchedMovies` arrays.
+     */
     func fetchMovies() {
         // Clear existing data
         movies = []
@@ -144,7 +170,13 @@ class LogViewModel: ObservableObject {
         }
     }
 
-    
+    /**
+     Fetches details for a specific movie, including its data and half-sheet URL.
+     
+     - Parameters:
+         - movieId: The id of the movie to fetch.
+         - isWatched: A boolean value indicating whether the movie is watched or unwatched.
+     */
     func fetchMovieDetails(movieId: String, isWatched: Bool) async {
         let movieDetailsResult = await movieRepo.getMovieById(movieId: movieId)
         let halfSheetResult = await movieRepo.getMovieHalfSheet(movieId: movieId)
@@ -165,6 +197,12 @@ class LogViewModel: ObservableObject {
         }
     }
     
+    /**
+     Marks a movie as watched, updating the `watchedMovies` array and CoreData model.
+     
+     - Parameters:
+         - movieId: The id of the movie to mark as watched.
+     */
     func markMovieAsWatched(movieId: Int) {
         guard case .localLog(let localLog) = log else { return }
 
@@ -191,6 +229,12 @@ class LogViewModel: ObservableObject {
         }
     }
 
+    /**
+     Marks a movie as unwatched, updating the `watchedMovies` array and CoreData model.
+     
+     - Parameters:
+         - movieId: The id of the movie to mark as unwatched.
+     */
     func markMovieAsUnwatched(movieId: Int) {
         guard case .localLog(let localLog) = log else { return }
 
@@ -217,12 +261,21 @@ class LogViewModel: ObservableObject {
         }
     }
     
+    /**
+     Returns an array of movie id strings.
+     
+     - Parameters:
+         - movieId: The list of `LocalMovieData` from the CoreData model.
+     */
     func localMovieDataMapping(movieSet: Set<LocalMovieData>?) -> [String] {
         guard let movies: Set<LocalMovieData> = movieSet, !(movies.count == 0) else { return [] }
         
         return movies.compactMap { $0.movie_id  }
     }
 
+    /**
+     Deletes the log, removing it from CoreData or Firebase as appropriate.
+     */
     func deleteLog() {
         do {
             switch log {
@@ -249,6 +302,9 @@ class LogViewModel: ObservableObject {
         }
     }
     
+    /**
+     Fetches the poster URL for the movie.
+     */
     func fetchMoviePoster() {
         if (!logContainsMovies()) {
             isLoading = false
@@ -281,6 +337,11 @@ class LogViewModel: ObservableObject {
         }
     }
 
+    /**
+     Checks if the log contains any movies.
+     
+     - Returns: A boolean value indicating if the log contains movies.
+     */
     func logContainsMovies() -> Bool {
         return switch log {
         case .localLog(let local):
@@ -290,6 +351,13 @@ class LogViewModel: ObservableObject {
         }
     }
 
+    /**
+     Truncates the given text to a specified maximum number of characters.
+     
+     - Parameters:
+         - text: The text to truncate.
+     - Returns: The truncated text.
+     */
     func truncateText(_ text: String) -> String {
         if text.count > maxCharacters {
             return String(text.prefix(maxCharacters)) + "..."
@@ -298,7 +366,12 @@ class LogViewModel: ObservableObject {
         }
     }
     
-    // Function to remove a movie from a local log
+    /**
+     Removes a movie from the log, updating the `movies` array and CoreData model.
+     
+     - Parameters:
+         - movieId: The id of the movie to remove.
+     */
     func removeMovie(movieId: Int) {
         guard case .localLog(let localLog) = log else { return }
 
@@ -319,7 +392,13 @@ class LogViewModel: ObservableObject {
         }
     }
 
-    // Function to reorder movies within a local log
+    /**
+     Reorders movies within the log, updating the `movies` array and CoreData model.
+     
+     - Parameters:
+         - source: The source index set.
+         - destination: The destination index.
+     */
     func reorderMovies(from source: IndexSet, to destination: Int) {
         guard case .localLog(let localLog) = log else { return }
         let movieIds = localLog.movie_ids
@@ -339,6 +418,12 @@ class LogViewModel: ObservableObject {
         }
     }
     
+    /**
+     Updates the name of the log.
+     
+     - Parameters:
+         - newName: The new name for the log.
+     */
     func updateLogName(newName: String) {
         guard case .localLog(let localLog) = log else { return }
         localLog.name = newName
@@ -349,19 +434,42 @@ class LogViewModel: ObservableObject {
         }
     }
 
-    // EDIT LOG SHEET VIEW
+    /**
+     Deletes a draft movie from the log.
+     
+     - Parameters:
+         - movies: The array of movies.
+         - offsets: The index set of the movie to delete.
+     - Returns: The updated array of movies after deletion.
+     */
     func deleteDraftMovie(movies: [(MovieData, String)], at offsets: IndexSet) -> [(MovieData, String)] {
         var newMovies = movies
         newMovies.remove(atOffsets: offsets)
         return newMovies
     }
 
+    /**
+     Moves draft movies within the log.
+     
+     - Parameters:
+         - movies: The array of movies.
+         - source: The source index set.
+         - offsets: The destination index.
+     - Returns: The updated array of movies after moving.
+     */
     func moveDraftMovies(movies: [(MovieData, String)], from source: IndexSet, to destination: Int) -> [(MovieData, String)] {
         var newMovies = movies
         newMovies.move(fromOffsets: source, toOffset: destination)
         return newMovies
     }
 
+    /**
+     Saves changes to the log, including its name and movie list.
+     
+     - Parameters:
+         - movies: The array of movies.
+         - draftLogName: The draft name for the log.
+     */
     func saveChanges(draftLogName: String, movies: [(MovieData, String)]) {
         // Apply changes from draft state to the view model
         updateLogName(newName: draftLogName)

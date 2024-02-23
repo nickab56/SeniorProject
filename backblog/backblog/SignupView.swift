@@ -92,5 +92,6 @@ struct SignupView: View {
             .navigationDestination(isPresented: $vm.signupSuccessful) {
                 LoginView(vm: vm)
             }
+            .navigationBarBackButtonHidden(true)
     }
 }

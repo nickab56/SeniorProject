@@ -1,6 +1,24 @@
+//
+//  LogDetailsView.swift
+//  backblog
+//
+//  Created by Nick Abegg on 2/2/24.
+//  Updated by Jake Buhite on 2/23/24.
+//
+//  Description: View responsible for the details of a log, including its movies and collaborators.
+//
+
 import SwiftUI
 import CoreData
 
+/**
+ View displaying the details of a log, including its movies and collaborators
+ 
+ - Parameters:
+     - log: A log wrapped in `LogType`.
+     - dismiss: The environment variable for dismissing the view.
+     - vm: The view model managing log-related data and operations.
+ */
 struct LogDetailsView: View {
     let log: LogType
     @Environment(\.dismiss) var dismiss
@@ -9,11 +27,20 @@ struct LogDetailsView: View {
     
     @State private var editLogSheet = false
     
+    /**
+     Initializes the `LogDetailsView`, initializing the `LogViewModel`.
+     
+     - Parameters:
+         - log: The `LogType` of the log.
+     */
     init(log: LogType) {
         self.log = log
         _vm = StateObject(wrappedValue: LogViewModel(log: log, fb: FirebaseService(), movieService: MovieService()))
     }
 
+    /**
+     The body of the `LogDetailsView` view, defining the SwiftUI content.
+     */
     var body: some View {
         ZStack(alignment: .top) {
             LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -179,7 +206,13 @@ struct LogDetailsView: View {
         }
     }
     
+    /**
+     View displaying a notification when a movie is added to the "watched" list.
+     */
     struct WatchedNotificationView: View {
+        /**
+         The body of the `WatchedNotificationsView` view, defining the SwiftUI content.
+         */
         var body: some View {
             Text("Movie added to watched")
                 .padding()
@@ -193,10 +226,20 @@ struct LogDetailsView: View {
     }
 }
 
+/**
+ View representing a row for displaying a movie within a log.
+ 
+ - Parameters:
+     - movie: The `MovieData` to display.
+     - halfSheetPath: The path for the movie's half-sheet details.
+ */
 struct MovieRow: View {
     let movie: MovieData
     let halfSheetPath: String
 
+    /**
+     The body of the `MovieRow` view, defining the SwiftUI content.
+     */
     var body: some View {
         NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0))) {
             HStack {
@@ -223,9 +266,18 @@ struct MovieRow: View {
     }
 }
 
+/**
+ View representing an avatar image
+ 
+ - Parameters:
+     - imageName: The name of the asset to display.
+ */
 struct AvatarView: View {
     var imageName: String
 
+    /**
+     The body of the `AvatarView` view, defining the SwiftUI content.
+     */
     var body: some View {
         Image(imageName)
             .resizable()
@@ -236,10 +288,19 @@ struct AvatarView: View {
     }
 }
 
+/**
+ View displaying the avatars of log collaborators.
+ 
+ - Parameters:
+     - collaborators: An array of avatar image names representing log collaborators.
+ */
 struct CollaboratorsView: View {
     var collaborators: [String]
     @State private var expanded = false
 
+    /**
+     The body of the `CollaboratorsView` view, defining the SwiftUI content.
+     */
     var body: some View {
         HStack(spacing: 0) {
             if collaborators.count > 4 && !expanded {
@@ -267,6 +328,9 @@ struct CollaboratorsView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
+    /**
+     A private method that creates an expand button for the list of collaborators.
+     */
     private var expandButtonOverlay: some View {
         Button(action: {
             withAnimation {
@@ -281,6 +345,9 @@ struct CollaboratorsView: View {
         .padding(5)
     }
 
+    /**
+     A private method that creates an condense button for the list of collaborators.
+     */
     private var condenseButtonOverlay: some View {
         Button(action: {
             withAnimation {
