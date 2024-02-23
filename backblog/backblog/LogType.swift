@@ -20,4 +20,22 @@ enum LogType: Identifiable {
             return log.logId ?? ""
         }
     }
+    
+    func toLocalLog() -> LocalLogData? {
+        switch self {
+        case .localLog(let log):
+            return log
+        default:
+            return nil
+        }
+    }
+    
+    func toLog() -> LogData? {
+        switch self {
+        case .log(let log):
+            return log
+        default:
+            return nil
+        }
+    }
 }

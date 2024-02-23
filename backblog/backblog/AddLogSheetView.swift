@@ -7,6 +7,8 @@ struct AddLogSheetView: View {
     @State private var newLogName = ""
     @State private var showingAllFriends = false // To toggle the full list of friends
     @State private var searchText = "" // For the search bar
+    
+    @ObservedObject var logsViewModel: LogsViewModel
 
     let collaborators = ["Alice", "Bob", "Charlie"]
     let friends = ["Dave", "Eva", "Frank", "George", "Hannah", "Ian", "Jill", "Kevin", "Luna", "Mike", "Nora", "Oscar", "Patty", "Quinn", "Rachel", "Steve", "Tina", "Uma", "Vince", "Wendy", "Xander", "Yvonne", "Zack"]
@@ -103,6 +105,7 @@ struct AddLogSheetView: View {
 
         do {
             try viewContext.save()
+            logsViewModel.fetchLogs() // FIX THIS
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")

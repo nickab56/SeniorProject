@@ -7,13 +7,17 @@
 
 import Foundation
 
-struct LogData: Identifiable, Codable, Equatable {
+struct LogData: Identifiable, Codable, Equatable, Hashable {
     static func == (lhs: LogData, rhs: LogData) -> Bool {
         return lhs.logId == rhs.logId
     }
     
     var id: String {
         logId ?? ""
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(logId)
     }
     
     var logId: String?

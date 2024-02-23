@@ -36,7 +36,10 @@ class LogViewModel: ObservableObject {
     }
     
     func updateLog() {
-        guard case .log(let fbLog) = log else { return }
+        guard case .log(let fbLog) = log else {
+            fetchMovies()
+            return
+        }
         DispatchQueue.main.async { [self] in
             Task {
                 do {

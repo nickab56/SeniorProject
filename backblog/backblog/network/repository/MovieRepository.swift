@@ -46,13 +46,13 @@ class MovieRepository {
         }
     }
     
-    func getWatchNextMovie(userId: String) async -> Result<String, Error> {
+    func getWatchNextMovie(userId: String) async -> Result<(String, String)?, Error> {
         do {
             // Get log data
             let logs = try await LogRepository(fb: fb).getLogs(userId: userId, showPrivate: true).get()
             
             if (logs.isEmpty) {
-                return .failure(FirebaseError.notFound)
+                return .success(nil)
             }
             
             var priorityLog: LogData? = nil
@@ -72,10 +72,13 @@ class MovieRepository {
             }
             
             if (priorityLog == nil) {
-                return .failure(FirebaseError.nullProperty)
+                return .success(nil)
             }
             
-            return .success(priorityLog!.movieIds!.first!)
+            let movieId = priorityLog!.movieIds!.first!
+            let logName = priorityLog!.name ?? "Unknown"
+            
+            return .success((movieId, logName))
         } catch {
             return .failure(error)
         }

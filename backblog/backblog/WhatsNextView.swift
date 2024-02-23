@@ -2,12 +2,12 @@ import SwiftUI
 import CoreData
 
 struct WhatsNextView: View {
-    var log: LocalLogData  // Assuming you're passing the specific log for "What's Next"
+    var log: LogType  // Assuming you're passing the specific log for "What's Next"
     @ObservedObject var vm: LogsViewModel
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text("From \(log.name ?? "Unknown")")
+            Text("From \(vm.nextLogName)")
                 .font(.subheadline)
                 .foregroundColor(.gray)
                 .bold()
@@ -23,7 +23,7 @@ struct WhatsNextView: View {
                     .padding(.horizontal, 10)
                     .accessibility(identifier: "logPosterImage")
             }
-            .buttonStyle(PlainButtonStyle()) // Use PlainButtonStyle to keep the image appearance
+            .buttonStyle(PlainButtonStyle())
 
             HStack {
                 VStack(alignment: .leading) {
@@ -43,7 +43,9 @@ struct WhatsNextView: View {
                 Spacer()
 
                 Button(action: {
-                    vm.markMovieAsWatched(log: log)
+                    withAnimation {
+                        vm.markMovieAsWatched(log: log)
+                    }
                 }) {
                     Image(systemName: "checkmark.circle.fill")
                         .resizable()
@@ -54,9 +56,6 @@ struct WhatsNextView: View {
                 .accessibility(identifier: "checkButton")
             }
             .padding(.horizontal)
-        }
-        .onAppear {
-            vm.loadNextUnwatchedMovie(log: log)
         }
     }
 }

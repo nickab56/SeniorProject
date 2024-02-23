@@ -109,7 +109,9 @@ class MovieRepositoryTests: XCTestCase {
         do {
             let result = try await movieRepoSucceed.getWatchNextMovie(userId: userId).get()
             
-            XCTAssertEqual(result, "11")
+            XCTAssertNotNil(result)
+            XCTAssertEqual(result?.0, "11")
+            XCTAssertEqual(result?.1, "My Log")
         } catch {
             XCTFail("Error: \(error)")
         }
