@@ -1,12 +1,37 @@
+//
+//  LogItemView.swift
+//  backblog
+//
+//  Created by Nick Abegg on 2/4/24.
+//  Updated by Jake Buhite on 2/23/24
+//
+//  Description: Displays a single log item with its related details.
+//
+
 import SwiftUI
 
+/**
+ Displays a single log item with its related details.
+ 
+ - Parameters:
+     - vm: The `LogViewModel` managing the log item's data.
+ */
 struct LogItemView: View {
     @StateObject var vm: LogViewModel
     
+    /**
+     Initializes the LogItemView with a LogType instance.
+     
+     - Parameters:
+         - log: The `LogType` instance representing the log item.
+     */
     init(log: LogType) {
         _vm = StateObject(wrappedValue: LogViewModel(log: log, fb: FirebaseService(), movieService: MovieService()))
     }
 
+    /**
+     The body of `LogItemView` view, responsible for displaying the layout and SwiftUI elements.
+     */
     var body: some View {
         ZStack {
             if vm.isLoading {

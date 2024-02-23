@@ -1,10 +1,26 @@
+//
+//  LandingView.swift
+//  backblog
+//
+//  Created by Nick Abegg on 2/2/24.
+//  Updated by Jake Buhite on 2/23/24.
+//
+//  Description: View responsible for displaying the landing page of the app and the navigation bar.
+//
+
 import SwiftUI
 import CoreData
 
+/**
+ View for responsible for displaying the landing page of the app and the navigation bar on lauch.
+ */
 struct LandingView: View {
     @StateObject private var vm: LogsViewModel
     @StateObject private var authViewModel: AuthViewModel
 
+    /**
+     Initializes the `LandingView`, configuring the navigation bar and tab bar, and initializing view models.
+     */
     init() {
         NavConfigUtility.configureNavigationBar()
         NavConfigUtility.configureTabBar()
@@ -12,6 +28,9 @@ struct LandingView: View {
         _authViewModel = StateObject(wrappedValue: AuthViewModel(fb: FirebaseService()))
     }
 
+    /**
+     The body of the 'LandingView' view, defining the SwiftUI content
+     */
     var body: some View {
         TabView {
             NavigationStack {
@@ -49,6 +68,9 @@ struct LandingView: View {
         }
     }
 
+    /**
+     Creates the main landing view, displaying the `WhatsNextView` and `MyLogsView` when appropriate.
+     */
     private func mainLandingView() -> some View {
         ScrollView {
             VStack {

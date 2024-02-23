@@ -3,22 +3,39 @@
 //  backblog
 //
 //  Created by Nick Abegg
+//  Updated by Jake Buhite on 02/23/24.
 //
 //  Description: Details page for movies. Utilizes Repository functions found in network file.
 //  Fetches and displays all the info for a movie
+//
 
 import SwiftUI
 
+/**
+ View displaying detailed information for a specific movie.
+ 
+ - Parameters:
+     - vm: The MoviesViewModel responsible for managing movie data.
+ */
 struct MovieDetailsView: View {
     @StateObject var vm: MoviesViewModel
     @State private var opacity: Double = 0
     @State private var blurAmount: CGFloat = 0
     @State private var showingLogSelection = false
     
+    /**
+     Initializes the MovieDetailsView with the provided movie Id.
+     
+     - Parameters:
+         - movieId: The id of the movie in TMDB's database.
+     */
     init (movieId: String) {
         _vm = StateObject(wrappedValue: MoviesViewModel(movieId: movieId, fb: FirebaseService(), movieService: MovieService()))
     }
 
+    /**
+     The body of the MovieDetailsView, displaying movie details.
+     */
     var body: some View {
         ZStack(alignment: .top) {
             // Background

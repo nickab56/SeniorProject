@@ -1,12 +1,33 @@
+//
+//  MyLogsView.swift
+//  backblog
+//
+//  Created by Nick Abegg on 2/18/24.
+//  Updated by Jake Buhite on 2/23/23.
+//
+//  Description: View for displaying and managing user logs.
+//
+
 import SwiftUI
 import CoreData
 
+/**
+ View for managing and displaying user logs.
+ 
+ - Parameters:
+     - draggedLog: The log type that is currently being dragged.
+     - showingAddLogSheet: Boolean value indicating whether the "Add Log" sheet is shown.
+     - vm: The view model for managing the logs.
+ */
 struct MyLogsView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @State private var draggedLog: LogType?
     @State private var showingAddLogSheet = false
     @ObservedObject var vm: LogsViewModel
 
+    /**
+     The body of `MyLogsView`, defining its layout and SwiftUI elements.
+     */
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -44,6 +65,9 @@ struct MyLogsView: View {
         }
     }
     
+    /**
+     Function to display local logs in a LazyVGrid layout.
+     */
     private func LocalLogs() -> some View {
         let logList: [LocalLogData] = vm.logs.compactMap { logType in logType.toLocalLog() }
         return LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
@@ -68,6 +92,9 @@ struct MyLogsView: View {
         }
     }
 
+    /**
+     Function to display Firebase logs in a LazyVGrid layout.
+     */
     private func FirebaseLogs() -> some View {
         let logList: [LogData] = vm.logs.compactMap { logType in logType.toLog() }
         return LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
@@ -93,6 +120,9 @@ struct MyLogsView: View {
     }
 
 
+    /**
+     A drop delegate to handle drag and drop operations for logs.
+     */
     struct DropViewDelegate: DropDelegate {
         var logsViewModel: LogsViewModel
         let droppedLog: LogType
@@ -100,6 +130,9 @@ struct MyLogsView: View {
         @Binding var draggedLog: LogType?
         let viewContext: NSManagedObjectContext
 
+        /**
+         Function to perform the drop operation when a log is dropped.
+         */
         func performDrop(info: DropInfo) -> Bool {
             guard let draggedLog = draggedLog else { return false }
             
@@ -150,6 +183,9 @@ struct MyLogsView: View {
             return true
         }
 
+        /**
+         Function to handle the drop entered event for log dragging.
+         */
         func dropEntered(info: DropInfo) {
             guard let draggedLog = draggedLog else { return }
             

@@ -93,5 +93,6 @@ struct LoginView: View {
             .navigationDestination(isPresented: $vm.isLoggedInToSocial) {
                 SocialView()
             }
+            .navigationBarBackButtonHidden(true)
     }
 }

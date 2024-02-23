@@ -1,6 +1,22 @@
+//
+//  EditCollaboratorSheetView.swift
+//  backblog
+//
+//  Created by Nick Abegg on 2/18/24.
+//  Updated by Jake Buhite on 2/23/24
+//
+//  Description: View for editing collaborators for a log, allowing users to add or remove collaborators.
+//
+
 import SwiftUI
 import CoreData
 
+/**
+ Displays a single log item with its related details.
+ 
+ - Parameters:
+     - isPresented: A binding to control the presentation of the sheet.
+ */
 struct EditCollaboratorSheetView: View {
     @Binding var isPresented: Bool
     
@@ -27,6 +43,9 @@ struct EditCollaboratorSheetView: View {
         }
     }
     
+    /**
+     The body of `EditCollaboratorSheetView` view, responsible for displaying the layout and SwiftUI elements.
+     */
     var body: some View {
         NavigationView {
             Form {
@@ -96,12 +115,24 @@ struct EditCollaboratorSheetView: View {
         .preferredColorScheme(.dark)
     }
     
+    /**
+     Adds a friend as a collaborator.
+     
+     - Parameters:
+         - friend: The friend to add as a collaborator.
+     */
     func addCollaborator(friend: String) {
         withAnimation {
             collaborators.append(friend)
         }
     }
     
+    /**
+     Removes a collaborator at the specified index set.
+     
+     - Parameters:
+         - offsets: The index set of the collaborator(s) to remove.
+     */
     func removeCollaborator(at offsets: IndexSet) {
         withAnimation {
             collaborators.remove(atOffsets: offsets)

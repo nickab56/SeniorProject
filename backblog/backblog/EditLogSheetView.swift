@@ -3,11 +3,22 @@
 //  backblog
 //
 //  Created by Nick Abegg on 2/18/24.
+//  Updated by Jake Buhite on 2/23/23.
+//
+//  Description: View for editing the details of a log.
 //
 
 import SwiftUI
 import CoreData
 
+/**
+ View for editing the details of a log, including its name and movies.
+ 
+ - Parameters:
+     - isPresented: Binding to control the presentation of the view.
+     - vm: The view model for the log being edited.
+     - onLogDeleted: Closure to be called when the log is deleted.
+ */
 struct EditLogSheetView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Binding var isPresented: Bool
@@ -19,6 +30,14 @@ struct EditLogSheetView: View {
     @State private var draftMovies: [(MovieData, String)]
     @State private var showDeleteConfirmation: Bool = false
 
+    /**
+     Initializes the `EditLogSheetView` with the given bindings and view model.
+     
+     - Parameters:
+         - isPresented: Binding to control the presentation of the view.
+         - vm: The view model for the log being edited.
+         - onLogDeleted: Closure to be called when the log is deleted.
+     */
     init(isPresented: Binding<Bool>, vm: LogViewModel, onLogDeleted: (() -> Void)? = nil) {
         self._isPresented = isPresented
         self.vm = vm
@@ -34,8 +53,9 @@ struct EditLogSheetView: View {
         _draftMovies = State(initialValue: vm.movies)
     }
 
-
-
+    /**
+     The body of the `EditLogSheetView`, defining the layout and SwiftUI elements.
+     */
     var body: some View {
         NavigationView {
             Form {

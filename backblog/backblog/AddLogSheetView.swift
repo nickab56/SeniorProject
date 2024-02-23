@@ -1,6 +1,19 @@
+//
+//  AddLogSheetView.swift
+//  backblog
+//
+//  Created by Nick Abegg on 2/2/24.
+//  Updated by Jake Buhite on 2/23/24.
+//
+//  Description: View for adding a new log for both Firebase logs and CoreData logs.
+//
+
 import SwiftUI
 import CoreData
 
+/**
+ View for adding a new log, including options to name the log and add collaborators.
+ */
 struct AddLogSheetView: View {
     @Binding var isPresented: Bool
     @Environment(\.managedObjectContext) private var viewContext
@@ -28,6 +41,9 @@ struct AddLogSheetView: View {
         }
     }
 
+    /**
+     The body of the 'AddLogSheetView' view, defining the SwiftUI content
+     */
     var body: some View {
         NavigationView {
             Form {
@@ -118,6 +134,11 @@ struct AddLogSheetView: View {
         })
     }
 
+    /**
+     Adds a new local log to CoreData with the entered log name.
+     
+     - Note: This method is used when the user is not logged in.
+     */
     private func addNewLocalLog() {
         let newLog = LocalLogData(context: viewContext)
         newLog.name = newLogName
@@ -132,12 +153,24 @@ struct AddLogSheetView: View {
         }
     }
     
+    /**
+     Adds a friend as a collaborator to the new log.
+     
+     - Parameters:
+         - friend: The `UserData` object representing the friend to add as a collaborator.
+     */
     private func addCollaborator(friend: UserData) {
         withAnimation {
             collaborators.append(friend)
         }
     }
     
+    /**
+     Removes a collaborator from the list of collaborators.
+     
+     - Parameters:
+         - offsets: The index set of the collaborator to remove.
+     */
     private func removeCollaborator(at offsets: IndexSet) {
         withAnimation {
             collaborators.remove(atOffsets: offsets)

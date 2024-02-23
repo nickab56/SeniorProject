@@ -1,10 +1,30 @@
+//
+//  WhatsNextView.swift
+//  backblog
+//
+//  Created by Nick Abegg on 2/18/24.
+//  Updated by Jake Buhite on 2/23/23.
+//
+//  Description: View for displaying the next movie in a log.
+//
+
 import SwiftUI
 import CoreData
 
+/**
+ View for displaying the next movie in a log.
+ 
+ - Parameters:
+     - log: The log type containing the next movie.
+     - vm: The view model for managing the logs.
+ */
 struct WhatsNextView: View {
     var log: LogType
     @ObservedObject var vm: LogsViewModel
 
+    /**
+     The body of `WhatsNextView` view, responsible for displaying the layout and SwiftUI elements.
+     */
     var body: some View {
         VStack(alignment: .leading) {
             Text("From \(vm.nextLogName)")

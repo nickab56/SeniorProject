@@ -3,13 +3,22 @@
 //  backblog
 //
 //  Created by Nick Abegg on 2/4/24.
-//  Updated by Jake Buhite on 2/22/24
+//  Updated by Jake Buhite on 2/23/24
+//
+//  Description: Manages user logs and related data.
 //
 
 import Foundation
 import SwiftUI
 import CoreData
 
+/**
+ Manages user logs and related data.
+ 
+ - Parameters:
+     - fb: The `FirebaseProtocol` for Firebase operations.
+     - movieService: The `MovieService` for handling interactions with TMDB.
+ */
 class LogsViewModel: ObservableObject {
     @Published var logs: [LogType] = []
     @Published var refreshTrigger: Bool = false
@@ -35,6 +44,13 @@ class LogsViewModel: ObservableObject {
     let logRepo: LogRepository
     let friendRepo: FriendRepository
     
+    /**
+     Initializes the LogsViewModel with FirebaseProtocol and MovieService instances.
+     
+     - Parameters:
+         - fb: The `FirebaseProtocol` for Firebase operations.
+         - movieService: The `MovieService` for handling interactions with TMDB.
+     */
     init(fb: FirebaseProtocol, movieService: MovieService) {
         self.fb = fb
         self.movieService = movieService
@@ -43,6 +59,14 @@ class LogsViewModel: ObservableObject {
         self.friendRepo = FriendRepository(fb: fb)
     }
     
+    /**
+     Adds a new log with the specific name, visibility, and collaborators.
+     
+     - Parameters:
+         - name: The name of the log to add.
+         - isVisible: A boolean value indicating the visibility of the log.
+         - collaborators: An array of strings representing collaborator ids.
+     */
     func addLog(name: String, isVisible: Bool, collaborators: [String]) {
         DispatchQueue.main.async {
             Task {
@@ -59,6 +83,9 @@ class LogsViewModel: ObservableObject {
         }
     }
     
+    /**
+     Fetches user logs based on the user's authentication status.
+     */
     func fetchLogs() {
         // Check whether user is logged in
         if let userId = fb.getUserId() {
@@ -82,6 +109,9 @@ class LogsViewModel: ObservableObject {
         }
     }
     
+    /**
+     Fetches the user's friends for collaboration.
+     */
     func getFriends() {
         DispatchQueue.main.async {
             Task {
@@ -98,6 +128,9 @@ class LogsViewModel: ObservableObject {
         }
     }
     
+    /**
+     Loads the next unwatched movie based on the user's logs.
+     */
     func loadNextUnwatchedMovie() {
         switch (logs.first) {
         case .log(_):
@@ -163,6 +196,12 @@ class LogsViewModel: ObservableObject {
         }
     }
 
+    /**
+     Loads details and image for the specified movie id.
+     
+     - Parameters:
+         - movie: The id of the movie to load details for.
+     */
     func loadMovieDetails(movie: String?) {
         guard let movieId = movie else { return }
         
@@ -189,6 +228,12 @@ class LogsViewModel: ObservableObject {
         }
     }
 
+    /**
+     Marks the specified movie as watched in the log.
+     
+     - Parameters:
+         - log: The log containing the movie to mark as wathed.
+     */
     func markMovieAsWatched(log: LogType) {
         guard let movie = nextMovie else { return }
         
@@ -232,6 +277,12 @@ class LogsViewModel: ObservableObject {
         }
     }
     
+    /**
+     Updates the order of user logs
+     
+     - Parameters:
+         - logs: An array of `LogData` representing the updated order of logs.
+     */
     func updateLogsOrder(logs: [LogData]) {
         DispatchQueue.main.async {
             Task {
@@ -254,10 +305,20 @@ class LogsViewModel: ObservableObject {
         }
     }
     
+    /**
+     Gets the user id.
+     
+     - Returns: The user id if available, nil otherwise.
+     */
     func getUserId() -> String? {
         return fb.getUserId()
     }
     
+    /**
+     Retrieves local logs from CoreData.
+     
+     - Returns: An array of `LocalLogData` representing local logs.
+     */
     private func getLocalLogs() -> [LocalLogData] {
         let context = PersistenceController.shared.container.viewContext
 
@@ -275,8 +336,18 @@ class LogsViewModel: ObservableObject {
 
 }
 
-// ImageLoader for fetching images from URLs
+/**
+ Helper class for fetching images from URLs.
+ */
 class ImageLoader {
+    /**
+     Asynchronously loads an image from the specified URL.
+     
+     - Parameters:
+         - url: The URL of the image to load.
+         - completion: A closure to execute when the image is loaded, providing the UIImage
+     - Returns: A URLSessionDataTask for the image loading task.
+     */
     static func loadImage(from url: URL, completion: @escaping (UIImage) -> Void) -> URLSessionDataTask {
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data, let image = UIImage(data: data) else { return }
