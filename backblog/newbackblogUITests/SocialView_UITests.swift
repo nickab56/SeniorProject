@@ -46,7 +46,7 @@ final class SocialView_UITests: XCTestCase {
         loginButton.tap()
 
         // After login, wait for the first UI element of the logged-in state to ensure login was successful
-        let logsTabElement = app.staticTexts["NoLogsText"] // Assuming this element is quickly available after login
+        let logsTabElement = app.staticTexts["NoLogsText"]
         XCTAssertTrue(logsTabElement.waitForExistence(timeout: 10), "Should be in the Logs tab after login")
 
         // Switch to Friends tab and check for Friends section header
@@ -107,9 +107,6 @@ final class SocialView_UITests: XCTestCase {
         // Verify the selected avatar is displayed in settings
         let selectedAvatarImage = app.images["SettingsProfilePicture"]
         XCTAssertTrue(selectedAvatarImage.exists, "Selected avatar should be visible in settings")
-
-        // Further verification can be done by checking if the selected avatar's image is the one expected.
-        // This might involve comparing image assets or other methods not directly supported by XCTest UI testing.
     }
     
         func testAddFriendUIElements() throws {
@@ -138,7 +135,7 @@ final class SocialView_UITests: XCTestCase {
             sleep(2)
             
             // Tap on the 'Add Friend' button to open the add friend sheet
-            app.buttons["addFriendButton"].tap() // Ensure this button has an accessibility identifier set in your SwiftUI view.
+            app.buttons["addFriendButton"].tap()
             
             // Check if the text field for entering username is present
             let addUsernameTextField = app.textFields["addUsernameTextField"]
