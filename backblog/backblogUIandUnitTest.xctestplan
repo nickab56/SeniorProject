@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "C071A185-BD2B-4022-A68E-5B4368B54389",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:backblog.xcodeproj",
+        "identifier" : "3469C18C2B312A4700B8EEFB",
+        "name" : "backblogTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:backblog.xcodeproj",
+        "identifier" : "34AEBD612B745E4800C6EA87",
+        "name" : "newbackblogUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -95,6 +95,7 @@ struct SocialView: View {
                         Image(systemName: "person.badge.plus")
                             .foregroundColor(.white)
                     }
+                    .accessibilityIdentifier("addFriendButton")
                     .frame(width: 80, height: 40)
                     .background(Color.blue)
                     .cornerRadius(10)
