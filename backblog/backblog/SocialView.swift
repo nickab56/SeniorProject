@@ -4,23 +4,35 @@
 //
 //  Created by Nick Abegg on 12/23/23.
 //  Updated by Jake Buhite on 02/09/24.
+//  Description: View responsible for displaying the social page. Both a users public logs and their friends, friends request, and log request
+//
 
 import SwiftUI
 import FirebaseAuth
 import CoreData
 
+/**
+ A view component that displays the social features of the application including user's logs, friends, and friend requests.
+ */
 struct SocialView: View {
     @StateObject var vm: SocialViewModel
     
+    /**
+     Initializes the `SocialView` with a new instance of `SocialViewModel`.
+     */
     init() {
         _vm = StateObject(wrappedValue: SocialViewModel(fb: FirebaseService()))
     }
     
+    /**
+     The body of the `SocialView`, defining the SwiftUI content and layout for the social page.
+     */
     var body: some View {
         return VStack {
             HStack {
                 Spacer()
                 
+                // Settings navigation link
                 NavigationLink(destination: SettingsView(vm: vm)) {
                     Image(systemName: "gear")
                         .font(.title)
@@ -30,8 +42,9 @@ struct SocialView: View {
                 .padding(.horizontal, 10)
                 .padding(.top, 10)
             }
+            
+            // User profile display
             HStack {
-                // Display user's avatar
                 let avatarPreset = vm.userData?.avatarPreset ?? 1
                 let preset = getAvatarId(avatarPreset: avatarPreset)
                 
@@ -51,6 +64,7 @@ struct SocialView: View {
             }.padding(.leading)
                 .padding(.top, -20)
             
+            // Tab picker for Logs and Friends
             Picker("Options", selection: $vm.selectedTab) {
                 Text("Logs").tag("Logs")
                 Text("Friends").tag("Friends")
@@ -59,6 +73,7 @@ struct SocialView: View {
             .accessibility(identifier: "logsFriendsTabPicker")
 
             
+            // Logs Tab View
             if vm.selectedTab == "Logs" {
                 ScrollView {
                     if (vm.logs.count > 0) {
@@ -79,6 +94,7 @@ struct SocialView: View {
                     }
                 }
             } else if vm.selectedTab == "Friends" {
+                // Friends Tab View
                 HStack {
                     
                     Text("Friends")
@@ -181,6 +197,13 @@ struct SocialView: View {
         .navigationBarBackButtonHidden(true)
     }
     
+    /**
+     Displays a notification view with a custom message.
+
+     This function creates a SwiftUI view that shows a notification message to the user.
+
+     - Returns: A view component displaying the notification message.
+    */
     private var notificationView: some View {
         Text(vm.notificationMessage)
             .padding()
@@ -192,6 +215,21 @@ struct SocialView: View {
             .accessibility(identifier: "NotificationsView")
     }
 }
+
+
+/**
+ A view for displaying individual requests in a list, such as friend or log requests.
+
+ This view shows the requester's username and avatar, and provides buttons to accept or reject the request. It uses the `SocialViewModel` for handling request updates and navigates to the requester's profile on tap.
+
+ - Parameters:
+    - viewModel: The view model providing request data and update functions.
+    - notificationActive: Binding to control the display of notifications.
+    - notificationMessage: Binding to the message displayed in notifications.
+    - reqId, reqUserId, reqType, reqUsername, avatarPreset: Properties identifying the request and requester.
+
+ - Returns: A view component for a request item with accept and reject options.
+*/
 
 struct RequestList: View {
     @ObservedObject var viewModel: SocialViewModel

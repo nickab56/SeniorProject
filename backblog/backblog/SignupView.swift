@@ -8,6 +8,19 @@
 import SwiftUI
 import FirebaseAuth
 
+/**
+ Displays the signup view where users can create a new account.
+
+ This view presents a form for new users to sign up by providing their email, password, and display name. It includes validation to ensure that all fields are filled and the password meets the required length. The view uses the `AuthViewModel` to handle the signup process and display relevant messages, such as errors or success notifications.
+
+ - Properties:
+    - `vm`: The authentication view model that handles signup operations.
+    - `email`: A state variable for the user's email input.
+    - `password`: A state variable for the user's password input.
+    - `displayName`: A state variable for the user's chosen display name.
+
+ The view includes text fields for user input, a button to trigger the signup process, and navigation links to proceed based on the signup outcome (success or failure).
+ */
 struct SignupView: View {
     @ObservedObject var vm: AuthViewModel
     @State private var email = ""

@@ -7,6 +7,18 @@
 
 import SwiftUI
 
+/**
+ Presents the login interface for existing users to access their account.
+
+ This view contains input fields for the username (or email) and password, a login button to authenticate the user, and a link to the signup view for new users. It utilizes the `AuthViewModel` to manage the login process, including validation of input fields and displaying messages for successful or failed login attempts.
+
+ - Properties:
+    - `vm`: The authentication view model that facilitates the login process.
+    - `username`: A state variable for storing the user's inputted username or email.
+    - `password`: A state variable for storing the user's inputted password.
+
+ The view layout adapts to the device's screen size using `GeometryReader`, and the background is styled with a linear gradient. Upon successful login, the view navigates to the `SocialView`.
+ */
 struct LoginView: View {
     @ObservedObject var vm: AuthViewModel
     @State private var username = ""
