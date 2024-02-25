@@ -18,6 +18,7 @@
 		344BA2802B489F01002626F1 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA27F2B489F01002626F1 /* LoginView.swift */; };
 		344BA2822B48AC8E002626F1 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2812B48AC8E002626F1 /* SignupView.swift */; };
 		344D794E2B7957360030F12D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 344D794D2B7957360030F12D /* GoogleService-Info.plist */; };
+		345B29612B8933E300245700 /* SearchAddToLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 345B29602B8933E300245700 /* SearchAddToLogView.swift */; };
 		3466FF2D2B61EA610028034C /* MovieDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3466FF2C2B61EA610028034C /* MovieDetailsView.swift */; };
 		3469C17C2B312A4600B8EEFB /* BackblogApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C17B2B312A4600B8EEFB /* BackblogApp.swift */; };
 		3469C17E2B312A4600B8EEFB /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C17D2B312A4600B8EEFB /* LandingView.swift */; };
@@ -125,6 +126,7 @@
 		344D794D2B7957360030F12D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		344D79522B7FA4B90030F12D /* BackBlogNeWUITest.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = BackBlogNeWUITest.xctestplan; sourceTree = "<group>"; };
 		345B295E2B88DCDD00245700 /* backblogUIandUnitTest.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = backblogUIandUnitTest.xctestplan; sourceTree = "<group>"; };
+		345B29602B8933E300245700 /* SearchAddToLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAddToLogView.swift; sourceTree = "<group>"; };
 		3466FF2C2B61EA610028034C /* MovieDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsView.swift; sourceTree = "<group>"; };
 		3469C1782B312A4600B8EEFB /* backblog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = backblog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3469C17B2B312A4600B8EEFB /* BackblogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackblogApp.swift; sourceTree = "<group>"; };
@@ -381,6 +383,7 @@
 				34AEBD582B70823F00C6EA87 /* LogsViewModel.swift */,
 				34F035AB2B60A95500EB35C7 /* LogItemView.swift */,
 				8108A6412B76A2650069DBEA /* EditCollaboratorSheetView.swift */,
+				345B29602B8933E300245700 /* SearchAddToLogView.swift */,
 			);
 			name = "Log Displaying";
 			sourceTree = "<group>";
@@ -672,6 +675,7 @@
 				977922D52B758FA60021ECD9 /* LogType.swift in Sources */,
 				975B34052B7AB3E8004167D2 /* SearchViewModel.swift in Sources */,
 				344BA2782B378709002626F1 /* SearchView.swift in Sources */,
+				345B29612B8933E300245700 /* SearchAddToLogView.swift in Sources */,
 				97FCFC662B6369C000F5BFCB /* FriendRepository.swift in Sources */,
 				34AEBD512B6D569400C6EA87 /* SplashScreenView.swift in Sources */,
 				97FA406D2B754207004A4945 /* FriendsProfileView.swift in Sources */,

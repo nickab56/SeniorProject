@@ -65,6 +65,11 @@ struct WhatsNextView: View {
                 Button(action: {
                     withAnimation {
                         vm.markMovieAsWatched(log: log)
+                        
+                        // Trigger medium-sized haptic feedback
+                        let generator = UIImpactFeedbackGenerator(style: .medium)
+                        generator.prepare()
+                        generator.impactOccurred() // Trigger the haptic feedback
                     }
                 }) {
                     Image(systemName: "checkmark.circle.fill")
@@ -74,6 +79,7 @@ struct WhatsNextView: View {
                 }
                 .padding(.trailing, 20)
                 .accessibility(identifier: "checkButton")
+
             }
             .padding(.horizontal)
         }
