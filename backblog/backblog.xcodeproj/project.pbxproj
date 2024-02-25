@@ -348,6 +348,7 @@
 			isa = PBXGroup;
 			children = (
 				344BA2792B378713002626F1 /* SocialView.swift */,
+				975B34002B7AA44E004167D2 /* SocialViewModel.swift */,
 				344BA2812B48AC8E002626F1 /* SignupView.swift */,
 				344BA27F2B489F01002626F1 /* LoginView.swift */,
 				817960B22B6454BD00D94EF4 /* SettingsView.swift */,
@@ -355,7 +356,6 @@
 				97FA406C2B754207004A4945 /* FriendsProfileView.swift */,
 				97DD3A032B768AD700D8D759 /* AddFriendSheetView.swift */,
 				975B34022B7AACC7004167D2 /* AuthViewModel.swift */,
-				975B34002B7AA44E004167D2 /* SocialViewModel.swift */,
 				97FA40712B754943004A4945 /* FriendsProfileViewModel.swift */,
 			);
 			name = Social;

@@ -7,6 +7,23 @@
 
 import CoreData
 
+/**
+ Manages social features within the app, handling user data, friend and log requests, and notifications.
+
+ - `logs`: Stores logs for the social view.
+ - `selectedTab`: Tracks the currently selected tab in the social view.
+ - `userData`: Holds information about the currently logged-in user.
+ - `friends`: A list of the user's friends.
+ - `friendRequests`: A list of incoming friend requests and the users who sent them.
+ - `logRequests`: A list of log sharing requests from other users.
+ - `showingNotification`: Controls the visibility of notifications.
+ - `notificationMessage`: The message to display in a notification.
+ - `showingSendFriendReqSheet`: Determines whether the send friend request sheet is displayed.
+ - `isUnauthorized`: Indicates whether the user is unauthorized.
+ - `avatarSelection`: Stores the user's avatar selection.
+
+ The class provides functions to fetch user data, logs, friends, friend requests, and log requests. It also includes functions for updating and sending friend requests, updating user settings, logging out, syncing local logs to the database, and resetting all local logs.
+*/
 class SocialViewModel: ObservableObject {
     @Published var logs: [LogData] = []
     @Published var selectedTab = "Logs"
@@ -41,6 +58,9 @@ class SocialViewModel: ObservableObject {
         fetchLogRequests()
     }
    
+    /**
+     Fetches and updates the current user's data from the database.
+     */
     func fetchUserData() {
         DispatchQueue.main.async { [self] in
             Task {
@@ -165,6 +185,14 @@ class SocialViewModel: ObservableObject {
         }
     }
    
+    /**
+     Updates the status of a request (accept or reject) based on the given parameters.
+     
+     - Parameters:
+       - reqId: The ID of the request to update.
+       - reqType: The type of the request (e.g., "friend" or "log").
+       - accepted: A boolean indicating whether the request was accepted or rejected.
+     */
     func updateRequest(reqId: String, reqType: String, accepted: Bool) {
         DispatchQueue.main.async { [self] in
             Task {
@@ -194,6 +222,12 @@ class SocialViewModel: ObservableObject {
         }
     }
     
+    /**
+     Sends a friend request to the user with the specified username.
+
+     - Parameters:
+       - username: The username of the user to whom the friend request will be sent.
+     */
     func sendFriendRequest(username: String) {
         DispatchQueue.main.async { [self] in
             Task {
@@ -266,6 +300,14 @@ class SocialViewModel: ObservableObject {
         }
     }
     
+    /**
+     Updates the current user's profile information, including username and password.
+
+     - Parameters:
+       - username: The new username for the user.
+       - newPassword: The new password for the user.
+       - password: The current password of the user for verification.
+     */
     func updateUser(username: String, newPassword: String, password: String) {
         DispatchQueue.main.async { [self] in
             Task {
@@ -317,6 +359,10 @@ class SocialViewModel: ObservableObject {
         }
     }
     
+    
+    /**
+     Logs out the current user from the application.
+     */
     func logout() {
         DispatchQueue.main.async { [self] in
             Task {
@@ -342,6 +388,9 @@ class SocialViewModel: ObservableObject {
         return fb.getUserId() ?? ""
     }
     
+    /**
+     Syncs local logs with the database, transferring any locally stored logs to the server.
+     */
     func syncLocalLogsToDB() {
         DispatchQueue.main.async { [self] in
             Task {
@@ -392,6 +441,11 @@ class SocialViewModel: ObservableObject {
         }
     }
     
+    /**
+     Counts the number of local logs stored in CoreData.
+
+     - Returns: The count of local logs.
+     */
     func getLocalLogCount() -> Int {
         let context = PersistenceController.shared.container.viewContext
 
@@ -405,6 +459,9 @@ class SocialViewModel: ObservableObject {
         return 0
     }
     
+    /**
+     Resets all logs stored locally, clearing the local database of log entries.
+     */
     private func resetAllLogs() {
         let context = PersistenceController.shared.container.viewContext
 
@@ -420,6 +477,11 @@ class SocialViewModel: ObservableObject {
         }
     }
     
+    /**
+     Fetches all logs stored locally.
+
+     - Returns: An array of `LocalLogData` objects representing each local log.
+     */
     private func getLocalLogs() -> [LocalLogData] {
         let context = PersistenceController.shared.container.viewContext
 

@@ -22,6 +22,14 @@ class AuthViewModel: ObservableObject {
         self.userRepo = UserRepository(fb: fb)
     }
     
+    /**
+     Initiates the signup process with the provided user information.
+
+     - Parameters:
+       - email: The user's email address.
+       - password: The user's chosen password.
+       - displayName: The user's chosen display name.
+     */
     func attemptSignup(email: String, password: String, displayName: String) {
         DispatchQueue.main.async { [self] in
             Task {
@@ -53,6 +61,13 @@ class AuthViewModel: ObservableObject {
         }
     }
     
+    /**
+     Attempts to log in a user with the provided credentials.
+
+     - Parameters:
+       - email: The user's email address.
+       - password: The user's password.
+     */
     func attemptLogin(email: String, password: String) {
         DispatchQueue.main.async { [self] in
             Task {

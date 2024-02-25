@@ -9,6 +9,20 @@ import SwiftUI
 import FirebaseAuth
 import CoreData
 
+/**
+ Displays the profile view for a friend, including their logs and list of friends.
+
+ Users can view a friend's public logs, their friends list, and have options to add or remove the friend, or block the user. The view uses the `FriendsProfileViewModel` to fetch and manage the friend's data, including logs and friend relationships. The view dynamically adjusts to show either a button to add the friend or options to remove or block them based on the current relationship status.
+
+ - Properties:
+    - `viewModel`: The view model managing the friend's profile data.
+    - `selectedTab`: Controls which tab is currently selected ("Logs" or "Friends").
+    - `showActionSheet`: Determines if the action sheet for adding/removing/blocking the friend is visible.
+    - `showBlockConfirmation`: Controls the visibility of the confirmation dialog for blocking the user.
+    - `showRemoveFriendConfirmation`: Controls the visibility of the confirmation dialog for removing the friend.
+
+ The interface provides interactive elements such as buttons for friend management actions and navigation links to log details. Confirmation dialogs ensure that actions like removing a friend or blocking a user are intentional. A notification view is also included to display feedback messages resulting from user actions.
+ */
 struct FriendsProfileView: View {
     @StateObject var viewModel: FriendsProfileViewModel
     @State private var selectedTab = "Logs"
@@ -186,6 +200,11 @@ struct FriendsProfileView: View {
         .edgesIgnoringSafeArea(.all)
     }
     
+    /**
+     Constructs a notification view displaying the current message from the view model.
+
+     - Returns: A styled notification message view.
+    */
     private var notificationView: some View {
         Text(viewModel.notificationMessage)
             .padding()

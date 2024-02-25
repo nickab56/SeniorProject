@@ -9,6 +9,22 @@
 import SwiftUI
 import CoreData
 
+/**
+ Displays the settings interface allowing users to update their profile and application settings.
+
+ This view includes options for changing the user's avatar, username, and password. It also provides a logout button and, if applicable, a button to sync local logs to the database. The view uses `SocialViewModel` to interact with user data and handle actions like updating settings or logging out. Notifications for actions such as saving changes or syncing logs are displayed using a custom notification view.
+
+ - Properties:
+    - `vm`: An observable object of `SocialViewModel` containing the user's data and methods for updating it.
+    - `usernameText`: A state variable for the user's username input.
+    - `oldPasswordText`: A state variable for the user's old password input.
+    - `newPasswordText`: A state variable for the user's new password input.
+    - `showingAvatarSelection`: A state variable controlling the visibility of the avatar selection sheet.
+    - `saveMessage`: A state variable for the message displayed after saving changes.
+    - `messageColor`: A state variable for the color of the save message text.
+
+ The view is structured within a `ZStack` to layer the content over a gradient background, and a `ScrollView` is used to accommodate content that may exceed the screen size. User input fields and action buttons are styled consistently with the app's theme.
+ */
 struct SettingsView: View {
     @ObservedObject var vm: SocialViewModel
     
