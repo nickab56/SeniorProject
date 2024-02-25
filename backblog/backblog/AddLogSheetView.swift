@@ -185,6 +185,12 @@ struct AddLogSheetView: View {
         }
     }
     
+    /**
+     Removes a collaborator from the list of collaborators.
+     
+     - Parameters:
+         - offsets: The index set of the collaborator to remove.
+     */
     private func removeCollaborator(collaborator: UserData) {
         withAnimation {
             if let index = collaborators.firstIndex(of: collaborator) {
