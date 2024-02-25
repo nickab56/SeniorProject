@@ -15,6 +15,7 @@ struct FriendsProfileView: View {
     
     @State private var showActionSheet = false
     @State private var showBlockConfirmation = false
+    @State private var showRemoveFriendConfirmation = false
     
     init(friendId: String) {
         _viewModel = StateObject(wrappedValue: FriendsProfileViewModel(friendId: friendId, fb: FirebaseService()))
@@ -22,32 +23,34 @@ struct FriendsProfileView: View {
     
     var body: some View {
         return VStack {
-            HStack {
-                Spacer()
-                
-                // Conditional Add/Remove Friend Button
-                if viewModel.userIsFriend() {
-                    Button(action: {
-                        viewModel.removeFriend()
-                    }) {
-                        Image(systemName: "person.fiil.badge.minus")
-                            .imageScale(.large)
-                            .foregroundColor(.white)
-                    }
-                    .padding(.horizontal, 10)
-                    .padding(.top, 15)
-                } else {
-                    Button(action: {
-                        viewModel.sendFriendRequest()
-                    }) {
-                        Image(systemName: "person.fill.badge.plus")
-                            .imageScale(.large)
-                            .foregroundColor(.white)
-                    }
-                    .padding(.horizontal, 10)
-                    .padding(.top, 15)
-                }
-                Button(action: {
+                HStack {
+                    Spacer()
+                                if viewModel.userIsFriend() {
+                                    // Remove Friend Button
+                                    Button(action: {
+                                        showRemoveFriendConfirmation = true
+                                    }) {
+                                        Image(systemName: "person.fill.badge.minus")
+                                            .imageScale(.large)
+                                            .foregroundColor(.white)
+                                    }
+                                    .padding(.horizontal, 10)
+                                    .padding(.top, 15)
+                                } else {
+                                    // Add Friend Button
+                                    Button(action: {
+                                        viewModel.sendFriendRequest()
+                                    }) {
+                                        Image(systemName: "person.fill.badge.plus")
+                                            .imageScale(.large)
+                                            .foregroundColor(.white)
+                                    }
+                                    .padding(.horizontal, 10)
+                                    .padding(.top, 15)
+                                }
+                                
+                                // Block User Button
+                                Button(action: {
                                     self.showBlockConfirmation = true
                                 }) {
                                     Image(systemName: "person.fill.xmark")
@@ -56,7 +59,7 @@ struct FriendsProfileView: View {
                                 }
                                 .padding(.horizontal, 15)
                                 .padding(.top, 15)
-            }
+                            }
             HStack {
                 // Display user's avatar
                 let avatarPreset = viewModel.userData?.avatarPreset ?? 1
@@ -168,6 +171,16 @@ struct FriendsProfileView: View {
                 secondaryButton: .cancel()
             )
         }
+        .alert(isPresented: $showRemoveFriendConfirmation) {  // Remove Friend Confirmation Alert
+                                Alert(
+                                    title: Text("Remove Friend"),
+                                    message: Text("Are you sure you want to remove this friend?"),
+                                    primaryButton: .destructive(Text("Remove")) {
+                                        viewModel.removeFriend()
+                                    },
+                                    secondaryButton: .cancel()
+                                )
+                            }
         .padding(.top, 80)
         .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .edgesIgnoringSafeArea(.all)
