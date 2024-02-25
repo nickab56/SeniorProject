@@ -536,9 +536,26 @@ class LogViewModel: ObservableObject {
         }
     }
     
-    func shuffleWatchedMovies() {
-        watchedMovies.shuffle()
-        // Still need to update view and save shuffle changes
+    func shuffleUnwatchedMovies() {
+        guard case .localLog(let localLog) = log, let unwatchedMoviesSet = localLog.movie_ids as? Set<LocalMovieData> else { return }
+
+        // Convert Set to Array to shuffle
+        var unwatchedMoviesArray = Array(unwatchedMoviesSet)
+
+        // Shuffle the array
+        unwatchedMoviesArray.shuffle()
+
+        for (newIndex, movie) in unwatchedMoviesArray.enumerated() {
+            movie.movie_index = Int64(newIndex)
+        }
+
+        // Save Locally
+        do {
+            try viewContext.save()
+            fetchMovies()
+        } catch {
+            print("Error shuffling unwatched movies in Core Data: \(error.localizedDescription)")
+        }
     }
 
 }

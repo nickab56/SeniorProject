@@ -216,7 +216,7 @@ struct LogDetailsView: View {
         .alert("Shuffle Watched Movies", isPresented: $showingShuffleConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Shuffle", role: .destructive) {
-                vm.shuffleWatchedMovies()
+                vm.shuffleUnwatchedMovies()
             }
         } message: {
             Text("Are you sure you want to shuffle the order of the watched movies in this log?")
