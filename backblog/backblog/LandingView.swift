@@ -110,7 +110,6 @@ struct LandingView: View {
         .edgesIgnoringSafeArea(.all)
         .onAppear {
             vm.fetchLogs()
-            vm.loadNextUnwatchedMovie()
         }
         .navigationBarBackButtonHidden(true)
     }

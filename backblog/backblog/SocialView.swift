@@ -179,6 +179,9 @@ struct SocialView: View {
             AddFriendSheetView(viewModel: vm, isPresented: $vm.showingSendFriendReqSheet, notificationMsg: $vm.notificationMessage, notificationActive: $vm.showingNotification)
         }
         .navigationBarBackButtonHidden(true)
+        .onAppear(perform: {
+            vm.fetchLogs()
+        })
     }
     
     private var notificationView: some View {
