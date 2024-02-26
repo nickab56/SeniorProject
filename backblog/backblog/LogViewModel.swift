@@ -712,5 +712,15 @@ class LogViewModel: ObservableObject {
             }
         }
     }
+    
+    func canSwipeToMarkWatchedUnwatched() -> Bool {
+        switch log {
+        case .localLog:
+            return true
+        case .log:
+            return isOwner() || isCollaborator()
+        }
+    }
+
 }
 
