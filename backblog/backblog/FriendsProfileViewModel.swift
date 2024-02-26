@@ -32,6 +32,9 @@ class FriendsProfileViewModel: ObservableObject {
         fetchFriends()
     }
     
+    /**
+     Fetches data for the specified friend's user profile.
+     */
     private func fetchUserData() {
         DispatchQueue.main.async {
             Task {
@@ -44,6 +47,10 @@ class FriendsProfileViewModel: ObservableObject {
             }
         }
     }
+    
+    /**
+     Retrieves the public logs shared by the friend.
+     */
     private func fetchLogs() {
         DispatchQueue.main.async {
             Task {
@@ -56,6 +63,10 @@ class FriendsProfileViewModel: ObservableObject {
             }
         }
     }
+    
+    /**
+     Fetches the list of friends for the specified user.
+     */
     private func fetchFriends() {
         DispatchQueue.main.async {
             Task {
@@ -69,10 +80,19 @@ class FriendsProfileViewModel: ObservableObject {
         }
     }
     
+    
+    /**
+     Returns the current user's ID.
+
+     - Returns: A string representing the user's ID.
+     */
     func getUserId() -> String {
         return fb.getUserId() ?? ""
     }
     
+    /**
+     Removes the specified friend from the current user's friend list.
+     */
     func removeFriend() {
         DispatchQueue.main.async { [self] in
             Task {
@@ -95,6 +115,9 @@ class FriendsProfileViewModel: ObservableObject {
         }
     }
     
+    /**
+     Blocks the specified user, preventing them from interacting with the current user.
+     */
     func blockUser() {
         DispatchQueue.main.async { [self] in
             Task {
@@ -117,10 +140,19 @@ class FriendsProfileViewModel: ObservableObject {
         }
     }
     
+    
+    /**
+     Checks if the specified user is already a friend of the current user.
+
+     - Returns: A boolean indicating if the user is a friend.
+     */
     func userIsFriend() -> Bool {
         return userData?.friends?.contains(where: { $0.key == getUserId() }) ?? false
     }
     
+    /**
+     Sends a friend request to the specified user.
+     */
     func sendFriendRequest() {
         DispatchQueue.main.async { [self] in
             Task {

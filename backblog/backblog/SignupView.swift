@@ -8,9 +8,22 @@
 import SwiftUI
 import FirebaseAuth
 
+/**
+ Displays the signup view where users can create a new account.
+
+ This view presents a form for new users to sign up by providing their email, password, and display name. It includes validation to ensure that all fields are filled and the password meets the required length. The view uses the `AuthViewModel` to handle the signup process and display relevant messages, such as errors or success notifications.
+
+ - Properties:
+    - `vm`: The authentication view model that handles signup operations.
+    - `email`: A state variable for the user's email input.
+    - `password`: A state variable for the user's password input.
+    - `displayName`: A state variable for the user's chosen display name.
+
+ The view includes text fields for user input, a button to trigger the signup process, and navigation links to proceed based on the signup outcome (success or failure).
+ */
 struct SignupView: View {
     @ObservedObject var vm: AuthViewModel
-    @State private var username = ""
+    @State private var email = ""
     @State private var password = ""
     @State private var displayName = ""
 
@@ -45,7 +58,7 @@ struct SignupView: View {
                         .foregroundColor(vm.messageColor)
                         .padding()
 
-                    TextField("Email or Username", text: $username)
+                    TextField("Email", text: $email)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding(.horizontal)
                         .autocapitalization(.none)
@@ -63,7 +76,7 @@ struct SignupView: View {
                         .accessibility(identifier: "signupDisplayNameTextField")
 
                     Button("Continue") {
-                        if username.isEmpty || password.isEmpty || displayName.isEmpty {
+                        if email.isEmpty || password.isEmpty || displayName.isEmpty {
                             vm.signupMessage = "Please fill all fields"
                             vm.messageColor = Color.red
                         } else {
@@ -71,7 +84,7 @@ struct SignupView: View {
                                 vm.signupMessage = "Password must be at least 6 characters"
                                 vm.messageColor = Color.red
                             } else {
-                                vm.attemptSignup(email: username, password: password, displayName: displayName)
+                                vm.attemptSignup(email: email, password: password, displayName: displayName)
                             }
                         }
                     }
@@ -92,5 +105,6 @@ struct SignupView: View {
             .navigationDestination(isPresented: $vm.signupSuccessful) {
                 LoginView(vm: vm)
             }
+            .navigationBarBackButtonHidden(true)
     }
 }

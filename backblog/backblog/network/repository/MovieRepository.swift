@@ -32,10 +32,10 @@ class MovieRepository {
         do {
             let updates: [String: Any] = if (watched) {
                 // Movie has been marked as watched
-                ["movie_ids": FieldValue.arrayRemove([movieId]), "watched_ids": FieldValue.arrayUnion([movieId]), "last_modified_date: ": String(currentTimeInMS())]
+                ["movie_ids": FieldValue.arrayRemove([movieId]), "watched_ids": FieldValue.arrayUnion([movieId]), "last_modified_date": String(currentTimeInMS())]
             } else {
                 // Movie has been removed from watched
-                ["movie_ids": FieldValue.arrayUnion([movieId]), "watched_ids": FieldValue.arrayRemove([movieId]), "last_modified_date: ": String(currentTimeInMS())]
+                ["movie_ids": FieldValue.arrayUnion([movieId]), "watched_ids": FieldValue.arrayRemove([movieId]), "last_modified_date": String(currentTimeInMS())]
             }
             
             let result = try await fb.put(updates: updates, docId: logId, collection: "logs").get()
@@ -46,13 +46,13 @@ class MovieRepository {
         }
     }
     
-    func getWatchNextMovie(userId: String) async -> Result<String, Error> {
+    func getWatchNextMovie(userId: String) async -> Result<(String, LogData)?, Error> {
         do {
             // Get log data
             let logs = try await LogRepository(fb: fb).getLogs(userId: userId, showPrivate: true).get()
             
             if (logs.isEmpty) {
-                return .failure(FirebaseError.notFound)
+                return .success(nil)
             }
             
             var priorityLog: LogData? = nil
@@ -72,10 +72,13 @@ class MovieRepository {
             }
             
             if (priorityLog == nil) {
-                return .failure(FirebaseError.nullProperty)
+                return .success(nil)
             }
             
-            return .success(priorityLog!.movieIds!.first!)
+            let movieId = priorityLog!.movieIds!.first!
+            let logData = priorityLog!
+            
+            return .success((movieId, logData))
         } catch {
             return .failure(error)
         }

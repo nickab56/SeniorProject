@@ -3,10 +3,12 @@
 //  backblog
 //
 //  Created by Jake Buhite on 1/21/24.
+//  Updated by Jake Buhite on 2/23/24.
 //
 
 import Foundation
 
+/// Represents the data model for LogRequestData from Firebase.
 struct LogRequestData: Hashable, Codable, Equatable {
     static func == (lhs: LogRequestData, rhs: LogRequestData) -> Bool {
         return lhs.targetId == rhs.targetId && lhs.senderId == rhs.senderId && lhs.requestDate == rhs.requestDate && lhs.isComplete == rhs.isComplete && lhs.logId == rhs.logId

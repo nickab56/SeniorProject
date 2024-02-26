@@ -15,7 +15,7 @@ class LogRepository {
         self.fb = fb
     }
     
-    func addLog(name: String, isVisible: Bool, ownerId: String) async -> Result<Bool, Error> {
+    func addLog(name: String, isVisible: Bool, ownerId: String) async -> Result<String, Error> {
         do {
             let date = String(currentTimeInMS())
             let ownerData = Owner(userId: ownerId, priority: 0)
@@ -35,7 +35,7 @@ class LogRepository {
             // Update log to include logId
             _ = try await fb.put(updates: ["log_id": result], docId: result, collection: "logs").get()
             
-            return .success(true)
+            return .success(result)
         } catch {
             return .failure(error)
         }
@@ -118,7 +118,29 @@ class LogRepository {
                 return resultArr
             }
             
-            return .success(logData)
+            let userId = fb.getUserId()
+            
+            // Sort logs by priority
+            let sorted = logData.sorted { log1, log2 in
+                let p1: Int
+                let p2: Int
+                
+                if log1.owner?.userId == userId {
+                    p1 = log1.owner?.priority ?? 0
+                } else {
+                    p1 = log1.order?[userId ?? ""] ?? 0
+                }
+                
+                if log2.owner?.userId == userId {
+                    p2 = log2.owner?.priority ?? 0
+                } else {
+                    p2 = log2.order?[userId ?? ""] ?? 0
+                }
+                
+                return p1 < p2
+            }
+            
+            return .success(sorted)
         } catch {
             return .failure(error)
         }
@@ -159,7 +181,7 @@ class LogRepository {
                     
                     group.addTask {
                         do {
-                            return try await self.fb.put(updates: updates, docId: userId, collection: "logs").get()
+                            return try await self.fb.put(updates: updates, docId: item.0, collection: "logs").get()
                         } catch {
                             throw error
                         }
@@ -181,16 +203,84 @@ class LogRepository {
         }
     }
     
-    func addCollaborators(logId: String, collaborators: [String]) async -> Result<Bool, Error> {
+    func getCollaborators(logId: String) async -> Result<[UserData], Error> {
         do {
-            var updates: [String: Any] = [:]
-            for collaborator in collaborators {
-                updates["order.\(collaborator)"] = 0
+            let result = try await fb.get(type: LogData(), docId: logId, collection: "logs").get()
+            
+            // Successful. Continue by iterating through all the friends
+            let collaborators = Array(result.collaborators ?? [])
+
+            let collaboratorData: [UserData] = try await withThrowingTaskGroup(of: UserData.self) { group in
+                for collaborator in collaborators {
+                    group.addTask {
+                        do {
+                            return try await self.fb.get(type: UserData(), docId: collaborator, collection: "users").get()
+                        } catch {
+                            throw error
+                        }
+                    }
+                }
+                
+                var resultArr: [UserData] = []
+                
+                for try await result in group {
+                    resultArr.append(result)
+                }
+                
+                return resultArr
             }
             
-            updates["collaborators"] = FieldValue.arrayUnion(collaborators)
-            
-            let result = try await fb.put(updates: updates, docId: logId, collection: "logs").get()
+            return .success(collaboratorData)
+        } catch {
+            return .failure(error)
+        }
+    }
+    
+    func addCollaborators(logId: String, collaborators: [String]) async -> Result<Bool, Error> {
+        do {
+            let result = try await withThrowingTaskGroup(of: Bool.self) { group in
+                for e in collaborators {
+                    group.addTask {
+                        do {
+                            guard let userId = self.fb.getUserId() else {
+                                return false
+                            }
+                            
+                            // Check if target sent a request to this user
+                            let targetRequests = try await UserRepository(fb: self.fb).getLogRequests(userId: e).get()
+                            if ((targetRequests.firstIndex(where: { $0.senderId == userId && $0.targetId == e })) != nil) {
+                                // Log request already sent!
+                                return false
+                            }
+                            
+                            // Check if user already sent a request to this target
+                            let userRequests = try await UserRepository(fb: self.fb).getLogRequests(userId: userId).get()
+                            if ((userRequests.firstIndex(where: { $0.senderId == e && $0.targetId == userId })) != nil) {
+                                // User has already sent a friend request!
+                                return false
+                            }
+                            
+                            // Try adding log request
+                            return try await FriendRepository(fb: self.fb).addLogRequest(
+                                senderId: self.fb.getUserId() ?? "",
+                                targetId: e,
+                                logId: logId,
+                                requestDate: String(currentTimeInMS())).get()
+                        } catch {
+                            throw error
+                        }
+                    }
+                }
+                
+                for try await result in group {
+                    if (!result) {
+                        // Some requests didn't complete
+                        return false
+                    }
+                }
+                
+                return true
+            }
             
             return .success(result)
         } catch {

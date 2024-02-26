@@ -3,10 +3,14 @@
 //  backblog
 //
 //  Created by Jake Buhite on 1/25/24.
+//  Updated by Jake Buhite on 2/23/24.
+//
+//  Description: Represents the data model for a movie response from TMDB.
 //
 
 import Foundation
 
+/// Represents the data model for a movie response from TMDB.
 struct MovieData: Hashable, Codable {
     static func == (lhs: MovieData, rhs: MovieData) -> Bool {
         return lhs.id == rhs.id
@@ -64,6 +68,7 @@ struct MovieData: Hashable, Codable {
         case watchProviders = "watch_providers"
     }
     
+    /// Represents a collection that a movie may belong to.
     struct Collection: Codable {
         var id: Int?
         var name: String?
@@ -77,11 +82,13 @@ struct MovieData: Hashable, Codable {
         }
     }
     
+    /// Represents a genre of a movie.
     struct Genre: Codable {
         var id: Int?
         var name: String?
     }
     
+    /// Represents a production company associatedd with a movie.
     struct ProductionCompany: Codable {
         var id: Int?
         var logoPath: String?
@@ -96,6 +103,7 @@ struct MovieData: Hashable, Codable {
         }
     }
     
+    /// Represents images related to a movie.
     struct MovieImages: Codable {
         var backdrops: [Image]?
         var logos: [Image]?
@@ -121,6 +129,7 @@ struct MovieData: Hashable, Codable {
         }
     }
     
+    /// Represents release dates of a movie.
     struct ReleaseDates: Codable {
         var results: [ReleaseDate]?
         
@@ -150,6 +159,7 @@ struct MovieData: Hashable, Codable {
         }
     }
     
+    /// Represents watch providers of a movie.
     struct WatchProviders: Codable {
         var results: Dictionary<String?, WatchProviderResults>?
         
@@ -173,6 +183,7 @@ struct MovieData: Hashable, Codable {
         }
     }
     
+    /// Represents the credits of a movie, including cast and crew.
     struct Credits: Codable {
         var cast: [Cast]?
         var crew: [Crew]?

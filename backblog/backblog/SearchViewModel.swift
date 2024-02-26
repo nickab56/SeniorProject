@@ -13,6 +13,8 @@ class SearchViewModel: ObservableObject {
     @Published var backdropImageUrls: [Int: URL?] = [:]
     @Published var errorMessage: String? = nil
     
+    private let viewContext = PersistenceController.shared.container.viewContext
+    
     private var fb: FirebaseProtocol
     private var movieService: MovieService
     
@@ -81,6 +83,38 @@ class SearchViewModel: ObservableObject {
             }
         }
     }
+
+    func addMovieToLog(movieId: String, log: LogType) {
+        switch log {
+        case .log(let fbLog):
+            guard let logId = fbLog.logId else { return }
+            
+            Task {
+                let result = await movieRepo.addMovie(logId: logId, movieId: movieId)
+                
+                switch result {
+                case .success:
+                    print("Movie added successfully to the log")
+                case .failure(let error):
+                    print("Error adding movie to the log: \(error.localizedDescription)")
+                }
+            }
+        case .localLog(let localLog):
+            // Create a new LocalMovieData object and add it to the localLog
+            let newMovie = LocalMovieData(context: viewContext)
+            newMovie.movie_id = movieId
+            newMovie.movie_index = Int64(localLog.movie_ids?.count ?? 0)
+            localLog.addToMovie_ids(newMovie)
+
+            do {
+                try viewContext.save()
+                print("Movie added successfully to the local log")
+            } catch {
+                print("Error adding movie to the local log: \(error.localizedDescription)")
+            }
+        }
+    }
+
 
     
     func formatReleaseYear(from dateString: String?) -> String {

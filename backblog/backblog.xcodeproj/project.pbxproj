@@ -18,6 +18,7 @@
 		344BA2802B489F01002626F1 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA27F2B489F01002626F1 /* LoginView.swift */; };
 		344BA2822B48AC8E002626F1 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344BA2812B48AC8E002626F1 /* SignupView.swift */; };
 		344D794E2B7957360030F12D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 344D794D2B7957360030F12D /* GoogleService-Info.plist */; };
+		345B29612B8933E300245700 /* SearchAddToLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 345B29602B8933E300245700 /* SearchAddToLogView.swift */; };
 		3466FF2D2B61EA610028034C /* MovieDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3466FF2C2B61EA610028034C /* MovieDetailsView.swift */; };
 		3469C17C2B312A4600B8EEFB /* BackblogApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C17B2B312A4600B8EEFB /* BackblogApp.swift */; };
 		3469C17E2B312A4600B8EEFB /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C17D2B312A4600B8EEFB /* LandingView.swift */; };
@@ -26,8 +27,6 @@
 		3469C1852B312A4700B8EEFB /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C1842B312A4700B8EEFB /* Persistence.swift */; };
 		3469C1882B312A4700B8EEFB /* backblog.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3469C1862B312A4700B8EEFB /* backblog.xcdatamodeld */; };
 		3469C1922B312A4700B8EEFB /* backblogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C1912B312A4700B8EEFB /* backblogTests.swift */; };
-		3469C19C2B312A4700B8EEFB /* backblogUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C19B2B312A4700B8EEFB /* backblogUITests.swift */; };
-		3469C19E2B312A4700B8EEFB /* backblogUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469C19D2B312A4700B8EEFB /* backblogUITestsLaunchTests.swift */; };
 		347768DE2B82F7B300150EEF /* EditLogSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347768DD2B82F7B300150EEF /* EditLogSheetView.swift */; };
 		34AEBD512B6D569400C6EA87 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEBD502B6D569400C6EA87 /* SplashScreenView.swift */; };
 		34AEBD592B70823F00C6EA87 /* LogsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEBD582B70823F00C6EA87 /* LogsViewModel.swift */; };
@@ -126,6 +125,8 @@
 		344BA2812B48AC8E002626F1 /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
 		344D794D2B7957360030F12D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		344D79522B7FA4B90030F12D /* BackBlogNeWUITest.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = BackBlogNeWUITest.xctestplan; sourceTree = "<group>"; };
+		345B295E2B88DCDD00245700 /* backblogUIandUnitTest.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = backblogUIandUnitTest.xctestplan; sourceTree = "<group>"; };
+		345B29602B8933E300245700 /* SearchAddToLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAddToLogView.swift; sourceTree = "<group>"; };
 		3466FF2C2B61EA610028034C /* MovieDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsView.swift; sourceTree = "<group>"; };
 		3469C1782B312A4600B8EEFB /* backblog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = backblog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3469C17B2B312A4600B8EEFB /* BackblogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackblogApp.swift; sourceTree = "<group>"; };
@@ -137,8 +138,6 @@
 		3469C18D2B312A4700B8EEFB /* backblogTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = backblogTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3469C1912B312A4700B8EEFB /* backblogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = backblogTests.swift; sourceTree = "<group>"; };
 		3469C1972B312A4700B8EEFB /* backblogUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = backblogUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3469C19B2B312A4700B8EEFB /* backblogUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = backblogUITests.swift; sourceTree = "<group>"; };
-		3469C19D2B312A4700B8EEFB /* backblogUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = backblogUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		347768DD2B82F7B300150EEF /* EditLogSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditLogSheetView.swift; sourceTree = "<group>"; };
 		349BBA9F2B83AABB0009B418 /* backblogTestingPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = backblogTestingPlan.xctestplan; sourceTree = "<group>"; };
 		34AEBD502B6D569400C6EA87 /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
@@ -234,13 +233,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		345B295F2B88DE4500245700 /* TestingPlans */ = {
+			isa = PBXGroup;
+			children = (
+				345B295E2B88DCDD00245700 /* backblogUIandUnitTest.xctestplan */,
+				349BBA9F2B83AABB0009B418 /* backblogTestingPlan.xctestplan */,
+			);
+			name = TestingPlans;
+			sourceTree = "<group>";
+		};
 		3469C16F2B312A4600B8EEFB = {
 			isa = PBXGroup;
 			children = (
-				349BBA9F2B83AABB0009B418 /* backblogTestingPlan.xctestplan */,
 				3469C17A2B312A4600B8EEFB /* backblog */,
 				3469C1902B312A4700B8EEFB /* backblogTests */,
-				3469C19A2B312A4700B8EEFB /* backblogUITests */,
+				345B295F2B88DE4500245700 /* TestingPlans */,
 				34AEBD632B745E4800C6EA87 /* newbackblogUITests */,
 				3469C1792B312A4600B8EEFB /* Products */,
 			);
@@ -302,15 +309,6 @@
 			path = backblogTests;
 			sourceTree = "<group>";
 		};
-		3469C19A2B312A4700B8EEFB /* backblogUITests */ = {
-			isa = PBXGroup;
-			children = (
-				3469C19B2B312A4700B8EEFB /* backblogUITests.swift */,
-				3469C19D2B312A4700B8EEFB /* backblogUITestsLaunchTests.swift */,
-			);
-			path = backblogUITests;
-			sourceTree = "<group>";
-		};
 		34AEBD632B745E4800C6EA87 /* newbackblogUITests */ = {
 			isa = PBXGroup;
 			children = (
@@ -350,6 +348,7 @@
 			isa = PBXGroup;
 			children = (
 				344BA2792B378713002626F1 /* SocialView.swift */,
+				975B34002B7AA44E004167D2 /* SocialViewModel.swift */,
 				344BA2812B48AC8E002626F1 /* SignupView.swift */,
 				344BA27F2B489F01002626F1 /* LoginView.swift */,
 				817960B22B6454BD00D94EF4 /* SettingsView.swift */,
@@ -357,7 +356,6 @@
 				97FA406C2B754207004A4945 /* FriendsProfileView.swift */,
 				97DD3A032B768AD700D8D759 /* AddFriendSheetView.swift */,
 				975B34022B7AACC7004167D2 /* AuthViewModel.swift */,
-				975B34002B7AA44E004167D2 /* SocialViewModel.swift */,
 				97FA40712B754943004A4945 /* FriendsProfileViewModel.swift */,
 			);
 			name = Social;
@@ -385,6 +383,7 @@
 				34AEBD582B70823F00C6EA87 /* LogsViewModel.swift */,
 				34F035AB2B60A95500EB35C7 /* LogItemView.swift */,
 				8108A6412B76A2650069DBEA /* EditCollaboratorSheetView.swift */,
+				345B29602B8933E300245700 /* SearchAddToLogView.swift */,
 			);
 			name = "Log Displaying";
 			sourceTree = "<group>";
@@ -676,6 +675,7 @@
 				977922D52B758FA60021ECD9 /* LogType.swift in Sources */,
 				975B34052B7AB3E8004167D2 /* SearchViewModel.swift in Sources */,
 				344BA2782B378709002626F1 /* SearchView.swift in Sources */,
+				345B29612B8933E300245700 /* SearchAddToLogView.swift in Sources */,
 				97FCFC662B6369C000F5BFCB /* FriendRepository.swift in Sources */,
 				34AEBD512B6D569400C6EA87 /* SplashScreenView.swift in Sources */,
 				97FA406D2B754207004A4945 /* FriendsProfileView.swift in Sources */,
@@ -732,8 +732,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3469C19E2B312A4700B8EEFB /* backblogUITestsLaunchTests.swift in Sources */,
-				3469C19C2B312A4700B8EEFB /* backblogUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

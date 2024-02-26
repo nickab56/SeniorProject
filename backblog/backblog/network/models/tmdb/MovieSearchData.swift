@@ -3,10 +3,12 @@
 //  backblog
 //
 //  Created by Jake Buhite on 1/25/24.
+//  Updated by Jake Buhite on 2/23/24.
 //
 
 import Foundation
 
+/// Represents the data model for a movie search response from TMDB.
 struct MovieSearchData: Codable, Equatable {
     static func == (lhs: MovieSearchData, rhs: MovieSearchData) -> Bool {
         return lhs.page == rhs.page &&
@@ -26,6 +28,7 @@ struct MovieSearchData: Codable, Equatable {
         case totalResults = "total_results"
     }
     
+    /// Represents a movie search result from `MovieSearchData`.
     struct MovieSearchResult: Codable, Equatable {
         static func == (lhs: MovieSearchResult, rhs: MovieSearchResult) -> Bool {
             return lhs.id == rhs.id
