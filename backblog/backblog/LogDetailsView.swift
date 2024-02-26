@@ -90,20 +90,21 @@ struct LogDetailsView: View {
                     Spacer()
                 }.padding(.top, -25)
                 
-                if (vm.isOwner() || vm.isCollaborator()) {
                     HStack {
-                        if (vm.isOwner()) {
-                            Button(action: {
-                                editCollaboratorSheet = true
-                            }) {
-                                Image(systemName: "person.badge.plus")
-                                    .padding()
-                                    .font(.system(size: 25))
+                        if case .log = log { // Only show for non-local logs
+                                if (vm.isOwner()) {
+                                    Button(action: {
+                                        editCollaboratorSheet = true
+                                    }) {
+                                        Image(systemName: "person.badge.plus")
+                                            .padding()
+                                            .font(.system(size: 25))
+                                    }
+                                    .background(Color.clear)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(8)
+                                }
                             }
-                            .background(Color.clear)
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
-                        }
                         
                         Button(action: {
                             editLogSheet = true
@@ -150,7 +151,7 @@ struct LogDetailsView: View {
                         .cornerRadius(8)
                         
                     }.padding(.top, -20)
-                }
+                
                 
                 if vm.movies.isEmpty && vm.watchedMovies.isEmpty {
                     Text("No movies added to this log yet.")
@@ -162,10 +163,9 @@ struct LogDetailsView: View {
                             Section(header: Text("Unwatched").foregroundColor(.white).accessibility(identifier: "UnwatchedSectionHeader")) {
                                 ForEach(vm.movies, id: \.0.id) { (movie, halfSheetPath) in
                                     MovieRow(movie: movie, halfSheetPath: halfSheetPath)
-                                        .accessibility(identifier: "MovieRow_\(movie.title?.replacingOccurrences(of: " ", with: "") ?? "Unknown")")
                                         .listRowBackground(Color.clear)
-                                        .swipeActions(edge: .trailing, allowsFullSwipe: vm.isOwner() || vm.isCollaborator()) {
-                                            if (vm.isOwner() || vm.isCollaborator()) {
+                                        .swipeActions(edge: .trailing, allowsFullSwipe: vm.canSwipeToMarkWatchedUnwatched()) {
+                                            if vm.canSwipeToMarkWatchedUnwatched() {
                                                 Button {
                                                     vm.markMovieAsWatched(movieId: movie.id ?? 0)
                                                 } label: {
@@ -182,9 +182,8 @@ struct LogDetailsView: View {
                             ForEach(vm.watchedMovies, id: \.0.id) { (movie, halfSheetPath) in
                                 MovieRow(movie: movie, halfSheetPath: halfSheetPath)
                                     .listRowBackground(Color.clear)
-                                    .accessibility(identifier: "MovieRow_\(movie.title?.replacingOccurrences(of: " ", with: "") ?? "Unknown")")
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: vm.isOwner() || vm.isCollaborator()) {
-                                        if (vm.isOwner() || vm.isCollaborator()) {
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: vm.canSwipeToMarkWatchedUnwatched()) {
+                                        if vm.canSwipeToMarkWatchedUnwatched() {
                                             Button {
                                                 vm.markMovieAsUnwatched(movieId: movie.id ?? 0)
                                             } label: {
@@ -193,8 +192,10 @@ struct LogDetailsView: View {
                                             .tint(.blue)
                                         }
                                     }
+
                             }
                         }
+
                     }
                     .padding(.top, -30)
                     .listStyle(.plain)
