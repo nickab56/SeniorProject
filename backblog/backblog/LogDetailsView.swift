@@ -68,9 +68,11 @@ struct LogDetailsView: View {
                 }
                 
                 if case .log = log {
-                    CollaboratorsView(collaborators: ["avatar1", "avatar2", "avatar3", "avatar4", "avatar5"]) // get collaborators
-                        .padding(.horizontal)
-                        .padding(.bottom)
+                    if ((vm.isOwner() || vm.isCollaborator())) {
+                        CollaboratorsView(collaborators: vm.getCollaboratorAvatars())
+                            .padding(.horizontal)
+                            .padding(.bottom)
+                    }
                 }
                 
                 HStack {
@@ -88,63 +90,67 @@ struct LogDetailsView: View {
                     Spacer()
                 }.padding(.top, -25)
                 
-                HStack {
-                    Button(action: {
-                        editCollaboratorSheet = true
-                    }) {
-                        Image(systemName: "person.badge.plus")
-                            .padding()
-                            .font(.system(size: 25))
-                    }
-                    .background(Color.clear)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                    
-                    Button(action: {
-                        editLogSheet = true
-                    }) {
-                        Image(systemName: "pencil")
-                            .padding()
-                            .font(.system(size: 25))
-                    }
-                    .background(Color.clear)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                    .sheet(isPresented: $editLogSheet) {
-                        EditLogSheetView(isPresented: $editLogSheet, vm: vm, onLogDeleted: {
-                            dismiss()
-                        })
-                    }
-                    
-                    Spacer()
-                    
-                    Button(action: {
-                        showingShuffleConfirmation = true
-                    }) {
-                        Image(systemName: "shuffle")
-                            .padding()
-                            .font(.system(size: 25))
-                    }
-                    .background(Color.clear)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                    
-                    NavigationLink(destination: SearchAddToLogView(log: log), isActive: $showingSearchAddToLogView) {
-                        EmptyView() // Hidden NavigationLink
-                    }
+                if (vm.isOwner() || vm.isCollaborator()) {
+                    HStack {
+                        if (vm.isOwner()) {
+                            Button(action: {
+                                editCollaboratorSheet = true
+                            }) {
+                                Image(systemName: "person.badge.plus")
+                                    .padding()
+                                    .font(.system(size: 25))
+                            }
+                            .background(Color.clear)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                        }
+                        
+                        Button(action: {
+                            editLogSheet = true
+                        }) {
+                            Image(systemName: "pencil")
+                                .padding()
+                                .font(.system(size: 25))
+                        }
+                        .background(Color.clear)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        .sheet(isPresented: $editLogSheet) {
+                            EditLogSheetView(isPresented: $editLogSheet, vm: vm, onLogDeleted: {
+                                dismiss()
+                            })
+                        }
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            showingShuffleConfirmation = true
+                        }) {
+                            Image(systemName: "shuffle")
+                                .padding()
+                                .font(.system(size: 25))
+                        }
+                        .background(Color.clear)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        
+                        NavigationLink(destination: SearchAddToLogView(log: log), isActive: $showingSearchAddToLogView) {
+                            EmptyView() // Hidden NavigationLink
+                        }
 
-                    Button(action: {
-                        showingSearchAddToLogView = true // This triggers the navigation
-                    }) {
-                        Image(systemName: "plus.circle.fill")
-                            .padding()
-                            .font(.system(size: 30))
-                    }
-                    .background(Color.clear)
-                    .foregroundColor(.blue)
-                    .cornerRadius(8)
-                    
-                }.padding(.top, -20)
+                        Button(action: {
+                            showingSearchAddToLogView = true // This triggers the navigation
+                        }) {
+                            Image(systemName: "plus.circle.fill")
+                                .padding()
+                                .font(.system(size: 30))
+                        }
+                        .background(Color.clear)
+                        .foregroundColor(.blue)
+                        .cornerRadius(8)
+                        
+                    }.padding(.top, -20)
+                }
                 
                 if vm.movies.isEmpty && vm.watchedMovies.isEmpty {
                     Text("No movies added to this log yet.")
@@ -158,13 +164,15 @@ struct LogDetailsView: View {
                                     MovieRow(movie: movie, halfSheetPath: halfSheetPath)
                                         .accessibility(identifier: "MovieRow_\(movie.title?.replacingOccurrences(of: " ", with: "") ?? "Unknown")")
                                         .listRowBackground(Color.clear)
-                                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                            Button {
-                                                vm.markMovieAsWatched(movieId: movie.id ?? 0)
-                                            } label: {
-                                                Label("Watched", systemImage: "checkmark.circle.fill")
+                                        .swipeActions(edge: .trailing, allowsFullSwipe: vm.isOwner() || vm.isCollaborator()) {
+                                            if (vm.isOwner() || vm.isCollaborator()) {
+                                                Button {
+                                                    vm.markMovieAsWatched(movieId: movie.id ?? 0)
+                                                } label: {
+                                                    Label("Watched", systemImage: "checkmark.circle.fill")
+                                                }
+                                                .tint(.green)
                                             }
-                                            .tint(.green)
                                         }
                                 }
                             }
@@ -175,13 +183,15 @@ struct LogDetailsView: View {
                                 MovieRow(movie: movie, halfSheetPath: halfSheetPath)
                                     .listRowBackground(Color.clear)
                                     .accessibility(identifier: "MovieRow_\(movie.title?.replacingOccurrences(of: " ", with: "") ?? "Unknown")")
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        Button {
-                                            vm.markMovieAsUnwatched(movieId: movie.id ?? 0)
-                                        } label: {
-                                            Label("Unwatched", systemImage: "arrow.uturn.backward.circle.fill")
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: vm.isOwner() || vm.isCollaborator()) {
+                                        if (vm.isOwner() || vm.isCollaborator()) {
+                                            Button {
+                                                vm.markMovieAsUnwatched(movieId: movie.id ?? 0)
+                                            } label: {
+                                                Label("Unwatched", systemImage: "arrow.uturn.backward.circle.fill")
+                                            }
+                                            .tint(.blue)
                                         }
-                                        .tint(.blue)
                                     }
                             }
                         }
@@ -209,9 +219,14 @@ struct LogDetailsView: View {
         .animation(.easeInOut, value: vm.showingWatchedNotification)
         .onAppear {
             vm.updateLog()
+            if (vm.getUserId() != nil) {
+                vm.getOwnerData()
+                vm.getFriends()
+                vm.getCollaborators()
+            }
         }
         .sheet(isPresented: $editCollaboratorSheet) {
-            EditCollaboratorSheetView(isPresented: $editCollaboratorSheet)
+            EditCollaboratorSheetView(isPresented: $editCollaboratorSheet, vm: vm)
         }
         .alert("Shuffle Watched Movies", isPresented: $showingShuffleConfirmation) {
             Button("Cancel", role: .cancel) {}

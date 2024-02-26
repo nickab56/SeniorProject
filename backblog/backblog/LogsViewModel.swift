@@ -76,7 +76,9 @@ class LogsViewModel: ObservableObject {
                         return
                     }
                     let result = try await self.logRepo.addLog(name: name, isVisible: isVisible, ownerId: userId).get()
-                    _ = try await self.logRepo.addCollaborators(logId: result, collaborators: collaborators).get()
+                    for collaborator in collaborators {
+                        _ = try await self.friendRepo.addLogRequest(senderId: userId, targetId: collaborator, logId: result, requestDate: String(currentTimeInMS())).get()
+                    }
                 } catch {
                     print("Error creating remote log: \(error)")
                 }
@@ -97,6 +99,7 @@ class LogsViewModel: ObservableObject {
                         self.logs = result.compactMap { log in
                             return LogType.log(log)
                         }
+                        self.loadNextUnwatchedMovie()
                     } catch {
                         print("Error getting log data: \(error)")
                     }
@@ -107,6 +110,7 @@ class LogsViewModel: ObservableObject {
             logs = result.compactMap { localLog in
                 return LogType.localLog(localLog)
             }
+            loadNextUnwatchedMovie()
         }
     }
     
@@ -175,7 +179,7 @@ class LogsViewModel: ObservableObject {
             }
             
             let unwatchedMovies = localLog.movie_ids?.allObjects as? [LocalMovieData] ?? []
-            let nextUnwatchedMovie = unwatchedMovies.first(where: { $0.movie_index == 0 })
+            let nextUnwatchedMovie = unwatchedMovies.sorted(by: { $0.movie_index < $1.movie_index }).first
 
             nextMovie = nextUnwatchedMovie?.movie_id  // Update the state to reflect the next unwatched movie
 
