@@ -151,6 +151,22 @@ struct MovieDetailsView: View {
                             }
                             .padding(.leading, 10)
                             
+                        
+                        if vm.isComingFromLog{
+                            
+                            Button(action: {
+                                self.showingLogSelection = true
+                            }) {
+                                Text("Add to Watched")
+                                    .foregroundColor(.white)
+                            }
+                            .frame(width: 350, height: 40)
+                            .background(Color(hex: "3891E1"))
+                            .cornerRadius(25)
+                            .padding(.top, 5)
+                            .padding(.leading, 20)
+                        }
+                        else{
                             Button(action: {
                                 self.showingLogSelection = true
                             }) {
@@ -162,7 +178,7 @@ struct MovieDetailsView: View {
                             .cornerRadius(25)
                             .padding(.top, 5)
                             .padding(.leading, 20)
-                            
+                        }
                             // Overview
                             Text(movie.overview ?? "No overview available.")
                                 .foregroundColor(.white)
