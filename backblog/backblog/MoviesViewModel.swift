@@ -13,14 +13,16 @@ class MoviesViewModel: ObservableObject {
     @Published var errorMessage: String?
     
     var movieId: String
+    var isComingFromLog: Bool
     
     private var fb: FirebaseProtocol
     private var movieService: MovieService
     
     private var moviesRepo: MovieRepository
     
-    init(movieId: String, fb: FirebaseProtocol, movieService: MovieService) {
+    init(movieId: String, isComingFromLog: Bool, fb: FirebaseProtocol, movieService: MovieService) {
         self.movieId = movieId
+        self.isComingFromLog = isComingFromLog
         self.moviesRepo = MovieRepository(fb: fb, movieService: movieService)
         self.fb = fb
         self.movieService = movieService

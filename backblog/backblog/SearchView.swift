@@ -53,7 +53,7 @@ struct SearchView: View {
 
     private var movieList: some View {
         ForEach(vm.movies, id: \.id) { movie in
-            NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0))) {
+            NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0), isComingFromLog: false)) {
                 HStack {
                     movieImageView(for: movie.id)
 

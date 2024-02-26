@@ -15,7 +15,7 @@ struct WhatsNextView: View {
                 .accessibility(identifier: "logNameText")
 
             // Movie Image with Navigation Link
-            NavigationLink(destination: MovieDetailsView(movieId: vm.nextMovie ?? "")) {
+            NavigationLink(destination: MovieDetailsView(movieId: vm.nextMovie ?? "", isComingFromLog: true))) {
                 vm.halfSheetImage
                     .resizable()
                     .scaledToFit()

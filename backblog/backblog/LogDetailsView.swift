@@ -198,7 +198,7 @@ struct MovieRow: View {
     let halfSheetPath: String
 
     var body: some View {
-        NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0))) {
+        NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0), isComingFromLog: true)) {
             HStack {
                 if let url = URL(string: halfSheetPath) {
                     AsyncImage(url: url) { image in

@@ -15,8 +15,8 @@ struct MovieDetailsView: View {
     @State private var blurAmount: CGFloat = 0
     @State private var showingLogSelection = false
     
-    init (movieId: String) {
-        _vm = StateObject(wrappedValue: MoviesViewModel(movieId: movieId, fb: FirebaseService(), movieService: MovieService()))
+    init (movieId: String, isComingFromLog: Bool) {
+        _vm = StateObject(wrappedValue: MoviesViewModel(movieId: movieId, isComingFromLog: isComingFromLog, fb: FirebaseService(), movieService: MovieService()))
     }
 
     var body: some View {
