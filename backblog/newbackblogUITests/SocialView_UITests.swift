@@ -151,4 +151,59 @@ final class SocialView_UITests: XCTestCase {
             
             cancelButton.tap()
         }
+    
+    func test_FriendsProfileView_BlockandRemoveandAdd() throws {
+        let app = XCUIApplication()
+        app.launch()
+        
+        sleep(2)
+        app.tabBars["Tab Bar"].buttons["person.2.fill"].tap()
+
+        // Enter username/email
+        let usernameTextField = app.textFields["usernameTextField"] // Make sure this identifier matches your actual UI
+        XCTAssertTrue(usernameTextField.waitForExistence(timeout: 5), "Username text field should be present")
+        usernameTextField.tap()
+        usernameTextField.typeText("apple@apple.com")
+
+        // Enter password
+        let passwordSecureField = app.secureTextFields["passwordSecureField"] // Make sure this identifier matches your actual UI
+        XCTAssertTrue(passwordSecureField.waitForExistence(timeout: 5), "Password secure text field should be present")
+        passwordSecureField.tap()
+        passwordSecureField.typeText("apple123")
+
+        // Tap on the login button
+        let loginButton = app.buttons["loginButton"] // Make sure this identifier matches your actual UI
+        XCTAssertTrue(loginButton.waitForExistence(timeout: 5), "Login button should be present")
+        loginButton.tap()
+        
+        app.segmentedControls.buttons["Friends"].tap()
+        sleep(2)
+
+        let firstFriendProfile = app.buttons["FriendProfileElement"].firstMatch
+        XCTAssertTrue(firstFriendProfile.waitForExistence(timeout: 10), "At least one friend profile should be present in the list")
+
+        // Tap on the first friend profile
+        firstFriendProfile.tap()
+
+        // Assert and tap the Remove Friend Button
+        let removeFriendButton = app.buttons["RemoveFriendButton"]
+        XCTAssertTrue(removeFriendButton.waitForExistence(timeout: 5), "Remove Friend Button should be present")
+        removeFriendButton.tap()
+
+        // Tap Cancel on the Remove Friend alert
+        let cancelRemoveFriendButton = app.alerts.buttons["Cancel"]
+        XCTAssertTrue(cancelRemoveFriendButton.waitForExistence(timeout: 5), "Cancel button in Remove Friend alert should be present")
+        cancelRemoveFriendButton.tap()
+
+        // Assert and tap the Block User Button
+        let blockUserButton = app.buttons["BlockUserButton"]
+        XCTAssertTrue(blockUserButton.waitForExistence(timeout: 5), "Block User Button should be present")
+        blockUserButton.tap()
+
+        // Tap Cancel on the Block User alert
+        let cancelBlockUserButton = app.alerts.buttons["Cancel"]
+        XCTAssertTrue(cancelBlockUserButton.waitForExistence(timeout: 5), "Cancel button in Block User alert should be present")
+        cancelBlockUserButton.tap()
+    }
+
 }
