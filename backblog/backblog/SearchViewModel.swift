@@ -7,18 +7,21 @@
 
 import Foundation
 
+/**
+ ViewModel for handling search operations and managing movie data in the context of search.
+ */
 class SearchViewModel: ObservableObject {
-    @Published var movies: [MovieSearchData.MovieSearchResult] = []
-    @Published var halfSheetImageUrls: [Int: URL?] = [:]
-    @Published var backdropImageUrls: [Int: URL?] = [:]
-    @Published var errorMessage: String? = nil
+    @Published var movies: [MovieSearchData.MovieSearchResult] = [] // The search results.
+    @Published var halfSheetImageUrls: [Int: URL?] = [:] // URLs for half sheet images of movies.
+    @Published var backdropImageUrls: [Int: URL?] = [:] // URLs for backdrop images of movies.
+    @Published var errorMessage: String? = nil // Error messages, if any.
+
+    private let viewContext = PersistenceController.shared.container.viewContext // Core Data context.
     
-    private let viewContext = PersistenceController.shared.container.viewContext
+    private var fb: FirebaseProtocol // Firebase service interface.
+    private var movieService: MovieService // Movie service for API interactions.
     
-    private var fb: FirebaseProtocol
-    private var movieService: MovieService
-    
-    private let movieRepo: MovieRepository
+    private let movieRepo: MovieRepository // Repository for movie data fetching.
     
     init(fb: FirebaseProtocol, movieService: MovieService) {
         self.fb = fb
@@ -26,6 +29,12 @@ class SearchViewModel: ObservableObject {
         self.movieRepo = MovieRepository(fb: fb, movieService: movieService)
     }
     
+    /**
+     Searches for movies based on a query string and updates the movies state.
+     
+     - Parameters:
+         - query: The search query.
+     */
     func searchMovies(query: String) {
         guard !query.isEmpty else {
             movies = []
@@ -48,6 +57,12 @@ class SearchViewModel: ObservableObject {
     }
 
 
+    /**
+     Fetches and stores the URL for a movie's half sheet image.
+     
+     - Parameters:
+         - movieId: The id of the movie for which the image is fetched.
+     */
     func loadHalfSheetImage(movieId: Int) {
         Task {
             let result = await movieRepo.getMovieHalfSheet(movieId: String(movieId))
@@ -66,6 +81,12 @@ class SearchViewModel: ObservableObject {
         }
     }
     
+    /**
+     Fetches and stores the URL for a movie's backdrop image.
+     
+     - Parameters:
+         - movieId: The id of the movie for which the backdrop image is fetched.
+     */
     func loadBackdropImage(movieId: Int) {
         Task {
             let result = await movieRepo.getMovieById(movieId: String(movieId))
@@ -84,6 +105,14 @@ class SearchViewModel: ObservableObject {
         }
     }
 
+    
+    /**
+     Adds a movie to a specified log, handling both Firebase and local logs.
+     
+     - Parameters:
+         - movieId: The id of the movie to add.
+         - log: The log to which the movie is added.
+     */
     func addMovieToLog(movieId: String, log: LogType) {
         switch log {
         case .log(let fbLog):
@@ -116,7 +145,14 @@ class SearchViewModel: ObservableObject {
     }
 
 
-    
+    /**
+     Formats the release year from a given date string.
+     
+     - Parameters:
+         - dateString: The date string from which the year is extracted.
+     
+     - Returns: A string representing the release year.
+     */
     func formatReleaseYear(from dateString: String?) -> String {
         guard let dateString = dateString, let year = dateString.split(separator: "-").first else {
             return "Unknown year"

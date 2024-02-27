@@ -1,14 +1,31 @@
+//
+//  LogSelectionView.swift
+//  backblog
+//
+//  Created by Nick Abegg on 1/--/24.
+//
 import SwiftUI
 
 struct LogSelectionView: View {
-    @StateObject var vm: LogSelectionViewModel
-    @Binding var showingSheet: Bool
+    @StateObject var vm: LogSelectionViewModel // ViewModel handling log selection logic.
+    @Binding var showingSheet: Bool // Binding to control the visibility of the sheet.
 
+    
+    /**
+     Initializes the view with the selected movie ID and binding for the sheet visibility.
+     
+     - Parameters:
+         - selectedMovieId: The ID of the selected movie.
+         - showingSheet: Binding to control the sheet's visibility.
+     */
     init(selectedMovieId: Int, showingSheet: Binding<Bool>) {
         _showingSheet = showingSheet
         _vm = StateObject(wrappedValue: LogSelectionViewModel(selectedMovieId: selectedMovieId))
     }
     
+    /**
+     A view for selecting logs to which a movie will be added.
+     */
     var body: some View {
         ZStack {
             NavigationView {
@@ -67,6 +84,9 @@ struct LogSelectionView: View {
         .preferredColorScheme(.dark)
     }
     
+    /**
+     A view component representing a notification, used to indicate when a movie is already in a log.
+     */
     struct NotificationView: View {
         var body: some View {
             Text("Movie is already in log")
@@ -81,6 +101,14 @@ struct LogSelectionView: View {
     }
 }
 
+/**
+ A row view for multiple selection scenarios, used for selecting logs.
+ 
+ - Parameters:
+     - title: The title of the row.
+     - isSelected: Boolean indicating if the row is selected.
+     - action: The action to perform when the row is tapped.
+ */
 struct MultipleSelectionRow: View {
     var title: String
     var isSelected: Bool
