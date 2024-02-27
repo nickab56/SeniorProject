@@ -1,5 +1,15 @@
+//
+//  SearchAddToLogView.swift
+//  backblog
+//
+//  Created by Nick Abegg on 1/--/24.
+//
+
 import SwiftUI
 
+/**
+ A view for searching and adding movies to a specified log.
+ */
 struct SearchView: View {
     @StateObject private var vm = SearchViewModel(fb: FirebaseService(), movieService: MovieService())
     @State private var searchText = ""
@@ -33,6 +43,9 @@ struct SearchView: View {
         .navigationBarTitleDisplayMode(.large)
     }
 
+    /**
+     A search field that updates the search query in real-time.
+     */
     private var searchField: some View {
         HStack {
             Image(systemName: "magnifyingglass").foregroundColor(.gray)
@@ -51,6 +64,10 @@ struct SearchView: View {
         .padding(.horizontal)
     }
 
+    
+    /**
+     A list displaying search results, allowing movies to be added to the log.
+     */
     private var movieList: some View {
         ForEach(vm.movies, id: \.id) { movie in
             NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0))) {
@@ -76,6 +93,13 @@ struct SearchView: View {
         }
     }
 
+    
+    /**
+     Fetches and displays the movie's image.
+     
+     - Parameters:
+         - movieId: The id of the movie for which the image is displayed.
+     */
     private func movieImageView(for movieId: Int?) -> some View {
         Group {
             if let movieId = movieId {
@@ -123,6 +147,12 @@ struct SearchView: View {
 
 
 
+    /**
+     A button for adding the selected movie to the log.
+     
+     - Parameters:
+         - movie: The movie to be added to the log.
+     */
     private func addButton(for movie: MovieSearchData.MovieSearchResult) -> some View {
         Button(action: {
             self.tappedMovieId = movie.id
