@@ -31,6 +31,18 @@ struct FriendsProfileView: View {
     @State private var showBlockConfirmation = false
     @State private var showRemoveFriendConfirmation = false
     
+    @State private var activeAlert: ActiveAlert?
+
+    
+    enum ActiveAlert: Identifiable {
+        case blockUser, removeFriend
+        
+        // Conform to the Identifiable protocol
+        var id: Self {
+            return self
+        }
+    }
+    
     init(friendId: String) {
         _viewModel = StateObject(wrappedValue: FriendsProfileViewModel(friendId: friendId, fb: FirebaseService()))
     }
@@ -42,12 +54,13 @@ struct FriendsProfileView: View {
                                 if viewModel.userIsFriend() {
                                     // Remove Friend Button
                                     Button(action: {
-                                        showRemoveFriendConfirmation = true
+                                        self.activeAlert = .removeFriend
                                     }) {
                                         Image(systemName: "person.fill.badge.minus")
                                             .imageScale(.large)
                                             .foregroundColor(.white)
                                     }
+                                    .accessibilityIdentifier("RemoveFriendButton")
                                     .padding(.horizontal, 10)
                                     .padding(.top, 15)
                                 } else {
@@ -61,18 +74,20 @@ struct FriendsProfileView: View {
                                     }
                                     .padding(.horizontal, 10)
                                     .padding(.top, 15)
+                                    .accessibilityIdentifier("AddUserButton")
                                 }
                                 
-                                // Block User Button
-                                Button(action: {
-                                    self.showBlockConfirmation = true
-                                }) {
-                                    Image(systemName: "person.fill.xmark")
-                                        .imageScale(.large)
-                                        .foregroundColor(.white)
-                                }
-                                .padding(.horizontal, 15)
-                                .padding(.top, 15)
+                            // For the block user button
+                            Button(action: {
+                                self.activeAlert = .blockUser
+                            }) {
+                                Image(systemName: "person.fill.xmark")
+                                    .imageScale(.large)
+                                    .foregroundColor(.white)
+                            }
+                            .padding(.horizontal, 15)
+                            .padding(.top, 15)
+                            .accessibilityIdentifier("BlockUserButton")
                             }
             HStack {
                 // Display user's avatar
@@ -175,26 +190,28 @@ struct FriendsProfileView: View {
             }
             Button("Block User", role: .destructive, action: { self.showBlockConfirmation = true })
         }
-        .alert(isPresented: $showBlockConfirmation) { // Block User Confirmation Alert
-            Alert(
-                title: Text("Block User"),
-                message: Text("Are you sure you want to remove and block this friend?"),
-                primaryButton: .destructive(Text("Block")) {
-                    viewModel.blockUser()
-                },
-                secondaryButton: .cancel()
-            )
+        .alert(item: $activeAlert) { alertType in
+            switch alertType {
+            case .blockUser:
+                return Alert(
+                    title: Text("Block User"),
+                    message: Text("Are you sure you want to block this user? This action cannot be undone."),
+                    primaryButton: .destructive(Text("Block")) {
+                        viewModel.blockUser()
+                    },
+                    secondaryButton: .cancel()
+                )
+            case .removeFriend:
+                return Alert(
+                    title: Text("Remove Friend"),
+                    message: Text("Are you sure you want to remove this friend?"),
+                    primaryButton: .destructive(Text("Remove")) {
+                        viewModel.removeFriend()
+                    },
+                    secondaryButton: .cancel()
+                )
+            }
         }
-        .alert(isPresented: $showRemoveFriendConfirmation) {  // Remove Friend Confirmation Alert
-                                Alert(
-                                    title: Text("Remove Friend"),
-                                    message: Text("Are you sure you want to remove this friend?"),
-                                    primaryButton: .destructive(Text("Remove")) {
-                                        viewModel.removeFriend()
-                                    },
-                                    secondaryButton: .cancel()
-                                )
-                            }
         .padding(.top, 80)
         .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .edgesIgnoringSafeArea(.all)

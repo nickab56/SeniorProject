@@ -78,28 +78,23 @@ struct LandingView: View {
                     .bold()
                     .padding(.top, UIScreen.main.bounds.height * 0.08)
 
-                if let firstLog = vm.priorityLog {
-                    if vm.hasWatchNextMovie {
-                        // If there are unwatched movies, show the WhatsNextView for the first log
-                        WhatsNextView(log: firstLog, vm: vm)
-                        .padding(.top, -20)
-                    } else {
-                        // If there are no unwatched movies, show "All Caught Up" message
-                        VStack {
-                            Text("All Caught Up!")
-                                .font(.title)
-                                .foregroundColor(.white)
-                                .accessibilityIdentifier("NoNextMovieText")
-
-                            Text("You've watched all the movies in this log.")
-                                .foregroundColor(.gray)
-                        }
-                    }
-                } else {
-                    // If there are no logs, show "No logs available" message
+                if vm.logs.isEmpty {
                     Text("No logs available.")
                         .foregroundColor(.gray)
                         .padding()
+                } else if vm.hasWatchNextMovie, let firstLog = vm.priorityLog {
+                    WhatsNextView(log: firstLog, vm: vm)
+                        .padding(.top, -20)
+                } else {
+                    VStack {
+                        Text("All Caught Up!")
+                            .font(.title)
+                            .foregroundColor(.white)
+                            .accessibilityIdentifier("NoNextMovieText")
+
+                        Text("You've watched all the movies in this log.")
+                            .foregroundColor(.gray)
+                    }
                 }
 
                 MyLogsView(vm: vm)
@@ -110,6 +105,7 @@ struct LandingView: View {
         .edgesIgnoringSafeArea(.all)
         .onAppear {
             vm.fetchLogs()
+            vm.refreshPriorityLog()
         }
         .navigationBarBackButtonHidden(true)
     }
