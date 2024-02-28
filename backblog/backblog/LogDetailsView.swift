@@ -114,6 +114,7 @@ struct LogDetailsView: View {
                                 .padding()
                                 .font(.system(size: 25))
                         }
+                        .accessibilityIdentifier("editLogButton")
                         .background(Color.clear)
                         .foregroundColor(.white)
                         .cornerRadius(8)
@@ -132,6 +133,7 @@ struct LogDetailsView: View {
                                 .padding()
                                 .font(.system(size: 25))
                         }
+                        .accessibilityIdentifier("shuffleLogButton")
                         .background(Color.clear)
                         .foregroundColor(.white)
                         .cornerRadius(8)
