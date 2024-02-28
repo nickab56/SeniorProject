@@ -212,6 +212,7 @@ final class LandingView_UITests: XCTestCase {
     func test_WhatsNextView_MovieDisplayWatchedButton_DisplayAndRemoveMovie() {
         let app = XCUIApplication()
         app.launch()
+        sleep(2)
         // Add a new log
         let addLogButton = app.buttons["addLogButton"]
         XCTAssertTrue(addLogButton.waitForExistence(timeout: 5), "Add Log button should be visible")
@@ -271,6 +272,8 @@ final class LandingView_UITests: XCTestCase {
     func test_WhatsNextMarkMovieAsWatched_AddWatchedButton_MovieAddedToWatched() {
         let app = XCUIApplication()
         app.launch()
+        
+        sleep(2)
         // Add a new log
         let addLogButton = app.buttons["addLogButton"]
         XCTAssertTrue(addLogButton.waitForExistence(timeout: 5), "Add Log button should be visible")
