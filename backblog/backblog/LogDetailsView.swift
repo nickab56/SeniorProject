@@ -332,9 +332,6 @@ struct CollaboratorsView: View {
     var collaborators: [String]
     @State private var expanded = false
 
-    /**
-     The body of the `CollaboratorsView` view, defining the SwiftUI content.
-     */
     var body: some View {
         HStack(spacing: 0) {
             if collaborators.count > 4 && !expanded {
@@ -349,7 +346,8 @@ struct CollaboratorsView: View {
                         ForEach(collaborators.indices, id: \.self) { index in
                             AvatarView(imageName: collaborators[index])
                                 .overlay(
-                                    index == collaborators.count - 1 ? condenseButtonOverlay : nil,
+                                    // Only show condense button if there are more than 4 collaborators
+                                    (index == collaborators.count - 1 && collaborators.count > 4) ? condenseButtonOverlay : nil,
                                     alignment: .bottomTrailing
                                 )
                         }
