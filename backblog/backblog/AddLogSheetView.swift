@@ -74,6 +74,7 @@ struct AddLogSheetView: View {
                         }
                         .onDelete(perform: removeCollaborator)
                     }
+                    .accessibility(identifier: "currentCollaboratorsSection")
 
                     
                     Section(header: Text("Add Collaborators")) {
@@ -83,6 +84,7 @@ struct AddLogSheetView: View {
                             TextField("Search Friends", text: $searchText)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .padding(.bottom, 5)
+                                .accessibility(identifier: "searchFriendsTextField")
 
                             List {
                                 ForEach(filteredFriends, id: \.self) { friend in
@@ -102,6 +104,7 @@ struct AddLogSheetView: View {
                                                 .foregroundColor(Color.blue)
                                                 .imageScale(.large)
                                         }
+                                        .accessibility(identifier: "addCollaboratorButton")
                                     }
                                     .padding(.vertical, 5)
                                 }

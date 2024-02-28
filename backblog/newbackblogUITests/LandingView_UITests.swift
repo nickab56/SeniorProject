@@ -404,6 +404,89 @@ final class LandingView_UITests: XCTestCase {
            XCTAssertTrue(watchedNotification.waitForExistence(timeout: 5), "Watched notification should appear after swiping a movie")
     }
 
+    
+    func test_collabViews()
+    {
+        
+        let app = XCUIApplication()
+        app.launch()
+
+        // Navigate to the social tab
+        let tabBar = app.tabBars["Tab Bar"]
+        tabBar.buttons["person.2.fill"].tap()
+
+        // Log in
+        let usernameTextField = app.textFields["usernameTextField"]
+        usernameTextField.tap()
+        usernameTextField.typeText("apple@apple.com")
+        
+        let passwordSecureField = app.secureTextFields["passwordSecureField"]
+        passwordSecureField.tap()
+        passwordSecureField.typeText("apple123")
+        app.buttons["loginButton"].tap()
+        
+        sleep(2)
+
+        // Navigate back to the home/landing page and create a new log
+        app.tabBars["Tab Bar"].buttons["Hdr"].tap()
+        
+        let addLogButton = app.buttons["addLogButton"]
+        XCTAssertTrue(addLogButton.waitForExistence(timeout: 5), "Add Log button should be visible")
+        addLogButton.tap()
+
+        let searchFriendsTextField = app.textFields["searchFriendsTextField"]
+        XCTAssertTrue(searchFriendsTextField.exists, "Search Friends text field should exist")
+
+        let addCollaboratorButton = app.buttons["addCollaboratorButton"]
+        XCTAssertTrue(addCollaboratorButton.exists, "Add Collaborator button should exist")
+        
+        let newLogNameTextField = app.textFields["newLogNameTextField"]
+        newLogNameTextField.tap()
+        newLogNameTextField.typeText("Test Log\n")
+
+        let createLogButton = app.buttons["createLogButton"]
+        createLogButton.tap()
+
+        // Wait for the log to be created
+        XCTAssertTrue(app.staticTexts["Test Log"].waitForExistence(timeout: 5))
+        
+        // Ensure "Log 1" is created before proceeding.
+        let logEntry = app.staticTexts["Test Log"]
+        XCTAssertTrue(logEntry.waitForExistence(timeout: 10), "Test Log should be created and visible on the landing page")
+        
+        logEntry.tap()
+
+        app/*@START_MENU_TOKEN@*/.buttons["editCollabButton"]/*[[".otherElements[\"landingViewTab\"]",".buttons[\"person.badge.plus\"]",".buttons[\"editCollabButton\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/.tap()
+        
+        let currentCollaboratorsSection = app.otherElements["currentCollaboratorsSection"]
+        XCTAssertTrue(currentCollaboratorsSection.exists, "Current Collaborators section should exist")
+        
+        let searchCollabFriendsTextField = app.textFields["searchCollabFriendsTextField"]
+        XCTAssertTrue(searchCollabFriendsTextField.exists, "Search Friends text field should exist")
+        
+        let friendsList = app.otherElements["friendsList"]
+        XCTAssertTrue(friendsList.exists, "Friends list should exist")
+        
+        let cancelButton = app.buttons["collabCancelButton"]
+        cancelButton.tap()
+        
+        let editButton = app.buttons["Edit"]
+        XCTAssertTrue(editButton.waitForExistence(timeout: 5), "Edit button should be visible on the landing page")
+        editButton.tap()
+
+        // And: Tap the "Delete Log" button to initiate the log deletion.
+        let deleteLogButton = app.buttons["Delete Log"]
+        XCTAssertTrue(deleteLogButton.waitForExistence(timeout: 5), "Delete Log button should be visible after tapping Edit button")
+        deleteLogButton.tap()
+
+        // Then: Confirm the deletion in the alert dialog.
+        let confirmDeleteAlertButton = app.alerts["Are you sure you want to delete this log?"].buttons["Yes"]
+        XCTAssertTrue(confirmDeleteAlertButton.waitForExistence(timeout: 5), "Confirmation alert for deleting the log should appear")
+        confirmDeleteAlertButton.tap()
+        
+        
+            
+    }
 
 
 }

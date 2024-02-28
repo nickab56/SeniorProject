@@ -74,6 +74,7 @@ struct EditCollaboratorSheetView: View {
                         TextField("Search Friends", text: $searchText)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .padding(.bottom, 5)
+                            .accessibilityIdentifier("searchCollabFriendsTextField")
 
                         List {
                             ForEach(filteredFriends, id: \.self) { friend in
@@ -105,6 +106,7 @@ struct EditCollaboratorSheetView: View {
                                 }
                             }
                         }
+                        .accessibilityIdentifier("friendsList")
                         .transition(.opacity) // Apply a fade-in transition
                     }
                 }
