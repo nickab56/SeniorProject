@@ -57,6 +57,7 @@ struct SignupView: View {
                     Text(vm.signupMessage)
                         .foregroundColor(vm.messageColor)
                         .padding()
+                        .accessibilityIdentifier("signupMessage")
 
                     TextField("Email", text: $email)
                         .textFieldStyle(RoundedBorderTextFieldStyle())

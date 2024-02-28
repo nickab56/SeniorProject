@@ -103,6 +103,7 @@ struct LogDetailsView: View {
                                     .background(Color.clear)
                                     .foregroundColor(.white)
                                     .cornerRadius(8)
+                                    .accessibilityIdentifier("editCollabButton")
                                 }
                             }
                         
