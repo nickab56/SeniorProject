@@ -154,6 +154,7 @@ struct LogDetailsView: View {
                         .cornerRadius(8)
                         
                     }.padding(.top, -20)
+                    .padding(.bottom, 10)
                 
                 
                 if vm.movies.isEmpty && vm.watchedMovies.isEmpty {
@@ -163,7 +164,7 @@ struct LogDetailsView: View {
                 } else {
                     List {
                         if !vm.movies.isEmpty {
-                            Section(header: Text("Unwatched").foregroundColor(.white).accessibility(identifier: "UnwatchedSectionHeader")) {
+                            Section(header: Text("Unwatched")                            .background(Color.clear).foregroundColor(.white).accessibility(identifier: "UnwatchedSectionHeader")) {
                                 ForEach(vm.movies, id: \.0.id) { (movie, halfSheetPath) in
                                     MovieRow(movie: movie, halfSheetPath: halfSheetPath)
                                         .listRowBackground(Color.clear)
