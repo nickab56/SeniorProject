@@ -29,8 +29,8 @@ struct MovieDetailsView: View {
      - Parameters:
          - movieId: The id of the movie in TMDB's database.
      */
-    init (movieId: String, isComingFromLog: Bool) {
-        _vm = StateObject(wrappedValue: MoviesViewModel(movieId: movieId, isComingFromLog: isComingFromLog, fb: FirebaseService(), movieService: MovieService()))
+    init (movieId: String, isComingFromLog: Bool, log: LogType?) {
+        _vm = StateObject(wrappedValue: MoviesViewModel(movieId: movieId, isComingFromLog: isComingFromLog, log: log, fb: FirebaseService(), movieService: MovieService()))
     }
 
     /**
@@ -87,7 +87,7 @@ struct MovieDetailsView: View {
                         LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
                             .edgesIgnoringSafeArea(.all)
 
-                    VStack(alignment: .leading) {
+                        VStack(alignment: .leading) {
                             HStack {
                                 if let posterPath = movie.posterPath, let url = URL(string: "https://image.tmdb.org/t/p/w500" + posterPath) {
                                     AsyncImage(url: url) { image in
@@ -151,20 +151,35 @@ struct MovieDetailsView: View {
                             }
                             .padding(.leading, 10)
                             
-                        
-                        if vm.isComingFromLog{
                             
-                            Button(action: {
-                                self.showingLogSelection = true
-                            }) {
-                                Text("Add to Watched")
-                                    .foregroundColor(.white)
-                            }
-                            .frame(width: 350, height: 40)
-                            .background(Color(hex: "3891E1"))
-                            .cornerRadius(25)
-                            .padding(.top, 5)
-                            .padding(.leading, 20)
+                            if vm.isComingFromLog {
+                                if vm.isInUnwatchlist {
+                                    Button(action: {
+                                        //code to make movie to watched in log
+                                    }) {
+                                        Text("Add to Watched")
+                                            .foregroundColor(.white)
+                                    }
+                                    .frame(width: 350, height: 40)
+                                    .background(Color(hex: "3891E1"))
+                                    .cornerRadius(25)
+                                    .padding(.top, 5)
+                                    .padding(.leading, 20)
+                                }
+                        
+                                else{
+                                    Button(action: {
+                                        //code to make movie to unwatch in log
+                                    }) {
+                                        Text("Reset to Unwatched")
+                                            .foregroundColor(.white)
+                                    }
+                                    .frame(width: 350, height: 40)
+                                    .background(Color(hex: "3891E1"))
+                                    .cornerRadius(25)
+                                    .padding(.top, 5)
+                                    .padding(.leading, 20)
+                                }
                         }
                         else{
                             Button(action: {

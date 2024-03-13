@@ -48,7 +48,7 @@ struct SearchAddToLogView: View {
 
     private var movieList: some View {
         ForEach(viewModel.movies, id: \.id) { movie in
-            NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0), isComingFromLog: true), tag: String(movie.id ?? 0), selection: $selectedMovieId) {
+            NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0), isComingFromLog: true, log: log), tag: String(movie.id ?? 0), selection: $selectedMovieId) {
                 HStack {
                     movieImageView(for: movie.id)
                     VStack(alignment: .leading) {

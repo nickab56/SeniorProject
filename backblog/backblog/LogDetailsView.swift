@@ -162,7 +162,7 @@ struct LogDetailsView: View {
                         if !vm.movies.isEmpty {
                             Section(header: Text("Unwatched").foregroundColor(.white).accessibility(identifier: "UnwatchedSectionHeader")) {
                                 ForEach(vm.movies, id: \.0.id) { (movie, halfSheetPath) in
-                                    MovieRow(movie: movie, halfSheetPath: halfSheetPath)
+                                    MovieRow(movie: movie, halfSheetPath: halfSheetPath, log: log)
                                         .listRowBackground(Color.clear)
                                         .swipeActions(edge: .trailing, allowsFullSwipe: vm.canSwipeToMarkWatchedUnwatched()) {
                                             if vm.canSwipeToMarkWatchedUnwatched() {
@@ -180,7 +180,7 @@ struct LogDetailsView: View {
 
                         Section(header: Text("Watched").foregroundColor(.white).accessibility(identifier: "WatchedSectionHeader")) {
                             ForEach(vm.watchedMovies, id: \.0.id) { (movie, halfSheetPath) in
-                                MovieRow(movie: movie, halfSheetPath: halfSheetPath)
+                                MovieRow(movie: movie, halfSheetPath: halfSheetPath, log: log)
                                     .listRowBackground(Color.clear)
                                     .swipeActions(edge: .trailing, allowsFullSwipe: vm.canSwipeToMarkWatchedUnwatched()) {
                                         if vm.canSwipeToMarkWatchedUnwatched() {
@@ -269,12 +269,13 @@ struct LogDetailsView: View {
 struct MovieRow: View {
     let movie: MovieData
     let halfSheetPath: String
+    let log: LogType
 
     /**
      The body of the `MovieRow` view, defining the SwiftUI content.
      */
     var body: some View {
-        NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0), isComingFromLog: true)) {
+        NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0), isComingFromLog: true, log: log)) {
             HStack {
                 if let url = URL(string: halfSheetPath) {
                     AsyncImage(url: url) { image in
