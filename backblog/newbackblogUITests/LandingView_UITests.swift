@@ -487,6 +487,109 @@ final class LandingView_UITests: XCTestCase {
         
             
     }
+    
+    func test_editLogView()
+    {
+        
+        let app = XCUIApplication()
+        app.launch()
+        
+        // Add a new log
+        let addLogButton = app.buttons["addLogButton"]
+        XCTAssertTrue(addLogButton.waitForExistence(timeout: 5), "Add Log button should be visible")
+        addLogButton.tap()
+        
+        let newLogNameTextField = app.textFields["newLogNameTextField"]
+        newLogNameTextField.tap()
+        newLogNameTextField.typeText("Star Wars Log\n")
+        
+        app.buttons["createLogButton"].tap()
+        
+        // Step 2: Search for "Star Wars" and add the first two movies
+        let tabBar = app.tabBars["Tab Bar"]
+        tabBar.buttons["Search"].tap()
+        
+        let movieSearchField = app.textFields["movieSearchField"]
+        movieSearchField.tap()
+        movieSearchField.typeText("Star Wars\n")
+        
+        sleep(2)
+
+        let firstAddToLogButton = app.buttons.matching(identifier: "AddToLogButton").element(boundBy: 0)
+        if firstAddToLogButton.waitForExistence(timeout: 5) {
+            firstAddToLogButton.tap()
+            app.buttons["MultipleSelectionRow_Star Wars Log"].firstMatch.tap()
+            app.buttons["Add"].tap()
+        } else {
+            XCTFail("First 'Add to Log' button did not exist.")
+        }
+
+        sleep(1)
+
+        let secondAddToLogButton = app.buttons.matching(identifier: "AddToLogButton").element(boundBy: 1)
+        if secondAddToLogButton.waitForExistence(timeout: 5) {
+            secondAddToLogButton.tap()
+            app.buttons["MultipleSelectionRow_Star Wars Log"].firstMatch.tap()
+            app.buttons["Add"].tap()
+        } else {
+            XCTFail("Second 'Add to Log' button did not exist.")
+        }
+
+
+        // Navigate back to the landing page
+        app.buttons["Hdr"].tap()
+        
+        // Step 3: Open the created log and navigate to the Edit Log page
+        app.staticTexts["Star Wars Log"].tap()
+        app.buttons["editLogButton"].tap()
+        
+        // Step 4: Verify all UI elements on the Edit Log page
+        XCTAssertTrue(app.navigationBars["Edit Log"].exists, "Edit Log navigation bar is not visible")
+        XCTAssertTrue(app.buttons["Edit"].exists, "Edit button is not visible")
+        XCTAssertTrue(app.textFields["Log Name"].exists, "Log Name text field is not visible")
+        XCTAssertTrue(app.buttons["Save"].exists, "Save button is not visible")
+        XCTAssertTrue(app.buttons["Delete Log"].exists, "Delete Log button is not visible")
+        XCTAssertTrue(app.buttons["Cancel"].exists, "Cancel button is not visible")
+    }
+    
+    func test_shuffleButton()
+    {
+        
+        let app = XCUIApplication()
+        app.launch()
+        
+
+        app.buttons["addLogButton"].tap()
+        let newLogNameTextField = app.textFields["newLogNameTextField"]
+        XCTAssertTrue(newLogNameTextField.exists, "New log name text field should exist.")
+        newLogNameTextField.tap()
+        newLogNameTextField.typeText("Test Log\n")
+        
+        app.buttons["createLogButton"].tap()
+        
+        let newLogImage = app.images["NewLogImage"]
+        XCTAssertTrue(newLogImage.exists, "Newly created log should be accessible.")
+        newLogImage.tap()
+
+        let shuffleLogButton = app.buttons["shuffleLogButton"]
+        XCTAssertTrue(shuffleLogButton.exists, "Shuffle button should exist in the log details view.")
+        shuffleLogButton.tap()
+
+        let shuffleAlert = app.alerts["Shuffle Unwatched Movies"]
+        XCTAssertTrue(shuffleAlert.exists, "Shuffle confirmation alert should appear.")
+        
+        let cancelButton = shuffleAlert.buttons["Cancel"]
+        XCTAssertTrue(cancelButton.exists, "Cancel button should exist on the shuffle confirmation alert.")
+        cancelButton.tap()
+        
+        shuffleLogButton.tap()
+        let shuffleButton = shuffleAlert.buttons["Shuffle"]
+        XCTAssertTrue(shuffleButton.exists, "Shuffle button should exist on the shuffle confirmation alert.")
+        shuffleButton.tap()
+        
+        
+    }
+            
 
 
 }

@@ -233,13 +233,13 @@ struct LogDetailsView: View {
         .sheet(isPresented: $editCollaboratorSheet) {
             EditCollaboratorSheetView(isPresented: $editCollaboratorSheet, vm: vm)
         }
-        .alert("Shuffle Watched Movies", isPresented: $showingShuffleConfirmation) {
+        .alert("Shuffle Unwatched Movies", isPresented: $showingShuffleConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Shuffle", role: .destructive) {
                 vm.shuffleUnwatchedMovies()
             }
         } message: {
-            Text("Are you sure you want to shuffle the order of the watched movies in this log?")
+            Text("Are you sure you want to shuffle the order of the unwatched movies in this log?")
         }
     }
     
