@@ -10,6 +10,7 @@ struct LogSelectionView: View {
     @StateObject var vm: LogSelectionViewModel // ViewModel handling log selection logic.
     @Binding var showingSheet: Bool // Binding to control the visibility of the sheet.
 
+    @State private var showingCreateLogPopup = false
     
     /**
      Initializes the view with the selected movie ID and binding for the sheet visibility.
@@ -42,9 +43,8 @@ struct LogSelectionView: View {
                     Section {
                         Button(action: {
                             if vm.selectedLogs.isEmpty {
-                                showingSheet = false // Consider how to handle new log creation
-                            }
-                            else {
+                                showingCreateLogPopup = true
+                            } else {
                                 vm.addMovieToSelectedLogs()
                                 showingSheet = false
                             }
@@ -53,7 +53,7 @@ struct LogSelectionView: View {
                                 .frame(maxWidth: .infinity)
                                 .multilineTextAlignment(.center)
                         }
-                        .disabled(!vm.logsWithDuplicates.isEmpty) // Disable "Done" if there are duplicates
+                        .disabled(!vm.logsWithDuplicates.isEmpty)
 
                         Button(action: {
                             showingSheet = false
@@ -82,6 +82,14 @@ struct LogSelectionView: View {
         }
         .animation(.easeInOut, value: vm.showingNotification)
         .preferredColorScheme(.dark)
+        .overlay {
+            if showingCreateLogPopup {
+                CreateLogPopup(isVisible: $showingCreateLogPopup) { logName in
+                    vm.createNewLogWithName(logName)
+                }
+                .transition(.scale)
+            }
+        }
     }
     
     /**
@@ -100,6 +108,53 @@ struct LogSelectionView: View {
         }
     }
 }
+
+struct CreateLogPopup: View {
+    @Binding var isVisible: Bool
+    var onCommit: (String) -> Void
+    @State private var logName: String = ""
+    
+    var body: some View {
+        VStack(spacing: 16) {
+            Text("Create New Log")
+                .font(.headline)
+                .padding(.top, 20)
+            
+            TextField("Log Name", text: $logName)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.horizontal)
+            
+            Divider()
+            
+            HStack(spacing: 20) {
+                Button("Cancel") {
+                    isVisible = false
+                }
+                .foregroundColor(Color(UIColor.systemRed))
+                .font(.body)
+                
+                Spacer()
+                
+                Button("Create Log") {
+                    onCommit(logName)
+                    isVisible = false
+                }
+                .disabled(logName.isEmpty)
+                .foregroundColor(logName.isEmpty ? .gray : Color(UIColor.systemBlue))
+                .font(.body)
+            }
+            .padding(.bottom, 20)
+        }
+        .padding(.horizontal)
+        .background(Color(UIColor.systemBackground))
+        .cornerRadius(14)
+        .shadow(radius: 10)
+        .frame(width: 300)
+        .transition(.scale)
+    }
+}
+
+
 
 /**
  A row view for multiple selection scenarios, used for selecting logs.

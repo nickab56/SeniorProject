@@ -210,13 +210,15 @@ class LogSelectionViewModel: ObservableObject {
      */
     private func getLocalLogs() -> [LocalLogData] {
         let context = PersistenceController.shared.container.viewContext
-
         let fetchRequest: NSFetchRequest<LocalLogData> = LocalLogData.fetchRequest()
+
         do {
             let items = try context.fetch(fetchRequest)
-            return items
-        } catch let error as NSError {
-            print("Error resetting logs: \(error), \(error.userInfo)")
+            DispatchQueue.main.async {
+                self.logs = items.map { LogType.localLog($0) }
+            }
+        } catch {
+            print("Error fetching local logs: \(error)")
         }
         return []
     }
@@ -266,4 +268,36 @@ class LogSelectionViewModel: ObservableObject {
     func isLogSelected(logType: LogType) -> Bool {
         return selectedLogs.contains(getLogId(logType: logType))
     }
+    
+    func createNewLogWithName(_ name: String) {
+        if let userId = self.userId {
+            // User is authenticated, create the log remotely
+            Task {
+                do {
+                    let newLogId = try await logRepo.addLog(name: name, isVisible: true, ownerId: userId).get()
+                    print("Successfully created new log with ID \(newLogId) in Firebase")
+                    
+                    await getLogs()
+                } catch {
+                    print("Error creating new log: \(error.localizedDescription)")
+                }
+            }
+        } else {
+            // User is not authenticated, create the log locally
+            let newLog = LocalLogData(context: viewContext)
+            newLog.name = name
+            newLog.log_id = Int64(UUID().hashValue)
+
+            do {
+                getLocalLogs()
+                try viewContext.save()
+                print("Successfully created new local log with name \(name)")
+                
+            } catch {
+                print("Error saving new local log: \(error.localizedDescription)")
+            }
+        }
+    }
+
+
 }
