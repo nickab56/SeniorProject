@@ -34,6 +34,8 @@ struct SettingsView: View {
     @State private var newPasswordText: String = ""
     @State private var showingAvatarSelection: Bool = false
     
+    @State private var showingBlockedUsersSheet = false
+    
     // Message
     @State private var saveMessage: String = ""
     @State private var messageColor: Color = Color.red
@@ -131,6 +133,22 @@ struct SettingsView: View {
                     }
                     
                     Button(action: {
+                        showingBlockedUsersSheet = true
+                    }) {
+                        Text("View Blocked Users")
+                            .foregroundColor(.white)
+                    }
+                    .frame(width: 300, height: 50)
+                    .background(Color.red)
+                    .cornerRadius(50)
+                    .padding(.top, 10)
+                    
+                    // Present the BlockedUsersSheet
+                    .sheet(isPresented: $showingBlockedUsersSheet) {
+                        BlockedUsersSheet()
+                    }
+                    
+                    Button(action: {
                         vm.updateUser(username: usernameText, newPassword: newPasswordText, password: oldPasswordText)
                     }) {
                         Text("SAVE")
@@ -189,7 +207,62 @@ struct SettingsView: View {
             .foregroundColor(Color.white)
             .cornerRadius(10)
             .shadow(radius: 10)
-            .zIndex(1) // Ensure the notification view is always on top
+            .zIndex(1)
             .accessibility(identifier: "NotificationsView")
     }
+    
+    struct BlockedUsersSheet: View {
+        @State private var blockedUsers: [String] = ["User1", "User2", "User3"]
+        @State private var showAlert = false // State to manage alert presentation
+        @State private var userToUnblock: String? // Keep track of which user to unblock
+        @Environment(\.presentationMode) var presentationMode // Environment variable for sheet dismissal
+
+        var body: some View {
+            NavigationView {
+                List {
+                    ForEach(blockedUsers, id: \.self) { user in
+                        HStack {
+                            Text(user)
+                            Spacer()
+                            Button("Unblock") {
+                                userToUnblock = user
+                                showAlert = true // Show the alert
+                            }
+                            .foregroundColor(.red)
+                        }
+                    }
+                }
+                .alert(isPresented: $showAlert) {
+                    Alert(
+                        title: Text("Unblock User"),
+                        message: Text("Are you sure you want to unblock \(userToUnblock ?? "")?"),
+                        primaryButton: .destructive(Text("Unblock")) {
+                            if let user = userToUnblock {
+                                unblockUser(user: user)
+                            }
+                        },
+                        secondaryButton: .cancel()
+                    )
+                }
+                .navigationBarTitle("Blocked Users", displayMode: .inline)
+                .toolbar {
+                    Button("Done") {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+            }
+            .preferredColorScheme(.dark)
+        }
+
+        func unblockUser(user: String) {
+            // Implement unblocking logic here
+            // For demonstration, simply remove the user from the list
+            if let index = blockedUsers.firstIndex(of: user) {
+                blockedUsers.remove(at: index)
+            }
+        }
+    }
+
+
+
 }
