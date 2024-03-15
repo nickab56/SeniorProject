@@ -94,6 +94,8 @@ struct SearchView: View {
     }
 
     
+    // KNOWN BUG: Shows the static placeholder image FIRST, then shows the animated one if it is actually loading an image. Should first show the animated image and if there is an image show that and if there is no image it should show the static.
+    
     /**
      Fetches and displays the movie's image.
      
@@ -103,12 +105,12 @@ struct SearchView: View {
     private func movieImageView(for movieId: Int?) -> some View {
         Group {
             if let movieId = movieId {
-                // First, try to load the half sheet image if available
+                // Try to load the half sheet image if available
                 if let halfSheetUrl = vm.halfSheetImageUrls[movieId], let url = halfSheetUrl {
                     AsyncImage(url: url) { image in
                         image.resizable()
                     } placeholder: {
-                        Color.gray
+                        AnimatedPlaceholderView()
                     }
                     .frame(width: 180, height: 100)
                     .cornerRadius(8)
@@ -119,31 +121,27 @@ struct SearchView: View {
                     AsyncImage(url: url) { image in
                         image.resizable()
                     } placeholder: {
-                        Color.gray
+                        AnimatedPlaceholderView()
                     }
                     .frame(width: 180, height: 100)
                     .cornerRadius(8)
                     .padding(.leading)
                 }
-                // If neither is available, show a gray placeholder
+                // If neither is available, show the Static placeholder
                 else {
-                    Color.gray
-                        .frame(width: 180, height: 100)
-                        .cornerRadius(8)
-                        .padding(.leading)
+                    StaticPlaceholderView()
                         .onAppear {
                             vm.loadHalfSheetImage(movieId: movieId)
                             vm.loadBackdropImage(movieId: movieId)
                         }
                 }
             } else {
-                Color.gray
-                    .frame(width: 180, height: 100)
-                    .cornerRadius(8)
-                    .padding(.leading)
+                // Show the animated placeholder if there's no movie ID
+                StaticPlaceholderView()
             }
         }
     }
+
 
 
 
@@ -156,7 +154,7 @@ struct SearchView: View {
     private func addButton(for movie: MovieSearchData.MovieSearchResult) -> some View {
         Button(action: {
             self.tappedMovieId = movie.id
-            withAnimation(.easeInOut(duration: 0.2)) {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.6, blendDuration: 0)) {
                 self.selectedMovieForLog = movie
                 self.showingLogSelection = true
             }
@@ -165,8 +163,8 @@ struct SearchView: View {
                 .foregroundColor(Color(hex: "#3891e1"))
                 .imageScale(.large)
                 .scaleEffect(tappedMovieId == movie.id ? 1.2 : 1.0)
-                .opacity(tappedMovieId == movie.id ? 0.5 : 1.0)
         }
+
         .padding()
         .accessibilityLabel("Add to Log")
         .accessibility(identifier: "AddToLogButton")
@@ -179,4 +177,41 @@ struct SearchView: View {
             }
         }
     }
+    
+    
+    struct AnimatedPlaceholderView: View {
+        var body: some View {
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(LinearGradient(gradient: Gradient(colors: [Color.gray.opacity(0.5), Color.gray.opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .frame(width: 180, height: 100)
+                    .padding(.leading)
+                    .padding(.trailing)
+                
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                    .scaleEffect(1.5)
+            }
+        }
+    }
+
+    struct StaticPlaceholderView: View {
+        var body: some View {
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(LinearGradient(gradient: Gradient(colors: [Color.gray.opacity(0.5), Color.gray.opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .frame(width: 180, height: 100)
+                    .padding(.leading)
+
+                Image(systemName: "photo.on.rectangle.angled")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 50, height: 50)
+                    .foregroundColor(Color.white.opacity(0.7))
+            }
+        }
+    }
+
+    
+
 }
