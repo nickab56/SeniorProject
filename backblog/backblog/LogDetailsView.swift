@@ -123,6 +123,7 @@ struct LogDetailsView: View {
                                 dismiss()
                             })
                         }
+                        .transition(.slide)
                         
                         Spacer()
                         
@@ -168,6 +169,7 @@ struct LogDetailsView: View {
                                 ForEach(vm.movies, id: \.0.id) { (movie, halfSheetPath) in
                                     MovieRow(movie: movie, halfSheetPath: halfSheetPath)
                                         .listRowBackground(Color.clear)
+                                        .textCase(nil)
                                         .swipeActions(edge: .trailing, allowsFullSwipe: vm.canSwipeToMarkWatchedUnwatched()) {
                                             if vm.canSwipeToMarkWatchedUnwatched() {
                                                 Button {
@@ -186,6 +188,7 @@ struct LogDetailsView: View {
                             ForEach(vm.watchedMovies, id: \.0.id) { (movie, halfSheetPath) in
                                 MovieRow(movie: movie, halfSheetPath: halfSheetPath)
                                     .listRowBackground(Color.clear)
+                                    .textCase(nil)
                                     .swipeActions(edge: .trailing, allowsFullSwipe: vm.canSwipeToMarkWatchedUnwatched()) {
                                         if vm.canSwipeToMarkWatchedUnwatched() {
                                             Button {
@@ -234,13 +237,16 @@ struct LogDetailsView: View {
             EditCollaboratorSheetView(isPresented: $editCollaboratorSheet, vm: vm)
         }
         .alert("Shuffle Unwatched Movies", isPresented: $showingShuffleConfirmation) {
-            Button("Cancel", role: .cancel) {}
+            Button("Cancel", role: .cancel) { }
             Button("Shuffle", role: .destructive) {
-                vm.shuffleUnwatchedMovies()
+                withAnimation {
+                    vm.shuffleUnwatchedMovies()
+                }
             }
         } message: {
-            Text("Are you sure you want to shuffle the order of the unwatched movies in this log?")
+            Text("This will randomly rearrange the unwatched movies in your log. Do you want to proceed?")
         }
+
     }
     
     /**
@@ -294,7 +300,8 @@ struct MovieRow: View {
                 VStack(alignment: .leading) {
                     Text(movie.title ?? "N/A")
                         .foregroundColor(.white)
-                        .fontWeight(.bold)
+                        .fontWeight(.semibold)
+                        //.fontWeight(.bold)
                         .accessibility(identifier: "LogDetailsMovieTitle")
                 }
             }
