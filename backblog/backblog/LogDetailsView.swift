@@ -214,6 +214,8 @@ struct LogDetailsView: View {
             if vm.showingWatchedNotification {
                 WatchedNotificationView()
                     .transition(.move(edge: .bottom))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(.top, 375)
                     .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                             withAnimation {
@@ -259,7 +261,7 @@ struct LogDetailsView: View {
         var body: some View {
             Text("Movie added to watched")
                 .padding()
-                .background(Color.gray.opacity(0.9))
+                .background(Color.gray)
                 .foregroundColor(Color.white)
                 .cornerRadius(10)
                 .shadow(radius: 10)
