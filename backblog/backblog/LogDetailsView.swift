@@ -103,6 +103,7 @@ struct LogDetailsView: View {
                                     .background(Color.clear)
                                     .foregroundColor(.white)
                                     .cornerRadius(8)
+                                    .accessibilityIdentifier("editCollabButton")
                                 }
                             }
                         
@@ -113,6 +114,7 @@ struct LogDetailsView: View {
                                 .padding()
                                 .font(.system(size: 25))
                         }
+                        .accessibilityIdentifier("editLogButton")
                         .background(Color.clear)
                         .foregroundColor(.white)
                         .cornerRadius(8)
@@ -121,6 +123,7 @@ struct LogDetailsView: View {
                                 dismiss()
                             })
                         }
+                        .transition(.slide)
                         
                         Spacer()
                         
@@ -131,6 +134,7 @@ struct LogDetailsView: View {
                                 .padding()
                                 .font(.system(size: 25))
                         }
+                        .accessibilityIdentifier("shuffleLogButton")
                         .background(Color.clear)
                         .foregroundColor(.white)
                         .cornerRadius(8)
@@ -151,6 +155,7 @@ struct LogDetailsView: View {
                         .cornerRadius(8)
                         
                     }.padding(.top, -20)
+                    .padding(.bottom, 10)
                 
                 
                 if vm.movies.isEmpty && vm.watchedMovies.isEmpty {
@@ -160,10 +165,11 @@ struct LogDetailsView: View {
                 } else {
                     List {
                         if !vm.movies.isEmpty {
-                            Section(header: Text("Unwatched").foregroundColor(.white).accessibility(identifier: "UnwatchedSectionHeader")) {
+                            Section(header: Text("Unwatched")                            .background(Color.clear).foregroundColor(.white).accessibility(identifier: "UnwatchedSectionHeader")) {
                                 ForEach(vm.movies, id: \.0.id) { (movie, halfSheetPath) in
                                     MovieRow(movie: movie, halfSheetPath: halfSheetPath, log: log)
                                         .listRowBackground(Color.clear)
+                                        .textCase(nil)
                                         .swipeActions(edge: .trailing, allowsFullSwipe: vm.canSwipeToMarkWatchedUnwatched()) {
                                             if vm.canSwipeToMarkWatchedUnwatched() {
                                                 Button {
@@ -182,6 +188,7 @@ struct LogDetailsView: View {
                             ForEach(vm.watchedMovies, id: \.0.id) { (movie, halfSheetPath) in
                                 MovieRow(movie: movie, halfSheetPath: halfSheetPath, log: log)
                                     .listRowBackground(Color.clear)
+                                    .textCase(nil)
                                     .swipeActions(edge: .trailing, allowsFullSwipe: vm.canSwipeToMarkWatchedUnwatched()) {
                                         if vm.canSwipeToMarkWatchedUnwatched() {
                                             Button {
@@ -207,6 +214,8 @@ struct LogDetailsView: View {
             if vm.showingWatchedNotification {
                 WatchedNotificationView()
                     .transition(.move(edge: .bottom))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(.top, 375)
                     .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                             withAnimation {
@@ -229,14 +238,17 @@ struct LogDetailsView: View {
         .sheet(isPresented: $editCollaboratorSheet) {
             EditCollaboratorSheetView(isPresented: $editCollaboratorSheet, vm: vm)
         }
-        .alert("Shuffle Watched Movies", isPresented: $showingShuffleConfirmation) {
-            Button("Cancel", role: .cancel) {}
+        .alert("Shuffle Unwatched Movies", isPresented: $showingShuffleConfirmation) {
+            Button("Cancel", role: .cancel) { }
             Button("Shuffle", role: .destructive) {
-                vm.shuffleUnwatchedMovies()
+                withAnimation {
+                    vm.shuffleUnwatchedMovies()
+                }
             }
         } message: {
-            Text("Are you sure you want to shuffle the order of the watched movies in this log?")
+            Text("This will randomly rearrange the unwatched movies in your log. Do you want to proceed?")
         }
+
     }
     
     /**
@@ -249,7 +261,7 @@ struct LogDetailsView: View {
         var body: some View {
             Text("Movie added to watched")
                 .padding()
-                .background(Color.gray.opacity(0.9))
+                .background(Color.gray)
                 .foregroundColor(Color.white)
                 .cornerRadius(10)
                 .shadow(radius: 10)
@@ -291,7 +303,8 @@ struct MovieRow: View {
                 VStack(alignment: .leading) {
                     Text(movie.title ?? "N/A")
                         .foregroundColor(.white)
-                        .fontWeight(.bold)
+                        .fontWeight(.semibold)
+                        //.fontWeight(.bold)
                         .accessibility(identifier: "LogDetailsMovieTitle")
                 }
             }
@@ -332,9 +345,6 @@ struct CollaboratorsView: View {
     var collaborators: [String]
     @State private var expanded = false
 
-    /**
-     The body of the `CollaboratorsView` view, defining the SwiftUI content.
-     */
     var body: some View {
         HStack(spacing: 0) {
             if collaborators.count > 4 && !expanded {
@@ -349,7 +359,8 @@ struct CollaboratorsView: View {
                         ForEach(collaborators.indices, id: \.self) { index in
                             AvatarView(imageName: collaborators[index])
                                 .overlay(
-                                    index == collaborators.count - 1 ? condenseButtonOverlay : nil,
+                                    // Only show condense button if there are more than 4 collaborators
+                                    (index == collaborators.count - 1 && collaborators.count > 4) ? condenseButtonOverlay : nil,
                                     alignment: .bottomTrailing
                                 )
                         }

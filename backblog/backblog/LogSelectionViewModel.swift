@@ -9,18 +9,18 @@ import Foundation
 import CoreData
 
 class LogSelectionViewModel: ObservableObject {
-    private let viewContext = PersistenceController.shared.container.viewContext
-    @Published var selectedMovieId: Int
-    @Published var logs: [LogType] = []
-    @Published var selectedLogs: Set<String> = Set()
-    @Published var logsWithDuplicates: Set<String> = Set()
-    @Published var showingNotification = false
+    private let viewContext = PersistenceController.shared.container.viewContext // Core Data context for local operations.
+    @Published var selectedMovieId: Int // The id of the movie to be added to logs.
+    @Published var logs: [LogType] = [] // The list of available logs.
+    @Published var selectedLogs: Set<String> = Set() // The logs selected by the user to add the movie to.
+    @Published var logsWithDuplicates: Set<String> = Set() // Logs that already contain the movie.
+    @Published var showingNotification = false // Controls the visibility of notifications/alerts.
     
-    private let fb = FirebaseService()
-    private let movieService = MovieService()
-    private let logRepo: LogRepository
-    private let movieRepo: MovieRepository
-    private let userId: String?
+    private let fb = FirebaseService() // Firebase service for remote operations.
+    private let movieService = MovieService() // Movie service for API interactions.
+    private let logRepo: LogRepository // Repository for log data fetching.
+    private let movieRepo: MovieRepository // Repository for movie data fetching.
+    private let userId: String? // The current user's ID, if authenticated.
     
     init(selectedMovieId: Int) {
         self.selectedMovieId = selectedMovieId
@@ -30,6 +30,9 @@ class LogSelectionViewModel: ObservableObject {
         getLogs()
     }
     
+    /**
+     Fetches the list of available logs for the current user.
+     */
     func getLogs() {
         if (userId != nil) {
             // Check if authenticated
@@ -49,6 +52,12 @@ class LogSelectionViewModel: ObservableObject {
         }
     }
 
+    /**
+     Handles the selection or deselection of a log for adding the movie.
+     
+     - Parameters:
+         - logId: The ID of the log to be toggled.
+     */
     func handleLogSelection(logId: String) {
         if isDuplicateInLog(logId: logId) {
             // If the movie is already in the log, show notification and don't change selection
@@ -63,6 +72,15 @@ class LogSelectionViewModel: ObservableObject {
         }
     }
 
+    
+    /**
+     Checks if the selected movie already exists in the specified log.
+     
+     - Parameters:
+         - logId: The ID of the log to be checked.
+     
+     - Returns: A Boolean indicating if the movie is a duplicate in the log.
+     */
     func isDuplicateInLog(logId: String) -> Bool {
         if (userId != nil) {
             let logList: [LogData] = self.logs.compactMap { logType in
@@ -102,6 +120,9 @@ class LogSelectionViewModel: ObservableObject {
 
 
 
+    /**
+     Adds the selected movie to all selected logs.
+     */
     func addMovieToSelectedLogs() {
         if (userId != nil) {
             DispatchQueue.main.async {
@@ -182,19 +203,34 @@ class LogSelectionViewModel: ObservableObject {
         }
     }
     
+    /**
+     Fetches all local logs stored in Core Data.
+     
+     - Returns: An array of `LocalLogData` representing the local logs.
+     */
     private func getLocalLogs() -> [LocalLogData] {
         let context = PersistenceController.shared.container.viewContext
-
         let fetchRequest: NSFetchRequest<LocalLogData> = LocalLogData.fetchRequest()
+
         do {
             let items = try context.fetch(fetchRequest)
-            return items
-        } catch let error as NSError {
-            print("Error resetting logs: \(error), \(error.userInfo)")
+            DispatchQueue.main.async {
+                self.logs = items.map { LogType.localLog($0) }
+            }
+        } catch {
+            print("Error fetching local logs: \(error)")
         }
         return []
     }
     
+    /**
+     Retrieves the title of a given log.
+     
+     - Parameters:
+         - logType: The `LogType` enum instance representing the log.
+     
+     - Returns: The title of the log as a string.
+     */
     func getTitle(logType: LogType) -> String {
         switch logType {
         case .log(let log):
@@ -204,6 +240,14 @@ class LogSelectionViewModel: ObservableObject {
         }
     }
     
+    /**
+     Retrieves the ID of a given log.
+     
+     - Parameters:
+         - logType: The `LogType` enum instance representing the log.
+     
+     - Returns: The ID of the log as a string.
+     */
     func getLogId(logType: LogType) -> String {
         switch logType {
         case .log(let log):
@@ -213,7 +257,47 @@ class LogSelectionViewModel: ObservableObject {
         }
     }
     
+    /**
+     Checks if a given log is selected.
+     
+     - Parameters:
+         - logType: The `LogType` enum instance representing the log.
+     
+     - Returns: A Boolean indicating if the log is selected.
+     */
     func isLogSelected(logType: LogType) -> Bool {
         return selectedLogs.contains(getLogId(logType: logType))
     }
+    
+    func createNewLogWithName(_ name: String) {
+        if let userId = self.userId {
+            // User is authenticated, create the log remotely
+            Task {
+                do {
+                    let newLogId = try await logRepo.addLog(name: name, isVisible: true, ownerId: userId).get()
+                    print("Successfully created new log with ID \(newLogId) in Firebase")
+                    
+                    await getLogs()
+                } catch {
+                    print("Error creating new log: \(error.localizedDescription)")
+                }
+            }
+        } else {
+            // User is not authenticated, create the log locally
+            let newLog = LocalLogData(context: viewContext)
+            newLog.name = name
+            newLog.log_id = Int64(UUID().hashValue)
+
+            do {
+                getLocalLogs()
+                try viewContext.save()
+                print("Successfully created new local log with name \(name)")
+                
+            } catch {
+                print("Error saving new local log: \(error.localizedDescription)")
+            }
+        }
+    }
+
+
 }

@@ -69,7 +69,7 @@ struct backblogApp: App {
             .onAppear
             {
                 if CommandLine.arguments.contains("--uitesting-reset") {
-                    // Call your method to delete all logs here
+                    // Call method to delete all logs
                     resetAllLogs()
                 }
             }

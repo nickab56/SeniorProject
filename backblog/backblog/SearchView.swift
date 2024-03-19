@@ -1,5 +1,15 @@
+//
+//  SearchAddToLogView.swift
+//  backblog
+//
+//  Created by Nick Abegg on 1/--/24.
+//
+
 import SwiftUI
 
+/**
+ A view for searching and adding movies to a specified log.
+ */
 struct SearchView: View {
     @StateObject private var vm = SearchViewModel(fb: FirebaseService(), movieService: MovieService())
     @State private var searchText = ""
@@ -142,6 +152,9 @@ struct SearchView: View {
         .navigationBarTitleDisplayMode(.large)
     }
 
+    /**
+     A search field that updates the search query in real-time.
+     */
     private var searchField: some View {
         HStack {
             Image(systemName: "magnifyingglass").foregroundColor(.gray)
@@ -160,6 +173,10 @@ struct SearchView: View {
         .padding(.horizontal)
     }
 
+    
+    /**
+     A list displaying search results, allowing movies to be added to the log.
+     */
     private var movieList: some View {
         ForEach(vm.movies, id: \.id) { movie in
             NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0), isComingFromLog: false, log: nil)) {
@@ -185,15 +202,24 @@ struct SearchView: View {
         }
     }
 
+    
+    // KNOWN BUG: Shows the static placeholder image FIRST, then shows the animated one if it is actually loading an image. Should first show the animated image and if there is an image show that and if there is no image it should show the static.
+    
+    /**
+     Fetches and displays the movie's image.
+     
+     - Parameters:
+         - movieId: The id of the movie for which the image is displayed.
+     */
     private func movieImageView(for movieId: Int?) -> some View {
         Group {
             if let movieId = movieId {
-                // First, try to load the half sheet image if available
+                // Try to load the half sheet image if available
                 if let halfSheetUrl = vm.halfSheetImageUrls[movieId], let url = halfSheetUrl {
                     AsyncImage(url: url) { image in
                         image.resizable()
                     } placeholder: {
-                        Color.gray
+                        AnimatedPlaceholderView()
                     }
                     .frame(width: 180, height: 100)
                     .cornerRadius(8)
@@ -204,38 +230,40 @@ struct SearchView: View {
                     AsyncImage(url: url) { image in
                         image.resizable()
                     } placeholder: {
-                        Color.gray
+                        AnimatedPlaceholderView()
                     }
                     .frame(width: 180, height: 100)
                     .cornerRadius(8)
                     .padding(.leading)
                 }
-                // If neither is available, show a gray placeholder
+                // If neither is available, show the Static placeholder
                 else {
-                    Color.gray
-                        .frame(width: 180, height: 100)
-                        .cornerRadius(8)
-                        .padding(.leading)
+                    StaticPlaceholderView()
                         .onAppear {
                             vm.loadHalfSheetImage(movieId: movieId)
                             vm.loadBackdropImage(movieId: movieId)
                         }
                 }
             } else {
-                Color.gray
-                    .frame(width: 180, height: 100)
-                    .cornerRadius(8)
-                    .padding(.leading)
+                // Show the animated placeholder if there's no movie ID
+                StaticPlaceholderView()
             }
         }
     }
 
 
 
+
+    /**
+     A button for adding the selected movie to the log.
+     
+     - Parameters:
+         - movie: The movie to be added to the log.
+     */
     private func addButton(for movie: MovieSearchData.MovieSearchResult) -> some View {
         Button(action: {
             self.tappedMovieId = movie.id
-            withAnimation(.easeInOut(duration: 0.2)) {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.6, blendDuration: 0)) {
                 self.selectedMovieForLog = movie
                 self.showingLogSelection = true
             }
@@ -244,8 +272,8 @@ struct SearchView: View {
                 .foregroundColor(Color(hex: "#3891e1"))
                 .imageScale(.large)
                 .scaleEffect(tappedMovieId == movie.id ? 1.2 : 1.0)
-                .opacity(tappedMovieId == movie.id ? 0.5 : 1.0)
         }
+
         .padding()
         .accessibilityLabel("Add to Log")
         .accessibility(identifier: "AddToLogButton")
@@ -258,4 +286,41 @@ struct SearchView: View {
             }
         }
     }
+    
+    
+    struct AnimatedPlaceholderView: View {
+        var body: some View {
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(LinearGradient(gradient: Gradient(colors: [Color.gray.opacity(0.5), Color.gray.opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .frame(width: 180, height: 100)
+                    .padding(.leading)
+                    .padding(.trailing)
+                
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                    .scaleEffect(1.5)
+            }
+        }
+    }
+
+    struct StaticPlaceholderView: View {
+        var body: some View {
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(LinearGradient(gradient: Gradient(colors: [Color.gray.opacity(0.5), Color.gray.opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .frame(width: 180, height: 100)
+                    .padding(.leading)
+
+                Image(systemName: "photo.on.rectangle.angled")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 50, height: 50)
+                    .foregroundColor(Color.white.opacity(0.7))
+            }
+        }
+    }
+
+    
+
 }

@@ -164,6 +164,7 @@ struct SocialView: View {
                             }
                             ForEach(vm.friends) { friendId in FriendListElement(friendId: friendId.userId ?? "", userId: vm.getUserId(), username: friendId.username ?? "", avatarPreset: friendId.avatarPreset ?? 1)
                                     .padding(.horizontal)
+                                    .accessibilityIdentifier("FriendProfileElement")
                             }
                         } else {
                             Text("No friends found.")

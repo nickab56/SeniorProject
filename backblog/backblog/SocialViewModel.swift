@@ -375,7 +375,7 @@ class SocialViewModel: ObservableObject {
                     _ = try fb.logout().get()
                     
                     // Logout successful
-                    isUnauthorized = false
+                    isUnauthorized = true
                 } catch {
                     notificationMessage = "Error, please try logging out later."
                     showingNotification = true

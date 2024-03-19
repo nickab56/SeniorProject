@@ -64,14 +64,17 @@ struct EditCollaboratorSheetView: View {
                     }
                     .onDelete(perform: removeCollaborator)
                 }
+                .accessibilityIdentifier("currentCollabSection")
                 
                 Section(header: Text("Add Collaborators")) {
                     if friends.count == 0 {
                         Text("No friends found.")
+                            .accessibilityIdentifier("collabNoFriends")
                     } else {
                         TextField("Search Friends", text: $searchText)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .padding(.bottom, 5)
+                            .accessibilityIdentifier("searchCollabFriendsTextField")
 
                         List {
                             ForEach(filteredFriends, id: \.self) { friend in
@@ -103,6 +106,7 @@ struct EditCollaboratorSheetView: View {
                                 }
                             }
                         }
+                        .accessibilityIdentifier("friendsList")
                         .transition(.opacity) // Apply a fade-in transition
                     }
                 }
@@ -116,6 +120,7 @@ struct EditCollaboratorSheetView: View {
                         Text("Done")
                             .frame(maxWidth: .infinity)
                             .multilineTextAlignment(.center)
+                            .accessibilityIdentifier("collabDoneButton")
                     }
                     Button(action: {
                         isPresented = false
@@ -124,6 +129,7 @@ struct EditCollaboratorSheetView: View {
                             .frame(maxWidth: .infinity)
                             .multilineTextAlignment(.center)
                             .foregroundColor(.red)
+                            .accessibilityIdentifier("collabCancelButton")
                     }
                 }
             }

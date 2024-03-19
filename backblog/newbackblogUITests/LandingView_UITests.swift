@@ -212,6 +212,7 @@ final class LandingView_UITests: XCTestCase {
     func test_WhatsNextView_MovieDisplayWatchedButton_DisplayAndRemoveMovie() {
         let app = XCUIApplication()
         app.launch()
+        sleep(2)
         // Add a new log
         let addLogButton = app.buttons["addLogButton"]
         XCTAssertTrue(addLogButton.waitForExistence(timeout: 5), "Add Log button should be visible")
@@ -271,6 +272,8 @@ final class LandingView_UITests: XCTestCase {
     func test_WhatsNextMarkMovieAsWatched_AddWatchedButton_MovieAddedToWatched() {
         let app = XCUIApplication()
         app.launch()
+        
+        sleep(2)
         // Add a new log
         let addLogButton = app.buttons["addLogButton"]
         XCTAssertTrue(addLogButton.waitForExistence(timeout: 5), "Add Log button should be visible")
@@ -401,6 +404,192 @@ final class LandingView_UITests: XCTestCase {
            XCTAssertTrue(watchedNotification.waitForExistence(timeout: 5), "Watched notification should appear after swiping a movie")
     }
 
+    
+    func test_collabViews()
+    {
+        
+        let app = XCUIApplication()
+        app.launch()
+
+        // Navigate to the social tab
+        let tabBar = app.tabBars["Tab Bar"]
+        tabBar.buttons["person.2.fill"].tap()
+
+        // Log in
+        let usernameTextField = app.textFields["usernameTextField"]
+        usernameTextField.tap()
+        usernameTextField.typeText("apple@apple.com")
+        
+        let passwordSecureField = app.secureTextFields["passwordSecureField"]
+        passwordSecureField.tap()
+        passwordSecureField.typeText("apple123")
+        app.buttons["loginButton"].tap()
+        
+        sleep(2)
+
+        // Navigate back to the home/landing page and create a new log
+        app.tabBars["Tab Bar"].buttons["Hdr"].tap()
+        
+        let addLogButton = app.buttons["addLogButton"]
+        XCTAssertTrue(addLogButton.waitForExistence(timeout: 5), "Add Log button should be visible")
+        addLogButton.tap()
+
+        let searchFriendsTextField = app.textFields["searchFriendsTextField"]
+        XCTAssertTrue(searchFriendsTextField.exists, "Search Friends text field should exist")
+
+        let addCollaboratorButton = app.buttons["addCollaboratorButton"]
+        XCTAssertTrue(addCollaboratorButton.exists, "Add Collaborator button should exist")
+        
+        let newLogNameTextField = app.textFields["newLogNameTextField"]
+        newLogNameTextField.tap()
+        newLogNameTextField.typeText("Test Log\n")
+
+        let createLogButton = app.buttons["createLogButton"]
+        createLogButton.tap()
+
+        // Wait for the log to be created
+        XCTAssertTrue(app.staticTexts["Test Log"].waitForExistence(timeout: 5))
+        
+        // Ensure "Log 1" is created before proceeding.
+        let logEntry = app.staticTexts["Test Log"]
+        XCTAssertTrue(logEntry.waitForExistence(timeout: 10), "Test Log should be created and visible on the landing page")
+        
+        logEntry.tap()
+
+        app/*@START_MENU_TOKEN@*/.buttons["editCollabButton"]/*[[".otherElements[\"landingViewTab\"]",".buttons[\"person.badge.plus\"]",".buttons[\"editCollabButton\"]"],[[[-1,2],[-1,1],[-1,0,1]],[[-1,2],[-1,1]]],[0]]@END_MENU_TOKEN@*/.tap()
+        
+        let currentCollaboratorsSection = app.otherElements["currentCollaboratorsSection"]
+        XCTAssertTrue(currentCollaboratorsSection.exists, "Current Collaborators section should exist")
+        
+        let searchCollabFriendsTextField = app.textFields["searchCollabFriendsTextField"]
+        XCTAssertTrue(searchCollabFriendsTextField.exists, "Search Friends text field should exist")
+        
+        let friendsList = app.otherElements["friendsList"]
+        XCTAssertTrue(friendsList.exists, "Friends list should exist")
+        
+        let cancelButton = app.buttons["collabCancelButton"]
+        cancelButton.tap()
+        
+        let editButton = app.buttons["Edit"]
+        XCTAssertTrue(editButton.waitForExistence(timeout: 5), "Edit button should be visible on the landing page")
+        editButton.tap()
+
+        // And: Tap the "Delete Log" button to initiate the log deletion.
+        let deleteLogButton = app.buttons["Delete Log"]
+        XCTAssertTrue(deleteLogButton.waitForExistence(timeout: 5), "Delete Log button should be visible after tapping Edit button")
+        deleteLogButton.tap()
+
+        // Then: Confirm the deletion in the alert dialog.
+        let confirmDeleteAlertButton = app.alerts["Are you sure you want to delete this log?"].buttons["Yes"]
+        XCTAssertTrue(confirmDeleteAlertButton.waitForExistence(timeout: 5), "Confirmation alert for deleting the log should appear")
+        confirmDeleteAlertButton.tap()
+        
+        
+            
+    }
+    
+    func test_editLogView()
+    {
+        
+        let app = XCUIApplication()
+        app.launch()
+        
+        // Add a new log
+        let addLogButton = app.buttons["addLogButton"]
+        XCTAssertTrue(addLogButton.waitForExistence(timeout: 5), "Add Log button should be visible")
+        addLogButton.tap()
+        
+        let newLogNameTextField = app.textFields["newLogNameTextField"]
+        newLogNameTextField.tap()
+        newLogNameTextField.typeText("Star Wars Log\n")
+        
+        app.buttons["createLogButton"].tap()
+        
+        // Step 2: Search for "Star Wars" and add the first two movies
+        let tabBar = app.tabBars["Tab Bar"]
+        tabBar.buttons["Search"].tap()
+        
+        let movieSearchField = app.textFields["movieSearchField"]
+        movieSearchField.tap()
+        movieSearchField.typeText("Star Wars\n")
+        
+        sleep(2)
+
+        let firstAddToLogButton = app.buttons.matching(identifier: "AddToLogButton").element(boundBy: 0)
+        if firstAddToLogButton.waitForExistence(timeout: 5) {
+            firstAddToLogButton.tap()
+            app.buttons["MultipleSelectionRow_Star Wars Log"].firstMatch.tap()
+            app.buttons["Add"].tap()
+        } else {
+            XCTFail("First 'Add to Log' button did not exist.")
+        }
+
+        sleep(1)
+
+        let secondAddToLogButton = app.buttons.matching(identifier: "AddToLogButton").element(boundBy: 1)
+        if secondAddToLogButton.waitForExistence(timeout: 5) {
+            secondAddToLogButton.tap()
+            app.buttons["MultipleSelectionRow_Star Wars Log"].firstMatch.tap()
+            app.buttons["Add"].tap()
+        } else {
+            XCTFail("Second 'Add to Log' button did not exist.")
+        }
+
+
+        // Navigate back to the landing page
+        app.buttons["Hdr"].tap()
+        
+        // Step 3: Open the created log and navigate to the Edit Log page
+        app.staticTexts["Star Wars Log"].tap()
+        app.buttons["editLogButton"].tap()
+        
+        // Step 4: Verify all UI elements on the Edit Log page
+        XCTAssertTrue(app.navigationBars["Edit Log"].exists, "Edit Log navigation bar is not visible")
+        XCTAssertTrue(app.buttons["Edit"].exists, "Edit button is not visible")
+        XCTAssertTrue(app.textFields["Log Name"].exists, "Log Name text field is not visible")
+        XCTAssertTrue(app.buttons["Save"].exists, "Save button is not visible")
+        XCTAssertTrue(app.buttons["Delete Log"].exists, "Delete Log button is not visible")
+        XCTAssertTrue(app.buttons["Cancel"].exists, "Cancel button is not visible")
+    }
+    
+    func test_shuffleButton()
+    {
+        
+        let app = XCUIApplication()
+        app.launch()
+        
+
+        app.buttons["addLogButton"].tap()
+        let newLogNameTextField = app.textFields["newLogNameTextField"]
+        XCTAssertTrue(newLogNameTextField.exists, "New log name text field should exist.")
+        newLogNameTextField.tap()
+        newLogNameTextField.typeText("Test Log\n")
+        
+        app.buttons["createLogButton"].tap()
+        
+        let newLogImage = app.images["NewLogImage"]
+        XCTAssertTrue(newLogImage.exists, "Newly created log should be accessible.")
+        newLogImage.tap()
+
+        let shuffleLogButton = app.buttons["shuffleLogButton"]
+        XCTAssertTrue(shuffleLogButton.exists, "Shuffle button should exist in the log details view.")
+        shuffleLogButton.tap()
+
+        let shuffleAlert = app.alerts["Shuffle Unwatched Movies"]
+        XCTAssertTrue(shuffleAlert.exists, "Shuffle confirmation alert should appear.")
+        
+        let cancelButton = shuffleAlert.buttons["Cancel"]
+        XCTAssertTrue(cancelButton.exists, "Cancel button should exist on the shuffle confirmation alert.")
+        cancelButton.tap()
+        
+        shuffleLogButton.tap()
+        let shuffleButton = shuffleAlert.buttons["Shuffle"]
+        XCTAssertTrue(shuffleButton.exists, "Shuffle button should exist on the shuffle confirmation alert.")
+        shuffleButton.tap()
+        
+        
+    }
+            
 
 
 }

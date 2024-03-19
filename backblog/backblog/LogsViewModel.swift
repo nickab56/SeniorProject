@@ -340,6 +340,17 @@ class LogsViewModel: ObservableObject {
         }
         return []
     }
+    
+    func refreshPriorityLog() {
+        if logs.isEmpty {
+            // No logs available
+            priorityLog = nil
+            hasWatchNextMovie = false
+        } else {
+            // Refresh the priority log and check for the next unwatched movie
+            fetchLogs() // This will reset priorityLog, nextMovie, and hasWatchNextMovie based on current logs
+        }
+    }
 
 }
 

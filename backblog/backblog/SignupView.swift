@@ -61,6 +61,7 @@ struct SignupView: View {
                     Text(vm.signupMessage)
                         .foregroundColor(vm.messageColor)
                         .padding()
+                        .accessibilityIdentifier("signupMessage")
                     VStack (spacing: 15) {
                         TextField("Email", text: $email)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -80,6 +81,7 @@ struct SignupView: View {
                             .accessibility(identifier: "signupDisplayNameTextField")
                     }
                     
+
                     Button("Continue") {
                         if email.isEmpty || password.isEmpty || displayName.isEmpty {
                             vm.signupMessage = "Please fill all fields"
