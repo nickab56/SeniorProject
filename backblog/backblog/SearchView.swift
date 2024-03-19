@@ -28,8 +28,117 @@ struct SearchView: View {
             ScrollView {
                 VStack(alignment: .leading) {
                     searchField
-
-                    movieList
+                    if !searchText.isEmpty{
+                        movieList
+                    }
+                    else{
+                        Text("Browse Categories")
+                            .padding()
+                            .bold()
+                            .foregroundColor(.white)
+                            .font(.title)
+                        
+                        VStack (spacing: 15) {
+                            HStack{
+                                Spacer()
+                                
+                                Button(action: {
+                                }) {
+                                    ZStack{
+                                        Rectangle()
+                                            .fill(Color.gray)
+                                        Image("actionSearch")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: 170, height: 100)
+                                            .overlay(Color.black.opacity(0.2))
+                                        
+                                        Text("Action")
+                                            .foregroundColor(.white)
+                                            .font(.title2)
+                                            .bold()
+                                    }
+                                }
+                                .cornerRadius(8)
+                                .frame(width: 170, height: 100)
+                                
+                                
+                                Button(action: {
+                                }) {
+                                    ZStack{
+                                        Rectangle()
+                                            .fill(Color.gray)
+                                        
+                                        Image("horrorSearch")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: 170, height: 100)
+                                            .overlay(Color.black.opacity(0.2))
+                                        
+                                        Text("Horror")
+                                            .foregroundColor(.white)
+                                            .font(.title2)
+                                            .bold()
+                                    }
+                                }
+                                .cornerRadius(8)
+                                .frame(width: 170, height: 100)
+                                
+                                Spacer()
+                            }
+                            
+                            HStack{
+                                Spacer()
+                                
+                                Button(action: {
+                                }) {
+                                    ZStack{
+                                        Rectangle()
+                                            .fill(Color.gray)
+                                        //TODO: replace with static image
+                                        Image("SciFiSearch")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: 170, height: 100)
+                                            .overlay(Color.black.opacity(0.2))
+                                        
+                                        Text("Sci-Fi")
+                                            .foregroundColor(.white)
+                                            .font(.title2)
+                                            .bold()
+                                    }
+                                }
+                                .cornerRadius(8)
+                                .frame(width: 170, height: 100)
+                                
+                                
+                                Button(action: {
+                                }) {
+                                    ZStack{
+                                        Rectangle()
+                                            .fill(Color.gray)
+                                        
+                                        Image("fantasySearch")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: 170, height: 100)
+                                            .overlay(Color.black.opacity(0.2))
+                                        
+                                        Text("Fantasy")
+                                            .foregroundColor(.white)
+                                            .font(.title2)
+                                            .bold()
+                                    }
+                                }
+                                .cornerRadius(8)
+                                .frame(width: 170, height: 100)
+                                
+                                Spacer()
+                                
+                            }
+                        }
+                        .padding()
+                    }
                 }
             }
         }
@@ -70,7 +179,7 @@ struct SearchView: View {
      */
     private var movieList: some View {
         ForEach(vm.movies, id: \.id) { movie in
-            NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0))) {
+            NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0), isComingFromLog: false, log: nil)) {
                 HStack {
                     movieImageView(for: movie.id)
 

@@ -39,42 +39,48 @@ struct SignupView: View {
                     .padding()
                 
                 VStack {
-                    Image("img_placeholder_backblog_logo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 100, height: 100)
-                        .foregroundColor(.white)
-
-                    Text("BackBlog")
-                        .font(.largeTitle)
-                        .foregroundColor(.white)
-
-                    Text("Create an account to Collaborate")
-                        .font(.headline)
-                        .foregroundColor(.gray)
-                        .padding(.bottom, 20)
+                    HStack{
+                        Image("img_placeholder_backblog_logo")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 100, height: 100)
+                            .foregroundColor(.white)
+                        VStack(alignment: .leading) {
+                            Text("BackBlog")
+                                .font(.largeTitle)
+                                .foregroundColor(.white)
+                                .bold()
+                            
+                            Text("Create an account to Collaborate")
+                                .font(.headline)
+                                .foregroundColor(.gray)
+                                .padding(.bottom, 20)
+                        }.padding(.top, 10)
+                    }.padding(.horizontal, -3)
                     
                     Text(vm.signupMessage)
                         .foregroundColor(vm.messageColor)
                         .padding()
                         .accessibilityIdentifier("signupMessage")
-
-                    TextField("Email", text: $email)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding(.horizontal)
-                        .autocapitalization(.none)
-                        .accessibility(identifier: "signupUsernameTextField")
-
-                    SecureField("Password", text: $password)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding(.horizontal)
-                        .accessibility(identifier: "signupPasswordSecureField")
-
-                    TextField("Display Name", text: $displayName)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding(.horizontal)
-                        .autocapitalization(.none)
-                        .accessibility(identifier: "signupDisplayNameTextField")
+                    VStack (spacing: 15) {
+                        TextField("Email", text: $email)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding(.horizontal)
+                            .autocapitalization(.none)
+                            .accessibility(identifier: "signupUsernameTextField")
+                        
+                        SecureField("Password", text: $password)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding(.horizontal)
+                            .accessibility(identifier: "signupPasswordSecureField")
+                        
+                        TextField("Display Name", text: $displayName)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding(.horizontal)
+                            .autocapitalization(.none)
+                            .accessibility(identifier: "signupDisplayNameTextField")
+                    }
+                    
 
                     Button("Continue") {
                         if email.isEmpty || password.isEmpty || displayName.isEmpty {
@@ -96,7 +102,19 @@ struct SignupView: View {
                     .cornerRadius(10)
                     .padding()
                     .accessibility(identifier: "signupContinueButton")
-                    Spacer()
+                    
+                    NavigationLink(destination: LoginView(vm: vm)) {
+                        VStack (spacing: 20) {
+                            Text("Have an account?")
+                                .foregroundColor(.gray)
+                            Text("Login")
+                                .foregroundColor(.gray)
+                                .font(.system(size: 25))
+                                .bold()
+                                .underline(true)
+                        }
+                        .padding()
+                    }
                 }
                 .padding()
             }

@@ -45,6 +45,7 @@ struct LoginView: View {
                         Text("BackBlog")
                             .font(.largeTitle)
                             .foregroundColor(.white)
+                            .bold()
 
                         Text("Login to Collaborate")
                             .font(.headline)
@@ -56,17 +57,20 @@ struct LoginView: View {
                             .padding()
                             .accessibilityIdentifier("loginMessage")
 
-                        TextField("Email or Username", text: $username)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .padding(.horizontal)
-                            .autocapitalization(.none)
-                            .accessibility(identifier: "usernameTextField")
-                            .keyboardType(UIKeyboardType.emailAddress)
-
-                        SecureField("Password", text: $password)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .padding(.horizontal)
-                            .accessibility(identifier: "passwordSecureField")
+                        VStack (spacing: 15) {
+                            TextField("Email or Username", text: $username)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .padding(.horizontal)
+                                .autocapitalization(.none)
+                                .accessibility(identifier: "usernameTextField")
+                                .keyboardType(UIKeyboardType.emailAddress)
+                            
+                            
+                            SecureField("Password", text: $password)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .padding(.horizontal)
+                                .accessibility(identifier: "passwordSecureField")
+                        }
 
                         Button("Log In") {
                             if username.isEmpty || password.isEmpty {
@@ -88,16 +92,22 @@ struct LoginView: View {
                         .cornerRadius(10)
                         .padding()
                         .accessibility(identifier: "loginButton")
+//                        TODO: if we want the fields to be in dark mode or light mode
+//                        .preferredColorScheme(.dark)
 
                         NavigationLink(destination: SignupView(vm: vm)) {
-                            HStack {
+                            VStack(spacing: 20) {
                                 Text("Don't have an account?")
                                     .foregroundColor(.gray)
+                                
                                 Text("Signup")
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(.gray)
+                                    .font(.system(size: 25))
+                                    .bold()
+                                    .underline(true)
                             }
+                            .padding()
                         }
-                        .padding()
                     }
                     .padding()
                 }
