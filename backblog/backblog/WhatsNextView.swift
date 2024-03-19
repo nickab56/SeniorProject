@@ -39,8 +39,8 @@ struct WhatsNextView: View {
                 vm.halfSheetImage
                     .resizable()
                     .scaledToFit()
-                    .cornerRadius(15)
-                    .padding(.horizontal, 10)
+                    .cornerRadius(10)
+                    .padding(.horizontal, 16)
                     .accessibility(identifier: "logPosterImage")
             }
             .buttonStyle(PlainButtonStyle())
@@ -51,6 +51,8 @@ struct WhatsNextView: View {
                         .font(.title)
                         .foregroundColor(.white)
                         .bold()
+                        .lineLimit(1)
+                        .truncationMode(.tail)
                         .accessibility(identifier: "WhatsNextTitle")
 
                     Text(vm.movieDetails)
@@ -61,25 +63,25 @@ struct WhatsNextView: View {
                 }
                 
                 Spacer()
-
-                Button(action: {
-                    withAnimation {
-                        vm.markMovieAsWatched(log: log)
-                        
-                        // Trigger medium-sized haptic feedback
-                        let generator = UIImpactFeedbackGenerator(style: .medium)
-                        generator.prepare()
-                        generator.impactOccurred() // Trigger the haptic feedback
+                
+                VStack(){
+                    Button(action: {
+                        withAnimation {
+                            vm.markMovieAsWatched(log: log)
+                            
+                            // Trigger medium-sized haptic feedback
+                            let generator = UIImpactFeedbackGenerator(style: .medium)
+                            generator.prepare()
+                            generator.impactOccurred() // Trigger the haptic feedback
+                        }
+                    }) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .resizable()
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(Color(hex: "#3891e1"))
                     }
-                }) {
-                    Image(systemName: "checkmark.circle.fill")
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                        .foregroundColor(Color(hex: "#3891e1"))
+                    .accessibility(identifier: "checkButton")
                 }
-                .padding(.trailing, 20)
-                .accessibility(identifier: "checkButton")
-
             }
             .padding(.horizontal)
         }

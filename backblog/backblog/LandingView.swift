@@ -86,19 +86,47 @@ struct LandingView: View {
                     WhatsNextView(log: firstLog, vm: vm)
                         .padding(.top, -20)
                 } else {
-                    VStack {
-                        Text("All Caught Up!")
-                            .font(.title)
-                            .foregroundColor(.white)
-                            .accessibilityIdentifier("NoNextMovieText")
-
-                        Text("You've watched all the movies in this log.")
-                            .foregroundColor(.gray)
-                    }
+//                    VStack {
+//                        Text("All Caught Up!")
+//                            .font(.title)
+//                            .foregroundColor(.white)
+//                            .accessibilityIdentifier("NoNextMovieText")
+//
+//                        Text("You've watched all the movies in this log.")
+//                            .foregroundColor(.gray)
+//                    }
+                    Rectangle()
+                        .cornerRadius(10)
+                        .frame(width: 361, height: 202.882)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 8)
+                        .foregroundColor(Color(hex: "#232323"))
+                        .overlay(
+                            VStack(){
+                                Image(systemName: "square.stack.3d.up.slash")
+                                    .resizable()
+                                    .frame(width: 50, height: 50)
+                                    .foregroundColor(Color(hex: "#9F9F9F"))
+                                Text("You're all caught up!")
+                                    .padding(.top, 10)
+                                    .bold()
+                                    .foregroundColor(.white)
+                                    .font(.system(size: 25))
+                            }
+                        )
+                    Rectangle()
+                        .frame(height: 57)
+                        .opacity(0)
+//                        .overlay(
+//                            Image("caughtup") // Use the local asset as a fallback
+//                                .resizable()
+//                                .cornerRadius(10)
+//                            )
                 }
 
                 MyLogsView(vm: vm)
                     .padding(.bottom, 150)
+                    .padding(.top, 15)
             }
         }
         .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
