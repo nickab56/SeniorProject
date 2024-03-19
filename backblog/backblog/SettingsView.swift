@@ -196,7 +196,7 @@ struct SettingsView: View {
             }
         }
         .navigationDestination(isPresented: $vm.isUnauthorized) {
-            SearchView()
+            LoginView(vm: AuthViewModel(fb: FirebaseService()))
         }
     }
     
