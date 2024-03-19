@@ -104,12 +104,11 @@ struct SignupView: View {
                     .accessibility(identifier: "signupContinueButton")
                     
                     NavigationLink(destination: LoginView(vm: vm)) {
-                        VStack (spacing: 20) {
+                        HStack {
                             Text("Have an account?")
                                 .foregroundColor(.gray)
                             Text("Login")
-                                .foregroundColor(.gray)
-                                .font(.system(size: 25))
+                                .foregroundColor(.blue)
                                 .bold()
                                 .underline(true)
                         }

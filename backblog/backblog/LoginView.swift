@@ -96,18 +96,16 @@ struct LoginView: View {
 //                        .preferredColorScheme(.dark)
 
                         NavigationLink(destination: SignupView(vm: vm)) {
-                            VStack(spacing: 20) {
-                                Text("Don't have an account?")
-                                    .foregroundColor(.gray)
-                                
-                                Text("Signup")
-                                    .foregroundColor(.gray)
-                                    .font(.system(size: 25))
-                                    .bold()
-                                    .underline(true)
-                            }
-                            .padding()
-                        }
+                           HStack {
+                               Text("Don't have an account?")
+                                   .foregroundColor(.gray)
+                               Text("Signup")
+                                   .foregroundColor(.blue)
+                                   .underline()
+                                   .bold()
+                           }
+                       }
+                       .padding()
                     }
                     .padding()
                 }
