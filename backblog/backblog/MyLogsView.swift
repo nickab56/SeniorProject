@@ -29,40 +29,68 @@ struct MyLogsView: View {
      The body of `MyLogsView`, defining its layout and SwiftUI elements.
      */
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Text("My Logs")
-                    .font(.system(size: 24))
-                    .bold()
-                    .foregroundColor(.white)
-
+        VStack(){
+            HStack() {
+                VStack(alignment: .leading){
+                    Text("My Logs")
+                        .font(.title)
+                        .bold()
+                        .foregroundColor(.white)
+                }
                 Spacer()
-
-                Button(action: {
-                    showingAddLogSheet = true
-                }) {
-                    Image(systemName: "plus.square.fill.on.square.fill")
-                        .foregroundColor(Color(hex: "#1b2731"))
-                }
-                .padding(8)
-                .background(Color(hex: "#3891e1"))
-                .cornerRadius(8)
-                .accessibility(identifier: "addLogButton")
-            }
-            .padding([.top, .leading, .trailing])
-
-            ScrollView {
-                switch (vm.logs.first) {
-                case .log(_):
-                    FirebaseLogs()
-                default:
-                    LocalLogs()
+                VStack(alignment: .trailing){
+                    Button(action: {
+                        showingAddLogSheet = true
+                    }) {
+                        Image(systemName: "plus.square.fill.on.square.fill")
+                            .foregroundColor(Color(hex: "#1b2731"))
+                    }
+                    .padding(8)
+                    .background(Color(hex: "#3891e1"))
+                    .cornerRadius(8)
+                    .accessibility(identifier: "addLogButton")
                 }
             }
+            .padding(16)
+            .sheet(isPresented: $showingAddLogSheet) {
+                AddLogSheetView(isPresented: $showingAddLogSheet, logsViewModel: vm)
+            }
+            //        VStack(alignment: .leading) {
+            //            HStack {
+            //                Text("My Logs")
+            //                    .font(.system(size: 24))
+            //                    .bold()
+            //                    .foregroundColor(.white)
+            //
+            //                Spacer()
+            //
+            //                Button(action: {
+            //                    showingAddLogSheet = true
+            //                }) {
+            //                    Image(systemName: "plus.square.fill.on.square.fill")
+            //                        .foregroundColor(Color(hex: "#1b2731"))
+            //                }
+            //                .padding(8)
+            //                .background(Color(hex: "#3891e1"))
+            //                .cornerRadius(8)
+            //                .accessibility(identifier: "addLogButton")
+            //            }
+            //            .padding([.top, .leading, .trailing])
+            VStack(alignment: .leading) {
+                ScrollView {
+                    switch (vm.logs.first) {
+                    case .log(_):
+                        FirebaseLogs()
+                    default:
+                        LocalLogs()
+                    }
+                }
+                Spacer()
+            }
         }
-        .sheet(isPresented: $showingAddLogSheet) {
-            AddLogSheetView(isPresented: $showingAddLogSheet, logsViewModel: vm)
-        }
+//        .sheet(isPresented: $showingAddLogSheet) {
+//            AddLogSheetView(isPresented: $showingAddLogSheet, logsViewModel: vm)
+//        }
     }
     
     /**
@@ -75,7 +103,7 @@ struct MyLogsView: View {
                 ForEach(logList.sorted(by: { $0.orderIndex < $1.orderIndex }), id: \.self) { log in
                     NavigationLink(destination: LogDetailsView(log: LogType.localLog(log))) {
                         LogItemView(log: LogType.localLog(log))
-                            .cornerRadius(15)
+                            //.cornerRadius(15)
                     }
                     .overlay(
                         Rectangle()
@@ -97,12 +125,14 @@ struct MyLogsView: View {
      */
     private func FirebaseLogs() -> some View {
         let logList: [LogData] = vm.logs.compactMap { logType in logType.toLog() }
-        return LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+        return LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
             Group {
                 ForEach(logList, id: \.self) { log in
                     NavigationLink(destination: LogDetailsView(log: LogType.log(log))) {
                         LogItemView(log: LogType.log(log))
-                            .cornerRadius(15)
+                        //Rectangle()
+                            //.aspectRatio(1.0, contentMode: .fit)
+                            //.cornerRadius(5)
                     }
                     .overlay(
                         Rectangle()
@@ -117,6 +147,7 @@ struct MyLogsView: View {
             }
             .animation(.easeInOut, value: logList)
         }
+        .padding(.horizontal, 16)
     }
 
 

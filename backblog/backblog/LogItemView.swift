@@ -37,31 +37,45 @@ struct LogItemView: View {
             if vm.isLoading {
                 Rectangle()
                     .foregroundColor(.gray)
-                    .aspectRatio(1, contentMode: .fill)
+                    .aspectRatio(1.0, contentMode: .fit)
             } else if let posterURL = vm.posterURL {
                 AsyncImage(url: posterURL) { phase in
                     switch phase {
                     case .empty:
                         Rectangle().foregroundColor(.gray)
                     case .success(let image):
-                        image.resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .overlay(Rectangle().foregroundColor(.black).opacity(0.3))
+                        Rectangle()
+                            .frame(width: 175, height: 175)
+                            .overlay (
+                                image.resizable()
+                                    .scaledToFill()
+                                    .overlay(Rectangle().foregroundColor(.black).opacity(0.7))
+                        )
                     case .failure:
-                        Image("NewLogImage") // Use the local asset as a fallback
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .blur(radius: 10)
+                        Rectangle()
+                            .frame(width: 175, height: 175)
+                            .overlay(
+                                Image("nomovies") // Use the local asset as a fallback
+                                    .resizable()
+                                    //.scaledToFill()
+                                    .overlay(Rectangle().foregroundColor(.black).opacity(0.7))
+                                    //.blur(radius: 10)
+                        )
                     @unknown default:
                         EmptyView()
                     }
                 }
                 .clipped()
             } else {
-                Image("NewLogImage")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .blur(radius: 10)
+                Rectangle()
+                    .frame(width: 175, height: 175)
+                    .overlay(
+                        Image("nomovies")
+                            .resizable()
+                            //.scaledToFill()
+                            .overlay(Rectangle().foregroundColor(.black).opacity(0.7))
+                            //.blur(radius: 10)
+                )
             }
 
             VStack {
@@ -72,12 +86,12 @@ struct LogItemView: View {
                     log.name ?? ""
                 }
                 Text(vm.truncateText(txt))
-                    .font(.title)
+                    .font(.title2)
                     .bold()
                     .foregroundColor(.white)
             }
         }
-        .cornerRadius(15)
+        .cornerRadius(10)
         .onAppear {
             vm.fetchMoviePoster()
         }
