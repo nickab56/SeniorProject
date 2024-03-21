@@ -76,7 +76,7 @@ struct LandingView: View {
             VStack {
                 CustomTitleView(title: "What's Next?")
                     .bold()
-                    .padding(.top, UIScreen.main.bounds.height * 0.08)
+                    .padding(.top, 100)
 
                 if vm.logs.isEmpty {
                     Text("No logs available.")
@@ -97,7 +97,8 @@ struct LandingView: View {
 //                    }
                     Rectangle()
                         .cornerRadius(10)
-                        .frame(width: 361, height: 202.882)
+                        //.frame(width: 361, height: 202.882)
+                        .frame(height: 202.882)
                         .padding(.horizontal, 16)
                         .padding(.top, 8)
                         .foregroundColor(Color(hex: "#232323"))

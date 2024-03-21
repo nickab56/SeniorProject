@@ -35,15 +35,22 @@ struct WhatsNextView: View {
                 .accessibility(identifier: "logNameText")
 
             // Movie Image with Navigation Link
-            NavigationLink(destination: MovieDetailsView(movieId: vm.nextMovie ?? "", isComingFromLog: true, log: log)) {
-                vm.halfSheetImage
-                    .resizable()
-                    .scaledToFit()
-                    .cornerRadius(10)
-                    .padding(.horizontal, 16)
-                    .accessibility(identifier: "logPosterImage")
-            }
-            .buttonStyle(PlainButtonStyle())
+            Rectangle()
+                .frame(height: 202.882)
+                .overlay{
+                    NavigationLink(destination: MovieDetailsView(movieId: vm.nextMovie ?? "", isComingFromLog: true, log: log)) {
+                        vm.halfSheetImage
+                            .resizable()
+                            .scaledToFill()
+                            .accessibility(identifier: "logPosterImage")
+                            .clipped()
+                    }
+                    .clipped()
+                    .buttonStyle(PlainButtonStyle())
+                }
+                .cornerRadius(10)
+                .clipped()
+                .padding(.horizontal, 16)
 
             HStack {
                 VStack(alignment: .leading) {
