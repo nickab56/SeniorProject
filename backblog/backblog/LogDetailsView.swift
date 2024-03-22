@@ -58,39 +58,57 @@ struct LogDetailsView: View {
                     log.name ?? ""
                 }
                 HStack{
-                    Text("\(logName)")
-                        .font(.system(size: 30))
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
-                        .padding()
+//                    Text("\(logName)")
+//                        .font(.system(size: 30))
+//                        .fontWeight(.bold)
+//                        .foregroundColor(.white)
+//                        .padding()
+                    CustomTitleView(title: "\(logName)")
+                        .bold()
+                        //.padding(.top, 80)
                     
                     Spacer()
                 }
                 
-                if case .log = log {
-                    if ((vm.isOwner() || vm.isCollaborator())) {
-                        CollaboratorsView(collaborators: vm.getCollaboratorAvatars())
-                            .padding(.horizontal)
-                            .padding(.bottom)
+                HStack(alignment: .center){
+                    VStack(){
+                        if case .log = log {
+                            if ((vm.isOwner() || vm.isCollaborator())) {
+                                CollaboratorsView(collaborators: vm.getCollaboratorAvatars())
+                                .frame(maxWidth: 80)
+                                //.padding(.horizontal)
+                                //.padding(.bottom)
+                                //.offset(y: -20)
+                            }
+                        }
                     }
-                }
+                    //.clipped()
+                    
+                    VStack(alignment: .leading) {
+                        if (vm.movies.count == 1) {
+                            Text("\(vm.movies.count) Movie")
+                        }
+                        else {
+                            Text("\(vm.movies.count) Movies")
+                        }
+//                        Text("Unwatched: \(vm.movies.count)")
+//                            .fontWeight(.bold)
+//                            .foregroundColor(.gray)
+//                            //.padding()
+//                        
+//                        Text("Watched: \(vm.watchedMovies.count)")
+//                            .fontWeight(.bold)
+//                            .foregroundColor(.gray)
+//                            .padding(.leading, -20)
+                            ///.padding()
+                        
+                        //Spacer()
+                    }//.padding(.top, -25)
+                    Spacer()
+                }.padding(.leading, 16)
+                    .offset(y: -20)
                 
                 HStack {
-                    Text("Unwatched: \(vm.movies.count)")
-                        .fontWeight(.bold)
-                        .foregroundColor(.gray)
-                        .padding()
-
-                    Text("Watched: \(vm.watchedMovies.count)")
-                        .fontWeight(.bold)
-                        .foregroundColor(.gray)
-                        .padding(.leading, -20)
-                        .padding()
-
-                    Spacer()
-                }.padding(.top, -25)
-                
-                    HStack {
                         if case .log = log { // Only show for non-local logs
                                 if (vm.isOwner()) {
                                     Button(action: {
@@ -147,8 +165,10 @@ struct LogDetailsView: View {
                             showingSearchAddToLogView = true // This triggers the navigation
                         }) {
                             Image(systemName: "plus.circle.fill")
-                                .padding()
-                                .font(.system(size: 30))
+                                .resizable()
+                                //.padding()
+                                .frame(width: 50, height: 50)
+                                //.font(.system(size: 30))
                         }
                         .background(Color.clear)
                         .foregroundColor(.blue)
@@ -156,6 +176,7 @@ struct LogDetailsView: View {
                         
                     }.padding(.top, -20)
                     .padding(.bottom, 10)
+                    .padding(.horizontal, 16)
                 
                 
                 if vm.movies.isEmpty && vm.watchedMovies.isEmpty {
@@ -165,7 +186,7 @@ struct LogDetailsView: View {
                 } else {
                     List {
                         if !vm.movies.isEmpty {
-                            Section(header: Text("Unwatched")                            .background(Color.clear).foregroundColor(.white).accessibility(identifier: "UnwatchedSectionHeader")) {
+//                            Section(header: Text("Unwatched")                            .background(Color.clear).foregroundColor(.white).accessibility(identifier: "UnwatchedSectionHeader")) {
                                 ForEach(vm.movies, id: \.0.id) { (movie, halfSheetPath) in
                                     MovieRow(movie: movie, halfSheetPath: halfSheetPath, log: log)
                                         .listRowBackground(Color.clear)
@@ -177,11 +198,11 @@ struct LogDetailsView: View {
                                                 } label: {
                                                     Label("Watched", systemImage: "checkmark.circle.fill")
                                                 }
-                                                .tint(.green)
+                                                .tint(.blue)
                                             }
                                         }
                                 }
-                            }
+                            //}
                         }
 
                         Section(header: Text("Watched").foregroundColor(.white).accessibility(identifier: "WatchedSectionHeader")) {
@@ -204,7 +225,6 @@ struct LogDetailsView: View {
                         }
 
                     }
-                    .padding(.top, -30)
                     .listStyle(.plain)
                     .background(Color.clear)
                 }
@@ -297,7 +317,7 @@ struct MovieRow: View {
                     }
                     .frame(width: 145, height: 90)
                     .cornerRadius(8)
-                    .padding(.leading)
+                    //.padding(.leading)
                 }
                 
                 VStack(alignment: .leading) {
@@ -329,9 +349,9 @@ struct AvatarView: View {
         Image(imageName)
             .resizable()
             .scaledToFill()
-            .frame(width: 40, height: 40)
+            .frame(width: 35, height: 35)
             .clipShape(Circle())
-            .overlay(Circle().stroke(Color.white, lineWidth: 2))
+            //.overlay(Circle().stroke(Color.white, lineWidth: 2))
     }
 }
 
@@ -355,7 +375,7 @@ struct CollaboratorsView: View {
                     )
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: -15) {
+                    HStack(spacing: 2) {
                         ForEach(collaborators.indices, id: \.self) { index in
                             AvatarView(imageName: collaborators[index])
                                 .overlay(
@@ -365,12 +385,12 @@ struct CollaboratorsView: View {
                                 )
                         }
                     }
-                    .padding(.leading, 10)
+                    //.padding(.leading, 10)
                 }
-                .frame(height: 40)
+                .frame(height: 45)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(alignment: .leading)
     }
 
     /**
