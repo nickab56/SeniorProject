@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MovieService {
+struct MovieService: MovieProtocol {
     let baseURL = "https://api.themoviedb.org/3/"
    
     enum MovieError: Error {

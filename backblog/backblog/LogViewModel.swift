@@ -37,7 +37,7 @@ class LogViewModel: ObservableObject {
     @Published var ownerData: UserData?
     
     private var fb: FirebaseProtocol
-    private var movieService: MovieService
+    private var movieService: MovieProtocol
     private var logRepo: LogRepository
     private var movieRepo: MovieRepository
     private var friendRepo: FriendRepository
@@ -55,7 +55,7 @@ class LogViewModel: ObservableObject {
          - fb: The `FirebaseProtocol` for Firebase operations.
          - movieService: The `MovieService` for handling interactions with TMDB.
      */
-    init(log: LogType, fb: FirebaseProtocol, movieService: MovieService) {
+    init(log: LogType, fb: FirebaseProtocol, movieService: MovieProtocol) {
         self.log = log
         self.fb = fb
         self.movieService = movieService

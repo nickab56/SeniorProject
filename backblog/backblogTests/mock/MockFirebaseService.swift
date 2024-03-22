@@ -11,6 +11,8 @@ import FirebaseFirestoreSwift
 
 class MockFirebaseService: FirebaseProtocol {
     var shouldSucceed = true // Flag to control success/failure of methods
+    var validUserId = true
+    var exists = true
     
     // TODO: Support all types for BackBlog
     func get<T>(type: T, query: Query?) async -> Result<T, Error> where T : Decodable {
@@ -83,7 +85,10 @@ class MockFirebaseService: FirebaseProtocol {
     // Complete
     func exists(query: Query?) async -> Result<Bool, Error> {
         if shouldSucceed {
-            return .success(true)
+            if exists {
+                return .success(true)
+            }
+            return .success(false)
         } else {
             let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Mock error"])
             return .failure(error)
@@ -154,7 +159,7 @@ class MockFirebaseService: FirebaseProtocol {
     }
     
     func getUserId() -> String? {
-        if shouldSucceed {
+        if validUserId {
             return "mockUserId"
         } else {
             return nil

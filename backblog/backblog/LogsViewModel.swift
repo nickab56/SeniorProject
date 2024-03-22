@@ -38,7 +38,7 @@ class LogsViewModel: ObservableObject {
     @Published var friends: [UserData] = []
     
     private var fb: FirebaseProtocol
-    private var movieService: MovieService
+    private var movieService: MovieProtocol
     private let viewContext = PersistenceController.shared.container.viewContext
     
     let movieRepo: MovieRepository
@@ -52,7 +52,7 @@ class LogsViewModel: ObservableObject {
          - fb: The `FirebaseProtocol` for Firebase operations.
          - movieService: The `MovieService` for handling interactions with TMDB.
      */
-    init(fb: FirebaseProtocol, movieService: MovieService) {
+    init(fb: FirebaseProtocol, movieService: MovieProtocol) {
         self.fb = fb
         self.movieService = movieService
         self.logRepo = LogRepository(fb: fb)

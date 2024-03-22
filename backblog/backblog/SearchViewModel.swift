@@ -19,11 +19,11 @@ class SearchViewModel: ObservableObject {
     private let viewContext = PersistenceController.shared.container.viewContext // Core Data context.
     
     private var fb: FirebaseProtocol // Firebase service interface.
-    private var movieService: MovieService // Movie service for API interactions.
+    private var movieService: MovieProtocol // Movie service for API interactions.
     
     private let movieRepo: MovieRepository // Repository for movie data fetching.
     
-    init(fb: FirebaseProtocol, movieService: MovieService) {
+    init(fb: FirebaseProtocol, movieService: MovieProtocol) {
         self.fb = fb
         self.movieService = movieService
         self.movieRepo = MovieRepository(fb: fb, movieService: movieService)
