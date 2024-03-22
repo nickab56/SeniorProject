@@ -116,40 +116,42 @@ struct MovieDetailsView: View {
                                         .padding(.leading, movie.posterPath == nil ? 20 : 0)
                                     
                                     // Runtime
-                                    if let runtime = movie.runtime {
-                                        if runtime > 0 {
-                                            Text("\(runtime) minutes")
-                                                .foregroundColor(.white)
-                                                .accessibility(identifier: "movieRunTime")
-                                                .padding(.leading, movie.posterPath == nil ? 20 : 0)
-                                        } else {
-                                            Text("No Runtime Found")
-                                                .foregroundColor(.white)
-                                                .padding(.leading, movie.posterPath == nil ? 20 : 0)
+//                                    if let runtime = movie.runtime {
+//                                        if runtime > 0 {
+//                                            Text("\(runtime) minutes")
+//                                                .foregroundColor(.white)
+//                                                .accessibility(identifier: "movieRunTime")
+//                                                .padding(.leading, movie.posterPath == nil ? 20 : 0)
+//                                        } else {
+//                                            Text("No Runtime Found")
+//                                                .foregroundColor(.white)
+//                                                .padding(.leading, movie.posterPath == nil ? 20 : 0)
+//                                        }
+//                                    }
+                                    
+                                    ScrollView(.horizontal, showsIndicators: false) {
+                                        HStack(spacing: 10) {
+                                            if let genres = movie.genres, !genres.isEmpty {
+                                                ForEach(genres, id: \.id) { genre in
+                                                    Text(genre.name ?? "N/A")
+                                                        .foregroundColor(.white)
+                                                        .padding(7)
+                                                        .background(Color.clear)
+                                                        .overlay(
+                                                            Capsule().stroke(Color.white, lineWidth: 1)
+                                                        )
+                                                }
+                                            }
                                         }
+                                        .padding(.vertical, 1)
                                     }
+                                    .padding(.leading, 10)
                                     
                                 }
                                 .padding(.top, -60)
                             }
                             
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 10) {
-                                    if let genres = movie.genres, !genres.isEmpty {
-                                        ForEach(genres, id: \.id) { genre in
-                                            Text(genre.name ?? "N/A")
-                                                .foregroundColor(.white)
-                                                .padding(7)
-                                                .background(Color.clear)
-                                                .overlay(
-                                                    Capsule().stroke(Color.white, lineWidth: 1)
-                                                )
-                                        }
-                                    }
-                                }
-                                .padding(.vertical, 1)
-                            }
-                            .padding(.leading, 10)
+                            
                             
                             
                             if vm.isComingFromLog {
@@ -164,7 +166,6 @@ struct MovieDetailsView: View {
                                     .background(Color(hex: "3891E1"))
                                     .cornerRadius(25)
                                     .padding(.top, 5)
-                                    .padding(.leading, 20)
                                 }
                         
                                 else{
@@ -178,7 +179,6 @@ struct MovieDetailsView: View {
                                     .background(Color(hex: "3891E1"))
                                     .cornerRadius(25)
                                     .padding(.top, 5)
-                                    .padding(.leading, 20)
                                 }
                         }
                         else{
@@ -192,12 +192,15 @@ struct MovieDetailsView: View {
                             .background(Color(hex: "3891E1"))
                             .cornerRadius(25)
                             .padding(.top, 5)
-                            .padding(.leading, 20)
                         }
+                            // TODO: Watch Providers
+                            // Text(movie.watchProviders ?? "Not on streaming platform")
+                            
+                            
                             // Overview
                             Text(movie.overview ?? "No overview available.")
                                 .foregroundColor(.white)
-                                .padding()
+                                .padding(.bottom, 15)
                             
                             // Director
                             if let crew = movie.credits?.crew, let director = crew.first(where: { $0.job == "Director" }) {
@@ -214,18 +217,22 @@ struct MovieDetailsView: View {
                                         .font(.headline)
                                         .foregroundColor(.white)
                                         .padding(.bottom, 1)
-                                    ForEach(cast.prefix(5), id: \.id) { castMember in
-                                        Text(castMember.name ?? "N/A")
-                                            .foregroundColor(.white)
-                                            .padding(.bottom, 1)
+                                    ScrollView(.horizontal, showsIndicators: false) {
+                                        HStack{
+                                            ForEach(cast.prefix(5), id: \.id) { castMember in
+                                                Text(castMember.name ?? "N/A")
+                                                    .foregroundColor(.white)
+                                                    .padding(.bottom, 1)
+                                            }
+                                        }
                                     }
-                                }.padding()
-                                    .accessibility(identifier: "movieCast")
+                                }
+                                .accessibility(identifier: "movieCast")
                             }
                         }
+                        .padding()
                     }
                     .padding(.top, 100)
-
                 }
             } else if vm.errorMessage != nil {
                 Text("Failed to load movie details.")
