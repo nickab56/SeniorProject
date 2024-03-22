@@ -70,6 +70,7 @@
 		9777C8CA2B5D90F9000F40EA /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9777C8C92B5D90F9000F40EA /* UserData.swift */; };
 		977922D52B758FA60021ECD9 /* LogType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977922D42B758FA60021ECD9 /* LogType.swift */; };
 		977CFF612BAD148B001F3051 /* SocialViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CFF602BAD148B001F3051 /* SocialViewModelTests.swift */; };
+		977CFF632BAD21C6001F3051 /* FriendsProfileViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CFF622BAD21C6001F3051 /* FriendsProfileViewModelTests.swift */; };
 		9789D6042B86970B00C279A1 /* LogSelectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9789D6032B86970B00C279A1 /* LogSelectionViewModel.swift */; };
 		97993F112B67284700CBBCCC /* MovieImageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97993F102B67284700CBBCCC /* MovieImageData.swift */; };
 		979B8EAF2B7EFF7800AEC03C /* FirebaseProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979B8EAE2B7EFF7800AEC03C /* FirebaseProtocol.swift */; };
@@ -189,6 +190,7 @@
 		9777C8C92B5D90F9000F40EA /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 		977922D42B758FA60021ECD9 /* LogType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogType.swift; sourceTree = "<group>"; };
 		977CFF602BAD148B001F3051 /* SocialViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialViewModelTests.swift; sourceTree = "<group>"; };
+		977CFF622BAD21C6001F3051 /* FriendsProfileViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsProfileViewModelTests.swift; sourceTree = "<group>"; };
 		9789D6032B86970B00C279A1 /* LogSelectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogSelectionViewModel.swift; sourceTree = "<group>"; };
 		97993F102B67284700CBBCCC /* MovieImageData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieImageData.swift; sourceTree = "<group>"; };
 		979B8EAE2B7EFF7800AEC03C /* FirebaseProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseProtocol.swift; sourceTree = "<group>"; };
@@ -431,6 +433,7 @@
 				9775898C2BACD25E008E2242 /* MoviesViewModelTests.swift */,
 				977589922BACE5D5008E2242 /* AuthViewModelTests.swift */,
 				977CFF602BAD148B001F3051 /* SocialViewModelTests.swift */,
+				977CFF622BAD21C6001F3051 /* FriendsProfileViewModelTests.swift */,
 			);
 			path = viewmodels;
 			sourceTree = "<group>";
@@ -747,6 +750,7 @@
 				972FFAE12B82EEE400E8F0B3 /* MovieRepositoryTests.swift in Sources */,
 				972FFAD52B82D1F700E8F0B3 /* LogDataTests.swift in Sources */,
 				3469C1922B312A4700B8EEFB /* backblogTests.swift in Sources */,
+				977CFF632BAD21C6001F3051 /* FriendsProfileViewModelTests.swift in Sources */,
 				9775898F2BACDA9F008E2242 /* MockMovieService.swift in Sources */,
 				972FFAD92B82D28600E8F0B3 /* MovieDataTests.swift in Sources */,
 				972FFAD32B82D19C00E8F0B3 /* LogRequestDataTests.swift in Sources */,
