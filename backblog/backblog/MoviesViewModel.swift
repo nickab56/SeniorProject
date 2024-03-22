@@ -22,16 +22,10 @@ class MoviesViewModel: ObservableObject {
     var isComingFromLog: Bool
     var log: LogType?
     
-    var isInUnwatchlist: Bool {
-            // Implement your logic here to check if the movie is in the unwatchlist
-            // You might need to access some data or state to determine this
-            // For example, you could check a list of unwatched movies
-            // Return true if the movie is in the unwatchlist, otherwise false
-            return false // Placeholder return value, replace it with your actual logic
-        }
+    var isInUnwatchlist: Bool { return false }
     
     private var fb: FirebaseProtocol
-    private var movieService: MovieService
+    private var movieService: MovieProtocol
     
     private var moviesRepo: MovieRepository
     
@@ -43,8 +37,7 @@ class MoviesViewModel: ObservableObject {
          - fb: The FirebaseProtocol for handling Firebase operations
          - movieService: The MovieService for handling interactions with TMDB.
      */
-    init(movieId: String, isComingFromLog: Bool, log: LogType? = nil, fb: FirebaseProtocol, movieService: MovieService) {
-
+    init(movieId: String, isComingFromLog: Bool, log: LogType? = nil, fb: FirebaseProtocol, movieService: MovieProtocol) {
         self.movieId = movieId
         self.isComingFromLog = isComingFromLog
         self.log = log

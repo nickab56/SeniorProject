@@ -82,11 +82,12 @@ class AuthViewModel: ObservableObject {
                         isLoggedInToSocial = true
                     }
                 } catch {
-                    let msg = if (error.localizedDescription.contains("malformed")) {
+                    let msg = "Failed to login. Please check your email and password" 
+                    /*if (error.localizedDescription.contains("malformed")) {
                         "Incorrect email or password"
                     } else {
                         error.localizedDescription
-                    }
+                    }*/
                     loginMessage = msg
                     messageColor = Color.red
                 }

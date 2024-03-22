@@ -11,12 +11,17 @@ import FirebaseFirestoreSwift
 
 class MockFirebaseService: FirebaseProtocol {
     var shouldSucceed = true // Flag to control success/failure of methods
+    var validUserId = true
+    var exists = true
     
-    // TODO: Support all types for BackBlog
+    // Modified values
+    var userData = UserData(userId: "mockUserId", username: "mockUsername", joinDate: "now", avatarPreset: 1, friends: ["bob123": true, "dude123": true], blocked: [:])
+    var friendRequests = [FriendRequestData(requestId: "req123", senderId: "sender123", targetId: "target456", requestDate: "now", isComplete: false),
+                          FriendRequestData(requestId: "req456", senderId: "bob123", targetId: "target456", requestDate: "old", isComplete: true)]
+    
     func get<T>(type: T, query: Query?) async -> Result<T, Error> where T : Decodable {
         if shouldSucceed {
-            let userData = UserData(userId: "mockUserId", username: "mockUsername", joinDate: "now", avatarPreset: 1, friends: ["bob123": true, "dude123": true], blocked: [:]) as! T
-            return .success(userData)
+            return .success(userData as! T)
         } else {
             let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Mock error"])
             return .failure(error)
@@ -27,7 +32,7 @@ class MockFirebaseService: FirebaseProtocol {
         if shouldSucceed {
             switch (T.self) {
             case is UserData.Type:
-                return .success(UserData(userId: "mockUserId", username: "mockUsername", joinDate: "now", avatarPreset: 1, friends: ["bob123": true, "dude123": true], blocked: [:]) as! T)
+                return .success(userData as! T)
             case is LogData.Type:
                 let ownerData = Owner(userId: "mockUserId", priority: 0)
                 return .success(LogData(logId: "log123", name: "My Log", creationDate: "old", lastModifiedDate: "now", isVisible: true, owner: ownerData, movieIds: [], watchedIds: [],
@@ -59,8 +64,7 @@ class MockFirebaseService: FirebaseProtocol {
                 return .success([LogRequestData(requestId: "req123", senderId: "sender123", targetId: "target456", logId: "log123", requestDate: "now", isComplete: false) as! T,
                                  LogRequestData(requestId: "req456", senderId: "sender456", targetId: "target456", logId: "log456", requestDate: "old", isComplete: true) as! T])
             case is FriendRequestData.Type:
-                return .success([FriendRequestData(requestId: "req123", senderId: "sender123", targetId: "target456", requestDate: "now", isComplete: false) as! T,
-                                 FriendRequestData(requestId: "req456", senderId: "bob123", targetId: "target456", requestDate: "old", isComplete: true) as! T])
+                return .success(friendRequests.map{ $0 as! T })
             default:
                 let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid type"])
                 return .failure(error)
@@ -83,7 +87,10 @@ class MockFirebaseService: FirebaseProtocol {
     // Complete
     func exists(query: Query?) async -> Result<Bool, Error> {
         if shouldSucceed {
-            return .success(true)
+            if exists {
+                return .success(true)
+            }
+            return .success(false)
         } else {
             let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Mock error"])
             return .failure(error)
@@ -154,7 +161,7 @@ class MockFirebaseService: FirebaseProtocol {
     }
     
     func getUserId() -> String? {
-        if shouldSucceed {
+        if validUserId {
             return "mockUserId"
         } else {
             return nil

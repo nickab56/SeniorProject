@@ -121,7 +121,6 @@ class FriendsProfileViewModel: ObservableObject {
     func blockUser() {
         DispatchQueue.main.async { [self] in
             Task {
-                print("blockUser function called")
                 let username = userData?.username ?? "null"
                 do {
                     guard let userId = fb.getUserId() else {

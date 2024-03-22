@@ -79,9 +79,29 @@ struct LandingView: View {
                     .padding(.top, 100)
 
                 if vm.logs.isEmpty {
-                    Text("No logs available.")
-                        .foregroundColor(.gray)
-                        .padding()
+                    Button(action: {
+                        //TODO: if we want to have it have the add log action sheet pop up on here
+                    }) {
+                        Rectangle()
+                            .cornerRadius(10)
+                            .frame(width: 361, height: 202.882)
+                            .padding(.horizontal, 16)
+                            .padding(.top, 8)
+                            .foregroundColor(Color(hex: "#232323"))
+                            .overlay(
+                                VStack(){
+                                    Image(systemName: "square.stack.3d.up.slash")
+                                        .resizable()
+                                        .frame(width: 50, height: 50)
+                                        .foregroundColor(Color(hex: "#9F9F9F"))
+                                    Text("Get Started and Create a log")
+                                        .padding(.top, 10)
+                                        .bold()
+                                        .foregroundColor(.white)
+                                        .font(.system(size: 25))
+                                }
+                            )
+                    }
                 } else if vm.hasWatchNextMovie, let firstLog = vm.priorityLog {
                     WhatsNextView(log: firstLog, vm: vm)
                         .padding(.top, -20)
@@ -115,14 +135,7 @@ struct LandingView: View {
                                     .font(.system(size: 25))
                             }
                         )
-                    Rectangle()
-                        .frame(height: 57)
-                        .opacity(0)
-//                        .overlay(
-//                            Image("caughtup") // Use the local asset as a fallback
-//                                .resizable()
-//                                .cornerRadius(10)
-//                            )
+                    
                 }
 
                 MyLogsView(vm: vm)
