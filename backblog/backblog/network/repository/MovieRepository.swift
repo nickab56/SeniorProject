@@ -10,9 +10,9 @@ import Foundation
 
 class MovieRepository {
     let fb: FirebaseProtocol
-    let movieService: MovieService
+    let movieService: MovieProtocol
     
-    init(fb: FirebaseProtocol, movieService: MovieService) {
+    init(fb: FirebaseProtocol, movieService: MovieProtocol) {
         self.fb = fb
         self.movieService = movieService
     }

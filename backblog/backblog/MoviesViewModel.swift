@@ -31,7 +31,7 @@ class MoviesViewModel: ObservableObject {
         }
     
     private var fb: FirebaseProtocol
-    private var movieService: MovieService
+    private var movieService: MovieProtocol
     
     private var moviesRepo: MovieRepository
     
@@ -43,8 +43,7 @@ class MoviesViewModel: ObservableObject {
          - fb: The FirebaseProtocol for handling Firebase operations
          - movieService: The MovieService for handling interactions with TMDB.
      */
-    init(movieId: String, isComingFromLog: Bool, log: LogType? = nil, fb: FirebaseProtocol, movieService: MovieService) {
-
+    init(movieId: String, isComingFromLog: Bool, log: LogType? = nil, fb: FirebaseProtocol, movieService: MovieProtocol) {
         self.movieId = movieId
         self.isComingFromLog = isComingFromLog
         self.log = log
