@@ -19,6 +19,8 @@ struct SearchView: View {
     @State private var selectedMovieForLog: MovieSearchData.MovieSearchResult?
     
     @State private var tappedMovieId: Int?
+    
+    @State private var selectedGenre: String?
 
     var body: some View {
         ZStack {
@@ -42,47 +44,17 @@ struct SearchView: View {
                             HStack{
                                 Spacer()
                                 
-                                Button(action: {
-                                }) {
-                                    ZStack{
-                                        Rectangle()
-                                            .fill(Color.gray)
-                                        Image("actionSearch")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: 170, height: 100)
-                                            .overlay(Color.black.opacity(0.2))
-                                        
-                                        Text("Action")
-                                            .foregroundColor(.white)
-                                            .font(.title2)
-                                            .bold()
-                                    }
+                                NavigationLink(destination: GenreView(genre: "Action")) {
+                                    genreButtonContent(imageName: "actionSearch", genreName: "Action")
                                 }
-                                .cornerRadius(8)
                                 .frame(width: 170, height: 100)
+                                .cornerRadius(8)
                                 
-                                
-                                Button(action: {
-                                }) {
-                                    ZStack{
-                                        Rectangle()
-                                            .fill(Color.gray)
-                                        
-                                        Image("horrorSearch")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: 170, height: 100)
-                                            .overlay(Color.black.opacity(0.2))
-                                        
-                                        Text("Horror")
-                                            .foregroundColor(.white)
-                                            .font(.title2)
-                                            .bold()
-                                    }
+                                NavigationLink(destination: GenreView(genre: "Horror")) {
+                                    genreButtonContent(imageName: "horrorSearch", genreName: "Horror")
                                 }
-                                .cornerRadius(8)
                                 .frame(width: 170, height: 100)
+                                .cornerRadius(8)
                                 
                                 Spacer()
                             }
@@ -90,48 +62,17 @@ struct SearchView: View {
                             HStack{
                                 Spacer()
                                 
-                                Button(action: {
-                                }) {
-                                    ZStack{
-                                        Rectangle()
-                                            .fill(Color.gray)
-                                        //TODO: replace with static image
-                                        Image("SciFiSearch")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: 170, height: 100)
-                                            .overlay(Color.black.opacity(0.2))
-                                        
-                                        Text("Sci-Fi")
-                                            .foregroundColor(.white)
-                                            .font(.title2)
-                                            .bold()
-                                    }
+                                NavigationLink(destination: GenreView(genre: "Sci-Fi")) {
+                                    genreButtonContent(imageName: "SciFiSearch", genreName: "Sci-Fi")
                                 }
-                                .cornerRadius(8)
                                 .frame(width: 170, height: 100)
+                                .cornerRadius(8)
                                 
-                                
-                                Button(action: {
-                                }) {
-                                    ZStack{
-                                        Rectangle()
-                                            .fill(Color.gray)
-                                        
-                                        Image("fantasySearch")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(width: 170, height: 100)
-                                            .overlay(Color.black.opacity(0.2))
-                                        
-                                        Text("Fantasy")
-                                            .foregroundColor(.white)
-                                            .font(.title2)
-                                            .bold()
-                                    }
+                                NavigationLink(destination: GenreView(genre: "Fantasy")) {
+                                    genreButtonContent(imageName: "fantasySearch", genreName: "Fantasy")
                                 }
-                                .cornerRadius(8)
                                 .frame(width: 170, height: 100)
+                                .cornerRadius(8)
                                 
                                 Spacer()
                                 
@@ -322,5 +263,21 @@ struct SearchView: View {
     }
 
     
+    private func genreButtonContent(imageName: String, genreName: String) -> some View {
+        ZStack {
+            Rectangle().fill(Color.gray)
+            Image(imageName)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 170, height: 100)
+                .overlay(Color.black.opacity(0.2))
+            Text(genreName)
+                .foregroundColor(.white)
+                .font(.title2)
+                .bold()
+        }
+        .cornerRadius(8)
+        .frame(width: 170, height: 100)
+    }
 
 }
