@@ -11,6 +11,7 @@ import FirebaseFirestoreSwift
 
 class MockMovieService: MovieProtocol {
     var shouldSucceed = true // Flag to control success/failure of methods
+    var emptyHalfSheet = false
     
     let baseURL = "https://api.themoviedb.org/3/"
    
@@ -35,9 +36,10 @@ class MockMovieService: MovieProtocol {
    
      func getMovieByID(movieId: String) async -> Result<MovieData, Error> {
          if (shouldSucceed) {
+             let backdropPath = if (emptyHalfSheet) { "" } else { "image.png" }
              let testResult = MovieData(
                 adult: false,
-                backdropPath: nil,
+                backdropPath: backdropPath,
                 belongsToCollection: nil,
                 budget: nil,
                 genres: nil,
@@ -73,7 +75,11 @@ class MockMovieService: MovieProtocol {
     
     func getMovieHalfSheet(movieId: String) async -> Result<String, Error> {
         if (shouldSucceed) {
-            let testResult = "backdrop.png"
+            let testResult = if !emptyHalfSheet {
+                "backdrop.png"
+            } else {
+                ""
+            }
             return .success(testResult)
         }
         return .failure(MovieError.networkError)
@@ -81,7 +87,11 @@ class MockMovieService: MovieProtocol {
     
     func getMoviePoster(movieId: String) async -> Result<String, Error> {
         if (shouldSucceed) {
-            let testResult = "poster.png"
+            let testResult = if !emptyHalfSheet {
+                "poster.png"
+            } else {
+                ""
+            }
             return .success(testResult)
         }
         return .failure(MovieError.networkError)
