@@ -319,7 +319,7 @@ class SocialViewModel: ObservableObject {
 
                     // Check if password field is empty
                     if (!password.isEmpty) {
-                        if (!username.isEmpty || !newPassword.isEmpty || avatarSelection != userData?.avatarPreset) {
+                        if (!username.isEmpty || !newPassword.isEmpty || avatarSelection != (userData?.avatarPreset ?? 1)) {
                             var updates: [String: Any] = [:]
                             
                             // Add updated fields

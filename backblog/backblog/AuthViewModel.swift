@@ -20,6 +20,7 @@ class AuthViewModel: ObservableObject {
     init(fb: FirebaseProtocol) {
         self.fb = fb
         self.userRepo = UserRepository(fb: fb)
+        getAuthChange()
     }
     
     /**
@@ -91,6 +92,14 @@ class AuthViewModel: ObservableObject {
                     loginMessage = msg
                     messageColor = Color.red
                 }
+            }
+        }
+    }
+    
+    func getAuthChange() {
+        fb.getAuth()?.addStateDidChangeListener { auth, user in
+            if (auth.currentUser != nil) {
+                self.isLoggedInToSocial = true
             }
         }
     }
