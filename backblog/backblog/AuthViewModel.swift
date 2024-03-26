@@ -97,7 +97,7 @@ class AuthViewModel: ObservableObject {
     }
     
     func getAuthChange() {
-        fb.getAuth()!.addStateDidChangeListener { auth, user in
+        fb.getAuth()?.addStateDidChangeListener { auth, user in
             if (auth.currentUser != nil) {
                 self.isLoggedInToSocial = true
             }
