@@ -69,7 +69,7 @@ class SearchViewModel: ObservableObject {
                 switch result {
                 case .success(let movieSearchData):
                     let sortedResults = movieSearchData.results?.sorted(by: {
-                        $0.popularity ?? 0 > $1.popularity ?? 0
+                        $0.voteAverage ?? 0 > $1.voteAverage ?? 0
                     }) ?? []
                     self.movies = sortedResults
                 case .failure(let error):
