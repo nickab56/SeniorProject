@@ -13,4 +13,6 @@ protocol MovieProtocol {
     func getMovieHalfSheet(movieId: String) async -> Result<String, Error>
     
     func getMoviePoster(movieId: String) async -> Result<String, Error>
+    
+    func searchMoviesByGenre(page: Int, genreId: String) async -> Result<MovieSearchData, Error>
 }
