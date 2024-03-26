@@ -171,4 +171,8 @@ class MockFirebaseService: FirebaseProtocol {
     func getCollectionRef(refName: String) -> CollectionReference? {
         return nil
     }
+    
+    func getAuth() -> Auth? {
+        return nil
+    }
 }

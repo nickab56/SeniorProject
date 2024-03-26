@@ -26,4 +26,5 @@ protocol FirebaseProtocol {
     func logout() -> Result<Bool, Error>
     func getUserId() -> String?
     func getCollectionRef(refName: String) -> CollectionReference?
+    func getAuth() -> Auth?
 }
