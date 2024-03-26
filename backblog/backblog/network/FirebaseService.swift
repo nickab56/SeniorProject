@@ -201,4 +201,8 @@ class FirebaseService: FirebaseProtocol {
     func getUserId() -> String? {
         return auth.currentUser?.uid
     }
+    
+    func getAuth() -> Auth? {
+        return auth
+    }
 }
