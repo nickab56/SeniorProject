@@ -121,7 +121,7 @@ struct MovieService: MovieProtocol {
     }
     
     func searchMoviesByGenre(page: Int, genreId: String) async -> Result<MovieSearchData, Error> {
-        let endpointExt = "discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=\(genreId)"
+        let endpointExt = "discover/movie?include_adult=false&include_video=false&language=en-US&page=\(page)&sort_by=popularity.desc&with_genres=\(genreId)"
         let url = URL(string: baseURL + endpointExt)!
         
         var request = URLRequest(url: url)

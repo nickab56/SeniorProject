@@ -45,19 +45,26 @@ struct SearchView: View {
                                 Spacer()
                                 
                                 /*
-                                 Reference:
-                                 genreList = [
-                                         ("Action" to 28),
-                                         ("Adventure" to 12),
-                                         ("Animation" to 16),
-                                         ("Comedy" to 35),
-                                         ("Crime" to 80),
-                                         ("Drama" to 18),
-                                         ("Family" to 10751),
-                                         ("Fantasy" to 14)
-                                         ]
-                                     )
-                                 
+                                 MOVIE
+                                 Action          28
+                                 Adventure       12
+                                 Animation       16
+                                 Comedy          35
+                                 Crime           80
+                                 Documentary     99
+                                 Drama           18
+                                 Family          10751
+                                 Fantasy         14
+                                 History         36
+                                 Horror          27
+                                 Music           10402
+                                 Mystery         9648
+                                 Romance         10749
+                                 Science Fiction 878
+                                 TV Movie        10770
+                                 Thriller        53
+                                 War             10752
+                                 Western         37
                                  */
                                 
                                 NavigationLink(destination: GenreView(genre: "Action")) {
@@ -66,8 +73,8 @@ struct SearchView: View {
                                 .frame(width: 170, height: 100)
                                 .cornerRadius(8)
                                 
-                                NavigationLink(destination: GenreView(genre: "Adventure")) {
-                                    genreButtonContent(imageName: "horrorSearch", genreId: 12, genreName: "Horror")
+                                NavigationLink(destination: GenreView(genre: "Horror")) {
+                                    genreButtonContent(imageName: "horrorSearch", genreId: 27, genreName: "Horror")
                                 }
                                 .frame(width: 170, height: 100)
                                 .cornerRadius(8)
@@ -78,8 +85,8 @@ struct SearchView: View {
                             HStack{
                                 Spacer()
                                 
-                                NavigationLink(destination: GenreView(genre: "Animation")) {
-                                    genreButtonContent(imageName: "SciFiSearch", genreId: 16, genreName: "Sci-Fi")
+                                NavigationLink(destination: GenreView(genre: "Sci-Fi")) {
+                                    genreButtonContent(imageName: "SciFiSearch", genreId: 878, genreName: "Sci-Fi")
                                 }
                                 .frame(width: 170, height: 100)
                                 .cornerRadius(8)
