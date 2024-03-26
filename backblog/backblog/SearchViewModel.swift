@@ -55,6 +55,29 @@ class SearchViewModel: ObservableObject {
             }
         }
     }
+    
+    /**
+     Searches for movies based on a genreId and updates the movies state.
+     
+     - Parameters:
+         - query: The search query.
+     */
+    func searchMoviesByGenre(genreId: String) {
+        Task {
+            let result = await movieRepo.getMoviesByGenre(genreId: genreId)
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let movieSearchData):
+                    let sortedResults = movieSearchData.results?.sorted(by: {
+                        $0.popularity ?? 0 > $1.popularity ?? 0
+                    }) ?? []
+                    self.movies = sortedResults
+                case .failure(let error):
+                    self.errorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
 
 
     /**

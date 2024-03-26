@@ -96,5 +96,18 @@ class MockMovieService: MovieProtocol {
         }
         return .failure(MovieError.networkError)
     }
+    
+    func searchMoviesByGenre(page: Int, genreId: String) async -> Result<MovieSearchData, Error> {
+        if (shouldSucceed) {
+            let testResult = MovieSearchData(
+                page: 1,
+                results: [],
+                totalPages: 1,
+                totalResults: 10
+            )
+            return .success(testResult)
+        }
+        return .failure(MovieError.networkError)
+    }
 }
 

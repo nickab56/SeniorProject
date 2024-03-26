@@ -1,5 +1,5 @@
 //
-//  SearchAddToLogView.swift
+//  CategoryResultsView.swift
 //  backblog
 //
 //  Created by Nick Abegg on 1/--/24.
@@ -10,17 +10,15 @@ import SwiftUI
 /**
  A view for searching and adding movies to a specified log.
  */
-struct SearchView: View {
-    @StateObject private var vm = SearchViewModel(fb: FirebaseService(), movieService: MovieService())
-    @State private var searchText = ""
-    @State private var isSearching = false
+struct CategoryResultsView: View {
+    @ObservedObject var vm: SearchViewModel
+    @State var selectedGenreId: String
+    @State var selectedGenreName: String
 
     @State private var showingLogSelection = false
     @State private var selectedMovieForLog: MovieSearchData.MovieSearchResult?
     
     @State private var tappedMovieId: Int?
-    
-    @State private var selectedGenre: String?
 
     var body: some View {
         ZStack {
@@ -29,73 +27,7 @@ struct SearchView: View {
 
             ScrollView {
                 VStack(alignment: .leading) {
-                    searchField
-                    if !searchText.isEmpty{
-                        movieList
-                    }
-                    else{
-                        Text("Browse Categories")
-                            .padding()
-                            .bold()
-                            .foregroundColor(.white)
-                            .font(.title)
-                        
-                        VStack (spacing: 15) {
-                            HStack{
-                                Spacer()
-                                
-                                /*
-                                 Reference:
-                                 genreList = [
-                                         ("Action" to 28),
-                                         ("Adventure" to 12),
-                                         ("Animation" to 16),
-                                         ("Comedy" to 35),
-                                         ("Crime" to 80),
-                                         ("Drama" to 18),
-                                         ("Family" to 10751),
-                                         ("Fantasy" to 14)
-                                         ]
-                                     )
-                                 
-                                 */
-                                
-                                NavigationLink(destination: GenreView(genre: "Action")) {
-                                    genreButtonContent(imageName: "actionSearch", genreId: 28, genreName: "Action")
-                                }
-                                .frame(width: 170, height: 100)
-                                .cornerRadius(8)
-                                
-                                NavigationLink(destination: GenreView(genre: "Adventure")) {
-                                    genreButtonContent(imageName: "horrorSearch", genreId: 12, genreName: "Horror")
-                                }
-                                .frame(width: 170, height: 100)
-                                .cornerRadius(8)
-                                
-                                Spacer()
-                            }
-                            
-                            HStack{
-                                Spacer()
-                                
-                                NavigationLink(destination: GenreView(genre: "Animation")) {
-                                    genreButtonContent(imageName: "SciFiSearch", genreId: 16, genreName: "Sci-Fi")
-                                }
-                                .frame(width: 170, height: 100)
-                                .cornerRadius(8)
-                                
-                                NavigationLink(destination: GenreView(genre: "Fantasy")) {
-                                    genreButtonContent(imageName: "fantasySearch", genreId: 14, genreName: "Fantasy")
-                                }
-                                .frame(width: 170, height: 100)
-                                .cornerRadius(8)
-                                
-                                Spacer()
-                                
-                            }
-                        }
-                        .padding()
-                    }
+                    movieList
                 }
             }
         }
@@ -105,31 +37,10 @@ struct SearchView: View {
                 LogSelectionView(selectedMovieId: selectedMovie.id ?? 0, showingSheet: $showingLogSelection)
             }
         })
-        .navigationTitle(searchText.isEmpty ? "Search" : "Results")
+        .navigationTitle(selectedGenreName)
         .navigationBarTitleDisplayMode(.large)
+        .onAppear(perform: { vm.searchMoviesByGenre(genreId: selectedGenreId) })
     }
-
-    /**
-     A search field that updates the search query in real-time.
-     */
-    private var searchField: some View {
-        HStack {
-            Image(systemName: "magnifyingglass").foregroundColor(.gray)
-            TextField("Search for a movie", text: $searchText)
-                .onChange(of: searchText) { newValue, oldValue in
-                    isSearching = !newValue.isEmpty
-                    vm.searchMovies(query: newValue)
-                }
-                .font(.system(size: 18, weight: .bold))
-                .foregroundColor(.primary)
-                .accessibility(identifier: "movieSearchField")
-        }
-        .padding(12)
-        .background(Color(.systemBackground))
-        .cornerRadius(10)
-        .padding(.horizontal)
-    }
-
     
     /**
      A list displaying search results, allowing movies to be added to the log.
@@ -276,27 +187,6 @@ struct SearchView: View {
                     .foregroundColor(Color.white.opacity(0.7))
             }
         }
-    }
-
-    
-    private func genreButtonContent(imageName: String, genreId: Int, genreName: String) -> some View {
-        NavigationLink(destination: CategoryResultsView(vm: vm, selectedGenreId: String(genreId), selectedGenreName: genreName)) {
-            ZStack {
-                Rectangle().fill(Color.gray)
-                Image(imageName)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 170, height: 100)
-                    .overlay(Color.black.opacity(0.2))
-                Text(genreName)
-                    .foregroundColor(.white)
-                    .font(.title2)
-                    .bold()
-            }
-            .cornerRadius(8)
-            .frame(width: 170, height: 100)
-        }
-        //.buttonStyle(PlainButtonStyle())
     }
 
 }

@@ -119,4 +119,25 @@ struct MovieService: MovieProtocol {
             return .failure(error)
         }
     }
+    
+    func searchMoviesByGenre(page: Int, genreId: String) async -> Result<MovieSearchData, Error> {
+        let endpointExt = "discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=\(genreId)"
+        let url = URL(string: baseURL + endpointExt)!
+        
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(MovieAccess.shared.MOVIE_SECRET)", forHTTPHeaderField: "Authorization")
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
+            if let searchResults = try? JSONDecoder().decode(MovieSearchData.self, from: data) {
+                return .success(searchResults)
+            } else {
+                return .failure(MovieError.decodingError)
+            }
+        } catch {
+            return .failure(error)
+        }
+    }
+    
 }
