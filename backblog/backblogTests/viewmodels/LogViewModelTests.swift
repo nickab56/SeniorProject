@@ -396,6 +396,133 @@ class LogViewModelTests: XCTestCase {
         resetAllLogs()
     }
     
+    func testMoveDraftMovies() {
+        let movies = [
+            (MovieData(id:11), "image"),
+            (MovieData(id: 1), "image"),
+            (MovieData(id: 3), "image")
+        ]
+        let indexSet = IndexSet(integer: 0)
+        let result = logVMSucceed.moveDraftMovies(movies: movies, from: indexSet, to: 2)
+        XCTAssert(result.count > 2 && result[1].0.id == 11)
+    }
+    
+    func testDeleteDraftMovie() {
+        let movies = [
+            (MovieData(id:11), "image"),
+            (MovieData(id: 1), "image"),
+            (MovieData(id: 3), "image")
+        ]
+        let indexSet = IndexSet(integer: 1)
+        let result = logVMSucceed.deleteDraftMovie(movies: movies, at: indexSet)
+        XCTAssert(result.count == 2)
+    }
+    
+    func testRemoveMovieSuccess() {
+        let removedMovieId = 3
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: [], watchedIds: [], collaborators: [], order: [:])
+        let movies = [(MovieData(), "test1"), (MovieData(id: 11), "test"), (MovieData(id: removedMovieId), "test2")]
+        logVMSucceed.log = LogType.log(log)
+        logVMSucceed.movies = movies
+        logVMSucceed.removeMovie(movieId: removedMovieId)
+    }
+    
+    func testRemoveMovieNotFoundInMovies() {
+        let removedMovieId = 3
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: [], watchedIds: [], collaborators: [], order: [:])
+        let movies = [(MovieData(), "test1"), (MovieData(id: 11), "test")]
+        logVMSucceed.log = LogType.log(log)
+        logVMSucceed.movies = movies
+        logVMSucceed.removeMovie(movieId: removedMovieId)
+    }
+    
+    func testRemoveMovieNilUserId() {
+        let removedMovieId = 3
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: [], watchedIds: [], collaborators: [], order: [:])
+        let movies = [(MovieData(), "test1"), (MovieData(id: 11), "test"), (MovieData(id: removedMovieId), "test2")]
+        mockFBSucceed.validUserId = false
+        logVMSucceed.movies = movies
+        logVMSucceed.log = LogType.log(log)
+        logVMSucceed.removeMovie(movieId: removedMovieId)
+    }
+    
+    func testRemoveMovieNilLogId() {
+        let removedMovieId = 3
+        let log = LogData(logId: nil, name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: [], watchedIds: [], collaborators: [], order: [:])
+        let movies = [(MovieData(), "test1"), (MovieData(id: 11), "test"), (MovieData(id: removedMovieId), "test2")]
+        logVMSucceed.movies = movies
+        logVMSucceed.log = LogType.log(log)
+        logVMSucceed.removeMovie(movieId: removedMovieId)
+    }
+    
+    func testRemoveMovieError() {
+        let removedMovieId = 3
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: [], watchedIds: [], collaborators: [], order: [:])
+        let movies = [(MovieData(), "test1"), (MovieData(id: 11), "test"), (MovieData(id: removedMovieId), "test2")]
+        logVMError.log = LogType.log(log)
+        logVMError.movies = movies
+        logVMError.removeMovie(movieId: removedMovieId)
+    }
+    
+    func testRemoveMovieLocalSuccess() {
+        let context = PersistenceController.shared.container.viewContext
+        let removedMovieId = 3
+        
+        // Test log data
+        let log = LocalLogData(context: context)
+        log.log_id = 123
+        log.name = "My Log"
+        let movieData = LocalMovieData(context: context)
+        movieData.movie_id = "3"
+        log.addToMovie_ids(movieData)
+        
+        let movies = [(MovieData(), "test1"), (MovieData(id: 11), "test"), (MovieData(id: removedMovieId), "test2")]
+        
+        logVMSucceed.log = LogType.localLog(log)
+        logVMSucceed.movies = movies
+        logVMSucceed.removeMovie(movieId: removedMovieId)
+        
+        resetAllLogs()
+    }
+    
+    func testRemoveMovieLocalNilMovieIds() {
+        let context = PersistenceController.shared.container.viewContext
+        let removedMovieId = 3
+        
+        // Test log data
+        let log = LocalLogData(context: context)
+        log.log_id = 123
+        log.name = "My Log"
+        
+        let movies = [(MovieData(), "test1"), (MovieData(id: 11), "test"), (MovieData(id: removedMovieId), "test2")]
+        
+        logVMSucceed.log = LogType.localLog(log)
+        logVMSucceed.movies = movies
+        logVMSucceed.removeMovie(movieId: removedMovieId)
+        
+        resetAllLogs()
+    }
+    
+    func testRemoveMovieLocalMovieNotFoundInList() {
+        let context = PersistenceController.shared.container.viewContext
+        let removedMovieId = 3
+        
+        // Test log data
+        let log = LocalLogData(context: context)
+        log.log_id = 123
+        log.name = "My Log"
+        let movieData = LocalMovieData(context: context)
+        movieData.movie_id = "11"
+        log.addToMovie_ids(movieData)
+        
+        let movies = [(MovieData(), "test1"), (MovieData(id: 11), "test")]
+        
+        logVMSucceed.log = LogType.localLog(log)
+        logVMSucceed.movies = movies
+        logVMSucceed.removeMovie(movieId: removedMovieId)
+        
+        resetAllLogs()
+    }
     
     private func resetAllLogs() {
         let context = PersistenceController.shared.container.viewContext
