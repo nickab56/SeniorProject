@@ -44,30 +44,15 @@ struct SearchView: View {
                             HStack{
                                 Spacer()
                                 
-                                /*
-                                 Reference:
-                                 genreList = [
-                                         ("Action" to 28),
-                                         ("Adventure" to 12),
-                                         ("Animation" to 16),
-                                         ("Comedy" to 35),
-                                         ("Crime" to 80),
-                                         ("Drama" to 18),
-                                         ("Family" to 10751),
-                                         ("Fantasy" to 14)
-                                         ]
-                                     )
-                                 
-                                 */
-                                
-                                NavigationLink(destination: GenreView(genre: "Action")) {
-                                    genreButtonContent(imageName: "actionSearch", genreId: 28, genreName: "Action")
+                                NavigationLink(destination: GenreView(genreId: 28, genreName: "Action")) {
+                                    genreButtonContent(imageName: "actionSearch", genreName: "Action")
                                 }
                                 .frame(width: 170, height: 100)
                                 .cornerRadius(8)
+
                                 
-                                NavigationLink(destination: GenreView(genre: "Adventure")) {
-                                    genreButtonContent(imageName: "horrorSearch", genreId: 12, genreName: "Horror")
+                                NavigationLink(destination: GenreView(genreId: 27, genreName: "Horror")) {
+                                    genreButtonContent(imageName: "horrorSearch", genreName: "Horror")
                                 }
                                 .frame(width: 170, height: 100)
                                 .cornerRadius(8)
@@ -78,14 +63,15 @@ struct SearchView: View {
                             HStack{
                                 Spacer()
                                 
-                                NavigationLink(destination: GenreView(genre: "Animation")) {
-                                    genreButtonContent(imageName: "SciFiSearch", genreId: 16, genreName: "Sci-Fi")
+
+                                NavigationLink(destination: GenreView(genreId: 878, genreName: "Sci-Fi")) {
+                                    genreButtonContent(imageName: "SciFiSearch", genreName: "Sci-Fi")
                                 }
                                 .frame(width: 170, height: 100)
                                 .cornerRadius(8)
                                 
-                                NavigationLink(destination: GenreView(genre: "Fantasy")) {
-                                    genreButtonContent(imageName: "fantasySearch", genreId: 14, genreName: "Fantasy")
+                                NavigationLink(destination: GenreView(genreId: 14, genreName: "Fantasy")) {
+                                    genreButtonContent(imageName: "fantasySearch", genreName: "Fantasy")
                                 }
                                 .frame(width: 170, height: 100)
                                 .cornerRadius(8)

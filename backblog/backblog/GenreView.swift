@@ -5,10 +5,21 @@
 //  Created by Nick Abegg on 3/23/24.
 //
 
+/*
+ TO DO:
+        - Add a new file for the view model for genre
+        - Fix the image formatting for the genre movie item list
+          so it is more like search view
+        - Implement the add movie to log button
+ */
+
 import SwiftUI
 
 struct GenreView: View {
-    let genre: String
+    let genreId: Int
+    let genreName: String
+
+    @StateObject private var viewModel = GenreViewModel()
 
     var body: some View {
         ZStack {
@@ -17,66 +28,103 @@ struct GenreView: View {
 
             ScrollView {
                 VStack(alignment: .leading) {
-                    Text("\(genre) Movies")
+                    Text("\(genreName) Movies")
                         .padding()
                         .bold()
                         .foregroundColor(.white)
                         .font(.title)
-                    
-                    // Loop through static movie data
-                    ForEach(mockMovies, id: \.id) { movie in
-                        HStack {
-                            SearchView.StaticPlaceholderView() // Using the static placeholder
-                                .frame(width: 180, height: 100)
-                                .cornerRadius(8)
-                                .padding(.leading)
 
-                            VStack(alignment: .leading) {
-                                Text(movie.title)
-                                    .foregroundColor(.white)
-                                    .bold()
-                                    .accessibilityIdentifier("StaticMovieTitle")
-                                Text(movie.releaseDate)
-                                    .foregroundColor(.gray)
-                                    .font(.footnote)
-                            }
+                    ForEach(viewModel.movies, id: \.id) { movie in
+                        NavigationLink(destination: MovieDetailsView(movieId: String(movie.id ?? 0), isComingFromLog: false, log: nil)) {
+                            HStack {
+                                movieImageView(for: movie.id)
 
-                            Spacer()
+                                VStack(alignment: .leading) {
+                                    Text(movie.title ?? "N/A")
+                                        .foregroundColor(.white)
+                                        .bold()
+                                    Text(viewModel.formatReleaseYear(from: movie.releaseDate))
+                                        .foregroundColor(.gray)
+                                        .font(.footnote)
+                                }
 
-                            // Static add button, functionality to be implemented
-                            Button(action: {
-                                // Add movie to log action
-                            }) {
-                                Image(systemName: "plus.circle.fill")
-                                    .foregroundColor(Color(hex: "#3891e1"))
-                                    .imageScale(.large)
+                                Spacer()
+
+                                addButton(for: movie)
                             }
                             .padding()
                         }
+                        .buttonStyle(PlainButtonStyle())
                         .padding(.vertical, 4)
                     }
                 }
                 .padding(.horizontal)
             }
         }
-        //.navigationTitle("\(genre) Movies")
+        .onAppear {
+            viewModel.loadMovies(forGenre: genreId)
+        }
+        .navigationTitle("\(genreName) Movies")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func movieImageView(for movieId: Int?) -> some View {
+        Group {
+            if let movieId = movieId, let url = URL(string: "https://image.tmdb.org/t/p/w500\(viewModel.movies.first(where: {$0.id == movieId})?.posterPath ?? "")") {
+                AsyncImage(url: url) { image in
+                    image.resizable()
+                } placeholder: {
+                    ProgressView()
+                }
+                .frame(width: 100, height: 150)
+                .cornerRadius(8)
+                .padding(.trailing, 10)
+            } else {
+                Image(systemName: "film")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 100, height: 150)
+                    .foregroundColor(.gray)
+                    .padding(.trailing, 10)
+            }
+        }
+    }
+
+    private func addButton(for movie: MovieSearchData.MovieSearchResult) -> some View {
+        Button(action: {
+            // Implement button
+        }) {
+            Image(systemName: "plus.circle.fill")
+                .foregroundColor(Color(hex: "#3891e1"))
+                .imageScale(.large)
+        }
+        .padding(.leading)
     }
 }
 
+class GenreViewModel: ObservableObject {
+    @Published var movies: [MovieSearchData.MovieSearchResult] = []
 
+    private let movieService = MovieService()
 
-// Simple movie data model for demonstration
-struct StaticMovie {
-    var id: Int
-    var title: String
-    var releaseDate: String
-    var imageName: String
+    func loadMovies(forGenre genreId: Int) {
+        Task {
+            let result = await movieService.searchMovieByGenre(genreId: genreId)
+            await MainActor.run {
+                switch result {
+                case .success(let searchResults):
+                    self.movies = (searchResults.results ?? []).sorted(by: { $0.voteAverage ?? 0 > $1.voteAverage ?? 0 })
+                case .failure(let error):
+                    print("Error loading genre movies: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    func formatReleaseYear(from dateString: String?) -> String {
+        guard let dateString = dateString, let year = dateString.split(separator: "-").first else {
+            return "Unknown year"
+        }
+        return String(year)
+    }
 }
-
-// Mock movie data
-let mockMovies = [
-    StaticMovie(id: 1, title: "Movie One", releaseDate: "2022", imageName: "moviePlaceholder"),
-    StaticMovie(id: 2, title: "Movie Two", releaseDate: "2021", imageName: "moviePlaceholder"),
-    StaticMovie(id: 3, title: "Movie Three", releaseDate: "2020", imageName: "moviePlaceholder")
-]
