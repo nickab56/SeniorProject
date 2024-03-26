@@ -44,13 +44,14 @@ struct SearchView: View {
                             HStack{
                                 Spacer()
                                 
-                                NavigationLink(destination: GenreView(genre: "Action")) {
+                                NavigationLink(destination: GenreView(genreId: 28, genreName: "Action")) {
                                     genreButtonContent(imageName: "actionSearch", genreName: "Action")
                                 }
                                 .frame(width: 170, height: 100)
                                 .cornerRadius(8)
+
                                 
-                                NavigationLink(destination: GenreView(genre: "Horror")) {
+                                NavigationLink(destination: GenreView(genreId: 27, genreName: "Horror")) {
                                     genreButtonContent(imageName: "horrorSearch", genreName: "Horror")
                                 }
                                 .frame(width: 170, height: 100)
@@ -62,13 +63,13 @@ struct SearchView: View {
                             HStack{
                                 Spacer()
                                 
-                                NavigationLink(destination: GenreView(genre: "Sci-Fi")) {
+                                NavigationLink(destination: GenreView(genreId: 878, genreName: "Sci-Fi")) {
                                     genreButtonContent(imageName: "SciFiSearch", genreName: "Sci-Fi")
                                 }
                                 .frame(width: 170, height: 100)
                                 .cornerRadius(8)
                                 
-                                NavigationLink(destination: GenreView(genre: "Fantasy")) {
+                                NavigationLink(destination: GenreView(genreId: 14, genreName: "Fantasy")) {
                                     genreButtonContent(imageName: "fantasySearch", genreName: "Fantasy")
                                 }
                                 .frame(width: 170, height: 100)
