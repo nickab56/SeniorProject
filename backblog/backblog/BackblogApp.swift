@@ -77,6 +77,11 @@ struct backblogApp: App {
         }
     }
     
+    /*
+     TO DO: Have resetAllLogs also include online logs so that the test starts fresh no matter what
+     Additoinally, have it sign the user out if possibl
+     */
+    
     /**
      Deletes all logs (array of LocalLogData) stored in Core Data. Fetches all logs, deletes each one, and saves changes to CoreData.
      */
