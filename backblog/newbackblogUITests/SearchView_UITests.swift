@@ -289,6 +289,37 @@ final class SearchView_UITests: XCTestCase {
         let notificationText = app.staticTexts["AlreadyInLogText"]
         XCTAssertFalse(notificationText.exists, "Notification for duplicate movie should not be displayed")
     }
+    
+    func test_CategoryView()
+    {
+        
+        let app = XCUIApplication()
+         app.tabBars.buttons["Search"].tap()
+         
+         // Define the genre identifiers and names for easier iteration
+         let genres = [
+             ("Action", "GenreButton_Action"),
+             ("Horror", "GenreButton_Horror"),
+             ("Sci-Fi", "GenreButton_SciFi"),
+             ("Fantasy", "GenreButton_Fantasy")
+         ]
+         
+         for (genreName, genreIdentifier) in genres {
+             let genreButton = app.buttons[genreIdentifier]
+             XCTAssertTrue(genreButton.exists, "\(genreName) button does not exist")
+             genreButton.tap()
+             
+             let firstMovie = app.staticTexts["SearchMovieTitle"].firstMatch
+             let exists = NSPredicate(format: "exists == 1")
+             expectation(for: exists, evaluatedWith: firstMovie, handler: nil)
+             waitForExpectations(timeout: 5, handler: nil)
+             
+             if app.navigationBars.buttons["Search"].exists {
+                 app.navigationBars.buttons["Search"].tap()
+             }
+         }
+        
+    }
 
 
 

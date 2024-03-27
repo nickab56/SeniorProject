@@ -72,12 +72,14 @@ struct SearchView: View {
                                 }
                                 .frame(width: 170, height: 100)
                                 .cornerRadius(8)
+                                .accessibility(identifier: "GenreButton_Action")
                                 
                                 NavigationLink(destination: GenreView(genre: "Horror")) {
                                     genreButtonContent(imageName: "horrorSearch", genreId: 27, genreName: "Horror")
                                 }
                                 .frame(width: 170, height: 100)
                                 .cornerRadius(8)
+                                .accessibility(identifier: "GenreButton_Horror")
                                 
                                 Spacer()
                             }
@@ -90,12 +92,14 @@ struct SearchView: View {
                                 }
                                 .frame(width: 170, height: 100)
                                 .cornerRadius(8)
+                                .accessibility(identifier: "GenreButton_SciFi")
                                 
                                 NavigationLink(destination: GenreView(genre: "Fantasy")) {
                                     genreButtonContent(imageName: "fantasySearch", genreId: 14, genreName: "Fantasy")
                                 }
                                 .frame(width: 170, height: 100)
                                 .cornerRadius(8)
+                                .accessibility(identifier: "GenreButton_Fantasy")
                                 
                                 Spacer()
                                 
