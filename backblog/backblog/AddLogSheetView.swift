@@ -18,6 +18,7 @@ struct AddLogSheetView: View {
     @Binding var isPresented: Bool
     @Environment(\.managedObjectContext) private var viewContext
     @State private var newLogName = ""
+    @State private var isPublic = false
     @State private var showingAllFriends = false
     @State private var searchText = ""
     
@@ -49,6 +50,12 @@ struct AddLogSheetView: View {
             Form {
                 TextField("Log Name", text: $newLogName)
                     .accessibility(identifier: "newLogNameTextField")
+                
+                Section{
+                    Toggle(isOn: $isPublic) {
+                        Text("Public Log")
+                    }
+                }
                 
                 if (logsViewModel.getUserId() != nil) {
                     Section(header: Text("Current Collaborators")) {
@@ -125,7 +132,7 @@ struct AddLogSheetView: View {
 
                 Button(action: {
                     if (logsViewModel.getUserId() != nil) {
-                        logsViewModel.addLog(name: newLogName, isVisible: true, collaborators: collaborators.compactMap { $0.userId })
+                        logsViewModel.addLog(name: newLogName, isVisible: isPublic, collaborators: collaborators.compactMap { $0.userId })
                     } else {
                         addNewLocalLog()
                     }
