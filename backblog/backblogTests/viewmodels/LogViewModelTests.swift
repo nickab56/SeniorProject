@@ -524,6 +524,429 @@ class LogViewModelTests: XCTestCase {
         resetAllLogs()
     }
     
+    func testIsCollaborator() {
+        _ = logVMSucceed.isCollaborator()
+        
+        // Collaborators is nil
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: [], watchedIds: [], collaborators: [], order: [:])
+        logVMSucceed.log = LogType.log(log)
+        _ = logVMSucceed.isCollaborator()
+        
+        // Nil user id
+        mockFBSucceed.validUserId = false
+        _ = logVMSucceed.isCollaborator()
+    }
+    
+    func testIsOwnerLocalLog() {
+        _ = logVMSucceed.isOwner()
+    }
+    
+    func testFetchMoviesSuccess() {
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: ["11", "12", "156"], watchedIds: ["1234", "13", "1"], collaborators: [], order: [:])
+        logVMSucceed.log = LogType.log(log)
+        logVMSucceed.fetchMovies()
+        
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                self.logVMSucceed.movies.count == 3 &&
+                self.logVMSucceed.watchedMovies.count == 3
+            }), object: nil)
+        wait(for: [expectation], timeout: 10)
+    }
+    
+    func testFetchMoviesAlreadyContainsSome() {
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: ["11", "12", "156"], watchedIds: ["1234", "13", "1"], collaborators: [], order: [:])
+        logVMSucceed.log = LogType.log(log)
+        logVMSucceed.movies = [(MovieData(id: 11), "backdrop.png")]
+        logVMSucceed.watchedMovies = [(MovieData(id: 13), "backdrop.png")]
+        logVMSucceed.fetchMovies()
+        
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                self.logVMSucceed.movies.count == 3 &&
+                self.logVMSucceed.watchedMovies.count == 3
+            }), object: nil)
+        wait(for: [expectation], timeout: 10)
+    }
+    
+    func testFetchMoviesLocalSuccess() {
+        let context = PersistenceController.shared.container.viewContext
+        
+        // Test log data
+        let log = LocalLogData(context: context)
+        log.log_id = 123
+        log.name = "My Log"
+        
+        // Fake movie data
+        let movieData = LocalMovieData(context: context)
+        movieData.movie_id = "11"
+        movieData.movie_index = 0
+        
+        let movieData2 = LocalMovieData(context: context)
+        movieData2.movie_id = "12"
+        movieData2.movie_index = 1
+        
+        let movieData3 = LocalMovieData(context: context)
+        movieData3.movie_id = "156"
+        movieData3.movie_index = 2
+        
+        let watchedMovieData = LocalMovieData(context: context)
+        movieData.movie_id = "1234"
+        movieData.movie_index = 0
+        
+        let watchedMovieData2 = LocalMovieData(context: context)
+        movieData2.movie_id = "13"
+        movieData2.movie_index = 1
+        
+        let watchedMovieData3 = LocalMovieData(context: context)
+        movieData3.movie_id = "1"
+        movieData3.movie_index = 2
+        
+        log.addToMovie_ids(movieData)
+        log.addToMovie_ids(movieData2)
+        log.addToMovie_ids(movieData3)
+        log.addToWatched_ids(watchedMovieData)
+        log.addToWatched_ids(watchedMovieData2)
+        log.addToWatched_ids(watchedMovieData3)
+        
+        logVMSucceed.log = LogType.localLog(log)
+        logVMSucceed.fetchMovies()
+        
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                self.logVMSucceed.movies.count == 3 &&
+                self.logVMSucceed.watchedMovies.count == 3
+            }), object: nil)
+        wait(for: [expectation], timeout: 10)
+        
+        resetAllLogs()
+    }
+    
+    func testMarkMovieAsWatchedSuccess() {
+        let movieId = 11
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: ["11", "12", "156"], watchedIds: ["1234", "13", "1"], collaborators: [], order: [:])
+        logVMSucceed.movies = [(MovieData(id: movieId), "string.png")]
+        logVMSucceed.log = LogType.log(log)
+        logVMSucceed.markMovieAsWatched(movieId: movieId)
+        
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                self.logVMSucceed.showingWatchedNotification == true
+            }), object: nil)
+        wait(for: [expectation], timeout: 10)
+    }
+    
+    func testMarkMovieAsWatchedNotFoundInMovies() {
+        let movieId = 11
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: ["11", "12", "156"], watchedIds: ["1234", "13", "1"], collaborators: [], order: [:])
+        logVMSucceed.log = LogType.log(log)
+        logVMSucceed.markMovieAsWatched(movieId: movieId)
+        
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                self.logVMSucceed.showingWatchedNotification == false
+            }), object: nil)
+        wait(for: [expectation], timeout: 10)
+    }
+    
+    func testMarkMovieAsWatchedNilUserId() {
+        let movieId = 11
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: ["11", "12", "156"], watchedIds: ["1234", "13", "1"], collaborators: [], order: [:])
+        mockFBSucceed.validUserId = false
+        logVMSucceed.movies = [(MovieData(id: movieId), "string.png")]
+        logVMSucceed.log = LogType.log(log)
+        logVMSucceed.markMovieAsWatched(movieId: movieId)
+        
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                self.logVMSucceed.showingWatchedNotification == false
+            }), object: nil)
+        wait(for: [expectation], timeout: 10)
+    }
+    
+    func testMarkMovieAsWatchedError() {
+        let movieId = 11
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: ["11", "12", "156"], watchedIds: ["1234", "13", "1"], collaborators: [], order: [:])
+        logVMError.movies = [(MovieData(id: movieId), "string.png")]
+        logVMError.log = LogType.log(log)
+        logVMError.markMovieAsWatched(movieId: movieId)
+        
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                self.logVMError.showingWatchedNotification == false
+            }), object: nil)
+        wait(for: [expectation], timeout: 10)
+    }
+    
+    func testMarkMovieAsWatchedLocalSuccess() {
+        let context = PersistenceController.shared.container.viewContext
+        let movieId = 11
+        
+        // Test log data
+        let log = LocalLogData(context: context)
+        log.log_id = 123
+        log.name = "My Log"
+        
+        // Fake movie data
+        let movieData = LocalMovieData(context: context)
+        movieData.movie_id = "11"
+        movieData.movie_index = 0
+        
+        log.addToMovie_ids(movieData)
+        
+        logVMSucceed.log = LogType.localLog(log)
+        logVMSucceed.movies = [(MovieData(id: movieId), "string.png")]
+        logVMSucceed.markMovieAsWatched(movieId: movieId)
+        
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                self.logVMSucceed.showingWatchedNotification == true
+            }), object: nil)
+        wait(for: [expectation], timeout: 10)
+        
+        resetAllLogs()
+    }
+    
+    func testMarkMovieAsWatchedLocalNotFoundInMovies() {
+        let movieId = 11
+        logVMSucceed.markMovieAsWatched(movieId: movieId)
+        
+        resetAllLogs()
+    }
+    
+    func testMarkMovieAsWatchedLocalNotFoundInMovieIds() {
+        let movieId = 11
+        logVMSucceed.movies = [(MovieData(id: movieId), "backdrop.png")]
+        logVMSucceed.markMovieAsWatched(movieId: movieId)
+        
+        resetAllLogs()
+    }
+    
+    func testMarkMovieAsUnWatchedSuccess() {
+        let movieId = 11
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: ["1234", "12", "156"], watchedIds: ["11", "13", "1"], collaborators: [], order: [:])
+        logVMSucceed.watchedMovies = [(MovieData(id: movieId), "string.png")]
+        logVMSucceed.log = LogType.log(log)
+        logVMSucceed.markMovieAsUnwatched(movieId: movieId)
+    }
+    
+    func testMarkMovieAsUnWatchedNotFoundInMovies() {
+        let movieId = 11
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: ["1234", "12", "156"], watchedIds: ["11", "13", "1"], collaborators: [], order: [:])
+        logVMSucceed.log = LogType.log(log)
+        logVMSucceed.markMovieAsUnwatched(movieId: movieId)
+    }
+    
+    func testMarkMovieAsUnWatchedNilUserId() {
+        let movieId = 11
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: ["1234", "12", "156"], watchedIds: ["11", "13", "1"], collaborators: [], order: [:])
+        mockFBSucceed.validUserId = false
+        logVMSucceed.watchedMovies = [(MovieData(id: movieId), "string.png")]
+        logVMSucceed.log = LogType.log(log)
+        logVMSucceed.markMovieAsUnwatched(movieId: movieId)
+    }
+    
+    func testMarkMovieAsUnWatchedError() {
+        let movieId = 11
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: ["1234", "12", "156"], watchedIds: ["11", "13", "1"], collaborators: [], order: [:])
+        logVMError.watchedMovies = [(MovieData(id: movieId), "string.png")]
+        logVMError.log = LogType.log(log)
+        logVMError.markMovieAsUnwatched(movieId: movieId)
+    }
+    
+    func testMarkMovieAsUnWatchedLocalSuccess() {
+        let context = PersistenceController.shared.container.viewContext
+        let movieId = 11
+        
+        // Test log data
+        let log = LocalLogData(context: context)
+        log.log_id = 123
+        log.name = "My Log"
+        
+        // Fake movie data
+        let movieData = LocalMovieData(context: context)
+        movieData.movie_id = "11"
+        movieData.movie_index = 0
+        
+        log.addToWatched_ids(movieData)
+        
+        logVMSucceed.log = LogType.localLog(log)
+        logVMSucceed.watchedMovies = [(MovieData(id: movieId), "string.png")]
+        logVMSucceed.markMovieAsUnwatched(movieId: movieId)
+        
+        resetAllLogs()
+    }
+    
+    func testMarkMovieAsUnWatchedLocalNotFoundInWatchedMovies() {
+        let movieId = 11
+        logVMSucceed.markMovieAsUnwatched(movieId: movieId)
+        
+        resetAllLogs()
+    }
+    
+    func testMarkMovieAsUnWatchedLocalNotFoundInWatchedIds() {
+        let movieId = 11
+        logVMSucceed.watchedMovies = [(MovieData(id: movieId), "backdrop.png")]
+        logVMSucceed.markMovieAsUnwatched(movieId: movieId)
+        
+        resetAllLogs()
+    }
+    
+    func testLocalMovieDataMapping() {
+        let context = PersistenceController.shared.container.viewContext
+        
+        // MovieSet is nil
+        var result = logVMSucceed.localMovieDataMapping(movieSet: nil)
+        XCTAssertEqual(result, [])
+        
+        // movies.count == 0
+        result = logVMSucceed.localMovieDataMapping(movieSet: Set())
+        XCTAssertEqual(result, [])
+        
+        // Movies Success
+        let movieData = LocalMovieData(context: context)
+        movieData.movie_id = "11"
+        var movieSet = Set<LocalMovieData>()
+        movieSet.insert(movieData)
+        result = logVMSucceed.localMovieDataMapping(movieSet: movieSet)
+        XCTAssertEqual(result.count, 1)
+    }
+    
+    func testDeleteLocalLogSuccess() {
+        let context = PersistenceController.shared.container.viewContext
+        
+        // Test log data
+        let log = LocalLogData(context: context)
+        log.log_id = 123
+        log.name = "My Log"
+        
+        logVMSucceed.log = LogType.localLog(log)
+        logVMSucceed.deleteLog()
+        
+        resetAllLogs()
+    }
+    
+    func testDeleteLogSuccess() {
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: ["1234", "12", "156"], watchedIds: ["11", "13", "1"], collaborators: [], order: [:])
+        logVMSucceed.log = LogType.log(log)
+        
+        logVMSucceed.deleteLog()
+    }
+    
+    func testDeleteLogNilUserId() {
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: ["1234", "12", "156"], watchedIds: ["11", "13", "1"], collaborators: [], order: [:])
+        mockFBSucceed.validUserId = false
+        logVMSucceed.log = LogType.log(log)
+        
+        logVMSucceed.deleteLog()
+    }
+    
+    func testDeleteLogNilLogId() {
+        let log = LogData(logId: nil, name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: ["1234", "12", "156"], watchedIds: ["11", "13", "1"], collaborators: [], order: [:])
+        logVMSucceed.log = LogType.log(log)
+        
+        logVMSucceed.deleteLog()
+    }
+    
+    func testDeleteLogError() {
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: ["1234", "12", "156"], watchedIds: ["11", "13", "1"], collaborators: [], order: [:])
+        logVMError.log = LogType.log(log)
+        
+        logVMError.deleteLog()
+    }
+    
+    func testFetchMoviePosterSuccess() {
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: ["1234", "12", "156"], watchedIds: ["11", "13", "1"], collaborators: [], order: [:])
+        logVMSucceed.log = LogType.log(log)
+        
+        logVMSucceed.fetchMoviePoster()
+        
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                self.logVMSucceed.posterURL != nil
+            }), object: nil)
+        wait(for: [expectation], timeout: 10)
+    }
+    
+    func testFetchMoviePosterLogDoesntContainMovies() {
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: [], watchedIds: ["11", "13", "1"], collaborators: [], order: [:])
+        logVMSucceed.log = LogType.log(log)
+        
+        logVMSucceed.fetchMoviePoster()
+        
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                self.logVMSucceed.isLoading == false
+            }), object: nil)
+        wait(for: [expectation], timeout: 10)
+    }
+    
+    func testFetchMoviePosterError() {
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: ["1234", "12", "156"], watchedIds: ["11", "13", "1"], collaborators: [], order: [:])
+        logVMError.log = LogType.log(log)
+        
+        logVMError.fetchMoviePoster()
+        
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                self.logVMError.isLoading == false
+            }), object: nil)
+        wait(for: [expectation], timeout: 10)
+    }
+    
+    func testFetchMoviePosterLocalSuccess() {
+        let context = PersistenceController.shared.container.viewContext
+        
+        // Test log data
+        let log = LocalLogData(context: context)
+        log.log_id = 123
+        log.name = "My Log"
+        
+        // Fake movie data
+        let movieData = LocalMovieData(context: context)
+        movieData.movie_id = "11"
+        movieData.movie_index = 0
+        
+        log.addToMovie_ids(movieData)
+        
+        logVMSucceed.log = LogType.localLog(log)
+        
+        logVMSucceed.fetchMoviePoster()
+        
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                self.logVMSucceed.posterURL != nil
+            }), object: nil)
+        wait(for: [expectation], timeout: 10)
+    }
+    
+    func testFetchMoviePosterLocalLogDoesntContainMovies() {
+        let context = PersistenceController.shared.container.viewContext
+        
+        // Test log data
+        let log = LocalLogData(context: context)
+        log.log_id = 123
+        log.name = "My Log"
+        
+        logVMSucceed.log = LogType.localLog(log)
+        
+        logVMSucceed.fetchMoviePoster()
+        
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                self.logVMSucceed.isLoading == false
+            }), object: nil)
+        wait(for: [expectation], timeout: 10)
+    }
+    
+    func testTruncateText() {
+        let result = logVMSucceed.truncateText("1234")
+        XCTAssertEqual(result, "1234")
+        
+        let greaterResult = logVMSucceed.truncateText("123456789012345678901")
+        XCTAssertEqual(greaterResult, "12345678901234567890...")
+    }
+    
     private func resetAllLogs() {
         let context = PersistenceController.shared.container.viewContext
 
