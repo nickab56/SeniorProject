@@ -716,10 +716,7 @@ class LogViewModel: ObservableObject {
     }
     
     private func initLogListener() {
-        guard case .log(let fbLog) = log else {
-            self.fetchMovies()
-            return
-        }
+        guard case .log(let fbLog) = log else { return }
         guard let logId = fbLog.logId else { return }
         logListener = fb.getCollectionRef(refName: "logs")?.document(logId)
             .addSnapshotListener { documentSnapshot, error in
