@@ -126,7 +126,7 @@ class MovieRepository {
     
     func getMoviesByGenre(genreId: String) async -> Result<MovieSearchData, Error> {
         do {
-            let result = try await movieService.searchMoviesByGenre(page: 5, genreId: genreId).get()
+            let result = try await movieService.searchMoviesByGenre(page: 1, genreId: genreId).get()
             
             return .success(result)
         } catch {
