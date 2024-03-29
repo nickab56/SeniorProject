@@ -12,7 +12,8 @@ import Foundation
 struct UserData: Identifiable, Codable, Equatable, Hashable {
     static func == (lhs: UserData, rhs: UserData) -> Bool {
         return lhs.userId == rhs.userId && lhs.username == rhs.username &&
-        lhs.avatarPreset == rhs.avatarPreset
+        lhs.avatarPreset == rhs.avatarPreset && lhs.friends == rhs.friends &&
+        lhs.blocked == rhs.blocked
     }
     
     var id: String {

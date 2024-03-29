@@ -248,7 +248,6 @@ struct LogDetailsView: View {
         .preferredColorScheme(.dark)
         .animation(.easeInOut, value: vm.showingWatchedNotification)
         .onAppear {
-            vm.updateLog()
             if (vm.getUserId() != nil) {
                 vm.getOwnerData()
                 vm.getFriends()
