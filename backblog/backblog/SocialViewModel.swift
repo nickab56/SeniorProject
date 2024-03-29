@@ -6,6 +6,7 @@
 //
 
 import CoreData
+import Firebase
 
 /**
  Manages social features within the app, handling user data, friend and log requests, and notifications.
@@ -40,6 +41,11 @@ class SocialViewModel: ObservableObject {
     // Settings
     @Published var isUnauthorized = false
     @Published var avatarSelection = 1
+    
+    // Listeners
+    private var friendListener: ListenerRegistration?
+    private var logReqListener: ListenerRegistration?
+    private var friendReqListener: ListenerRegistration?
    
     private let fb: FirebaseProtocol
     private let userRepo: UserRepository
@@ -56,6 +62,11 @@ class SocialViewModel: ObservableObject {
         fetchFriends()
         fetchFriendRequests()
         fetchLogRequests()
+        initFriendListeners()
+    }
+    
+    deinit {
+        removeListeners()
     }
    
     /**
@@ -199,8 +210,10 @@ class SocialViewModel: ObservableObject {
                 do {
                     if reqType.lowercased() == "log" {
                         _ = try await friendRepo.updateLogRequest(logRequestId: reqId, isAccepted: accepted).get()
+                        self.fetchLogRequests()
                     } else {
                         _ = try await friendRepo.updateFriendRequest(friendRequestId: reqId, isAccepted: accepted).get()
+                        self.fetchFriendRequests()
                     }
                     
                     // Successful
@@ -493,5 +506,67 @@ class SocialViewModel: ObservableObject {
             print("Error resetting logs: \(error), \(error.userInfo)")
         }
         return []
+    }
+    
+    private func initFriendListeners() {
+        guard let userId = fb.getUserId() else {
+            return
+        }
+        
+        // Log Requests
+        logReqListener = fb.getCollectionRef(refName: "log_requests")?
+            .whereField("target_id", isEqualTo: userId).whereField("is_complete", isEqualTo: false)
+            .addSnapshotListener { querySnapshot, error in
+                guard let snapshot = querySnapshot else {
+                    print("Error fetching snapshots: \(error!)")
+                    return
+                }
+                
+                snapshot.documentChanges.forEach { diff in
+                    // New or modified log requests
+                    if (diff.type == .added || diff.type == .modified) {
+                        self.fetchLogRequests()
+                    }
+                }
+            }
+        
+        // Friend Requests (Fetch both friends and friend requests)
+        friendReqListener = fb.getCollectionRef(refName: "friend_requests")?
+            .whereField("target_id", isEqualTo: userId).whereField("is_complete", isEqualTo: false)
+            .addSnapshotListener { querySnapshot, error in
+                guard let snapshot = querySnapshot else {
+                    print("Error fetching snapshots: \(error!)")
+                    return
+                }
+                
+                snapshot.documentChanges.forEach { diff in
+                    if (diff.type == .added) {
+                        // New friend requests
+                        self.fetchFriendRequests()
+                    }
+                    if (diff.type == .modified) {
+                        // Modified friend request (could have new friend)
+                        self.fetchFriendRequests()
+                    }
+                }
+            }
+        
+        // Friends
+        // Optimizations could be made to improve the performance of this listener
+        friendListener = fb.getCollectionRef(refName: "users")?.document(userId)
+            .addSnapshotListener { documentSnapshot, error in
+                guard documentSnapshot != nil else {
+                    print("Error fetching document: \(error!)")
+                    return
+                }
+                
+                self.fetchFriends()
+            }
+    }
+    
+    private func removeListeners() {
+        logReqListener?.remove()
+        friendReqListener?.remove()
+        friendListener?.remove()
     }
 }

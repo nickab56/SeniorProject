@@ -12,6 +12,7 @@
 import Foundation
 import SwiftUI
 import CoreData
+import Firebase
 
 /**
  Manages the data and business logic of a log, including its movies and collaborators.
@@ -26,6 +27,7 @@ class LogViewModel: ObservableObject {
     @Published var movies: [(MovieData, String)] = [] // Pair of MovieData and half-sheet URL
     @Published var watchedMovies: [(MovieData, String)] = []
     @Published var showingWatchedNotification = false
+    @Published var isActive = true
     
     // Log Item View
     @Published var posterURL: URL?
@@ -43,6 +45,9 @@ class LogViewModel: ObservableObject {
     private var friendRepo: FriendRepository
     private var userRepo: UserRepository
     
+    // Listeners
+    private var logListener: ListenerRegistration?
+    
     // Collaborators
     @Published var collaborators: [UserData] = []
     @Published var friends: [UserData] = []
@@ -51,9 +56,9 @@ class LogViewModel: ObservableObject {
      Initializes the `LogViewModel` with the specific `LogType`, `FirebaseProtocol`, and `MovieService`.
      
      - Parameters:
-         - log: A log wrapped in `LogType`.
-         - fb: The `FirebaseProtocol` for Firebase operations.
-         - movieService: The `MovieService` for handling interactions with TMDB.
+     - log: A log wrapped in `LogType`.
+     - fb: The `FirebaseProtocol` for Firebase operations.
+     - movieService: The `MovieService` for handling interactions with TMDB.
      */
     init(log: LogType, fb: FirebaseProtocol, movieService: MovieProtocol) {
         self.log = log
@@ -63,29 +68,13 @@ class LogViewModel: ObservableObject {
         self.movieRepo = MovieRepository(fb: fb, movieService: movieService)
         self.friendRepo = FriendRepository(fb: fb)
         self.userRepo = UserRepository(fb: fb)
+        initLogListener()
     }
     
-    /**
-     Updates the log, fetching movies based on the log type.
-     */
-    func updateLog() {
-        guard case .log(let fbLog) = log else {
-            fetchMovies()
-            return
-        }
-        DispatchQueue.main.async { [self] in
-            Task {
-                do {
-                    guard let logId = fbLog.logId else { return }
-                    log = try await LogType.log(logRepo.getLog(logId: logId).get())
-                    fetchMovies()
-                } catch {
-                    throw error
-                }
-            }
-        }
+    deinit {
+        removeListener()
     }
-    
+
     /**
      Fetches movies for the log based on its type, updating the `movies` and `watchedMovies` arrays.
      */
@@ -99,10 +88,10 @@ class LogViewModel: ObservableObject {
             // Fetch unwatched movies
             var unwatchedMovieEntities = localLog.movie_ids?.allObjects as? [LocalMovieData] ?? []
             unwatchedMovieEntities.sort { $0.movie_index < $1.movie_index }
-
+            
             // Dispatch group to wait for all tasks to complete
             let group = DispatchGroup()
-
+            
             for movieEntity in unwatchedMovieEntities {
                 group.enter()
                 Task {
@@ -110,11 +99,11 @@ class LogViewModel: ObservableObject {
                     group.leave()
                 }
             }
-
+            
             // Fetch watched movies
             var watchedMovieEntities = localLog.watched_ids?.allObjects as? [LocalMovieData] ?? []
             watchedMovieEntities.sort { $0.movie_index < $1.movie_index }
-
+            
             for movieEntity in watchedMovieEntities {
                 group.enter()
                 Task {
@@ -122,7 +111,7 @@ class LogViewModel: ObservableObject {
                     group.leave()
                 }
             }
-
+            
             // Notify when all tasks are completed
             group.notify(queue: .main) {
                 self.movies.sort { entityA, entityB in
@@ -140,29 +129,33 @@ class LogViewModel: ObservableObject {
         case .log(let fbLog):
             // Fetch unwatched movies
             let unwatchedMovies = fbLog.movieIds ?? []
-
+            
             // Dispatch group to wait for all tasks to complete
             let group = DispatchGroup()
-
+            
             for movieId in unwatchedMovies {
                 group.enter()
                 Task {
-                    await fetchMovieDetails(movieId: movieId, isWatched: false)
+                    if (!movies.contains(where: { String($0.0.id ?? 0) == movieId })) {
+                        await fetchMovieDetails(movieId: movieId, isWatched: false)
+                    }
                     group.leave()
                 }
             }
-
+            
             // Fetch watched movies
             let watchedMovies = fbLog.watchedIds ?? []
-
+            
             for movieId in watchedMovies {
                 group.enter()
                 Task {
-                    await fetchMovieDetails(movieId: movieId, isWatched: true)
+                    if (!self.watchedMovies.contains(where: { String($0.0.id ?? 0) == movieId })) {
+                        await fetchMovieDetails(movieId: movieId, isWatched: true)
+                    }
                     group.leave()
                 }
             }
-
+            
             // Notify when all tasks are completed
             group.notify(queue: .main) {
                 self.movies.sort { entityA, entityB in
@@ -179,18 +172,18 @@ class LogViewModel: ObservableObject {
             }
         }
     }
-
+    
     /**
      Fetches details for a specific movie, including its data and half-sheet URL.
      
      - Parameters:
-         - movieId: The id of the movie to fetch.
-         - isWatched: A boolean value indicating whether the movie is watched or unwatched.
+     - movieId: The id of the movie to fetch.
+     - isWatched: A boolean value indicating whether the movie is watched or unwatched.
      */
     func fetchMovieDetails(movieId: String, isWatched: Bool) async {
         let movieDetailsResult = await movieRepo.getMovieById(movieId: movieId)
         let halfSheetResult = await movieRepo.getMovieHalfSheet(movieId: movieId)
-
+        
         await MainActor.run {
             switch (movieDetailsResult, halfSheetResult) {
             case (.success(let movieData), .success(let halfSheetPath)):
@@ -211,7 +204,7 @@ class LogViewModel: ObservableObject {
      Marks a movie as watched, updating the `watchedMovies` array and Firebase/CoreData model appropriately.
      
      - Parameters:
-         - movieId: The id of the movie to mark as watched.
+     - movieId: The id of the movie to mark as watched.
      */
     func markMovieAsWatched(movieId: Int) {
         switch (log) {
@@ -219,7 +212,7 @@ class LogViewModel: ObservableObject {
             if let index = movies.firstIndex(where: { $0.0.id == movieId }) {
                 let movieTuple = movies.remove(at: index)
                 watchedMovies.append(movieTuple)
-
+                
                 // Update Firebase
                 DispatchQueue.main.async { [self] in
                     Task {
@@ -239,7 +232,7 @@ class LogViewModel: ObservableObject {
             if let index = movies.firstIndex(where: { $0.0.id == movieId }) {
                 let movieTuple = movies.remove(at: index)
                 watchedMovies.append(movieTuple)
-
+                
                 // Update Core Data model
                 let movieIds = localLog.movie_ids?.allObjects as? [LocalMovieData] ?? []
                 let movieEntity = movieIds.first(where: { $0.movie_id == String(movieId) })
@@ -248,7 +241,7 @@ class LogViewModel: ObservableObject {
                     
                     movieEntity?.movie_index = Int64(localLog.watched_ids?.count ?? 0)
                     localLog.addToWatched_ids(movieEntity!)
-
+                    
                     do {
                         try viewContext.save()
                         showingWatchedNotification = true
@@ -259,12 +252,12 @@ class LogViewModel: ObservableObject {
             }
         }
     }
-
+    
     /**
      Marks a movie as unwatched, updating the `watchedMovies` array and CoreData model.
      
      - Parameters:
-         - movieId: The id of the movie to mark as unwatched.
+     - movieId: The id of the movie to mark as unwatched.
      */
     func markMovieAsUnwatched(movieId: Int) {
         switch (log) {
@@ -272,7 +265,7 @@ class LogViewModel: ObservableObject {
             if let index = watchedMovies.firstIndex(where: { $0.0.id == movieId }) {
                 let movieTuple = watchedMovies.remove(at: index)
                 movies.append(movieTuple)
-
+                
                 // Update Firebase
                 DispatchQueue.main.async { [self] in
                     Task {
@@ -292,7 +285,7 @@ class LogViewModel: ObservableObject {
             if let index = watchedMovies.firstIndex(where: { $0.0.id == movieId }) {
                 let movieTuple = watchedMovies.remove(at: index)
                 movies.append(movieTuple)
-
+                
                 // Update Core Data model
                 let movieIds = localLog.watched_ids?.allObjects as? [LocalMovieData] ?? []
                 let movieEntity = movieIds.first(where: { $0.movie_id == String(movieId) })
@@ -301,7 +294,7 @@ class LogViewModel: ObservableObject {
                     
                     movieEntity?.movie_index = Int64(localLog.movie_ids?.count ?? 0)
                     localLog.addToMovie_ids(movieEntity!)
-
+                    
                     do {
                         try viewContext.save()
                     } catch {
@@ -316,14 +309,14 @@ class LogViewModel: ObservableObject {
      Returns an array of movie id strings.
      
      - Parameters:
-         - movieId: The list of `LocalMovieData` from the CoreData model.
+     - movieId: The list of `LocalMovieData` from the CoreData model.
      */
     func localMovieDataMapping(movieSet: Set<LocalMovieData>?) -> [String] {
         guard let movies: Set<LocalMovieData> = movieSet, !(movies.count == 0) else { return [] }
         
         return movies.compactMap { $0.movie_id  }
     }
-
+    
     /**
      Deletes the log, removing it from CoreData or Firebase as appropriate.
      */
@@ -373,7 +366,7 @@ class LogViewModel: ObservableObject {
             isLoading = false
             return
         }
-
+        
         Task {
             let result = await movieRepo.getMoviePoster(movieId: movieId)
             DispatchQueue.main.async { [self] in
@@ -389,7 +382,7 @@ class LogViewModel: ObservableObject {
             }
         }
     }
-
+    
     /**
      Checks if the log contains any movies.
      
@@ -403,12 +396,12 @@ class LogViewModel: ObservableObject {
             log.movieIds?.count ?? 0 > 0
         }
     }
-
+    
     /**
      Truncates the given text to a specified maximum number of characters.
      
      - Parameters:
-         - text: The text to truncate.
+     - text: The text to truncate.
      - Returns: The truncated text.
      */
     func truncateText(_ text: String) -> String {
@@ -423,7 +416,7 @@ class LogViewModel: ObservableObject {
      Removes a movie from the log, updating the `movies` array and CoreData model.
      
      - Parameters:
-         - movieId: The id of the movie to remove.
+     - movieId: The id of the movie to remove.
      */
     func removeMovie(movieId: Int) {
         if let index = movies.firstIndex(where: { $0.0.id == movieId }) {
@@ -450,7 +443,7 @@ class LogViewModel: ObservableObject {
                 let movieArr = localLog.movie_ids?.allObjects as? [LocalMovieData] ?? []
                 if let movieEntity = movieArr.first(where: { $0.movie_id == String(movieId) }) {
                     localLog.removeFromMovie_ids(movieEntity)
-
+                    
                     do {
                         try viewContext.save()
                     } catch {
@@ -465,7 +458,7 @@ class LogViewModel: ObservableObject {
      Updates the name of the log.
      
      - Parameters:
-         - newName: The new name for the log.
+     - newName: The new name for the log.
      */
     func updateLogName(newName: String) {
         switch (log) {
@@ -492,13 +485,13 @@ class LogViewModel: ObservableObject {
             }
         }
     }
-
+    
     /**
      Deletes a draft movie from the log.
      
      - Parameters:
-         - movies: The array of movies.
-         - offsets: The index set of the movie to delete.
+     - movies: The array of movies.
+     - offsets: The index set of the movie to delete.
      - Returns: The updated array of movies after deletion.
      */
     func deleteDraftMovie(movies: [(MovieData, String)], at offsets: IndexSet) -> [(MovieData, String)] {
@@ -506,14 +499,14 @@ class LogViewModel: ObservableObject {
         newMovies.remove(atOffsets: offsets)
         return newMovies
     }
-
+    
     /**
      Moves draft movies within the log.
      
      - Parameters:
-         - movies: The array of movies.
-         - source: The source index set.
-         - offsets: The destination index.
+     - movies: The array of movies.
+     - source: The source index set.
+     - offsets: The destination index.
      - Returns: The updated array of movies after moving.
      */
     func moveDraftMovies(movies: [(MovieData, String)], from source: IndexSet, to destination: Int) -> [(MovieData, String)] {
@@ -521,13 +514,13 @@ class LogViewModel: ObservableObject {
         newMovies.move(fromOffsets: source, toOffset: destination)
         return newMovies
     }
-
+    
     /**
      Saves changes to the log, including its name and movie list.
      
      - Parameters:
-         - movies: The array of movies.
-         - draftLogName: The draft name for the log.
+     - movies: The array of movies.
+     - draftLogName: The draft name for the log.
      */
     func saveChanges(draftLogName: String, movies: [(MovieData, String)]) {
         // Apply changes from draft state to the view model
@@ -594,14 +587,14 @@ class LogViewModel: ObservableObject {
             
             // Convert Set to Array to shuffle
             var unwatchedMoviesArray = Array(unwatchedMoviesSet)
-
+            
             // Shuffle the array
             unwatchedMoviesArray.shuffle()
-
+            
             for (newIndex, movie) in unwatchedMoviesArray.enumerated() {
                 movie.movie_index = Int64(newIndex)
             }
-
+            
             // Save Locally
             do {
                 try viewContext.save()
@@ -695,7 +688,7 @@ class LogViewModel: ObservableObject {
         avatars.append(contentsOf: collaborators.map { getAvatarId(avatarPreset: $0.avatarPreset ?? 1) })
         return avatars
     }
-
+    
     func getOwnerData() {
         guard case .log(let fbLog) = log else { return }
         DispatchQueue.main.async {
@@ -720,6 +713,38 @@ class LogViewModel: ObservableObject {
         case .log:
             return isOwner() || isCollaborator()
         }
+    }
+    
+    private func initLogListener() {
+        guard case .log(let fbLog) = log else { return }
+        guard let logId = fbLog.logId else { return }
+        logListener = fb.getCollectionRef(refName: "logs")?.document(logId)
+            .addSnapshotListener { documentSnapshot, error in
+                guard let document = documentSnapshot else {
+                    print("Error fetching document: \(error!)")
+                    return
+                }
+            
+                if document.exists {
+                    do {
+                        let logData = try document.data(as: LogData.self)
+                        self.log = LogType.log(logData)
+                        self.fetchMovies()
+                    } catch {
+                        print("Failed to decode document")
+                        return
+                    }
+                } else {
+                    // Document was likely deleted
+                    let logData = LogData()
+                    self.log = LogType.log(logData)
+                    print("Document was deleted")
+                }
+          }
+    }
+    
+    private func removeListener() {
+        logListener?.remove()
     }
 
 }
