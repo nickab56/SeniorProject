@@ -131,7 +131,8 @@ class FriendRepository {
                 }
                 
                 // Add collaborator
-                let newCollaborator = ["collaborators.\(logRequestData.targetId!)": true]
+                let priority = try await LogRepository(fb: fb).getLogs(userId: logRequestData.targetId!, showPrivate: true).get().count
+                let newCollaborator: [String: Any] = ["order.\(logRequestData.targetId!)": priority, "collaborators": FieldValue.arrayUnion([logRequestData.targetId!])]
                 _ = try await fb.put(updates: newCollaborator, docId: logRequestData.logId!, collection: "logs").get()
             }
             
