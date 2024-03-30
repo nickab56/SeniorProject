@@ -26,7 +26,9 @@ struct EditLogSheetView: View {
     
     var onLogDeleted: (() -> Void)?
     
+    
     @State private var draftLogName: String
+    @State private var draftPublicLog: Bool = true
     @State private var draftMovies: [(MovieData, String)]
     @State private var showDeleteConfirmation: Bool = false
 
@@ -61,6 +63,12 @@ struct EditLogSheetView: View {
             Form {
                 Section(header: Text("Log Name")) {
                     TextField("Log Name", text: $draftLogName)
+                }
+                
+                Section{
+                    Toggle(isOn: $draftPublicLog) {
+                        Text("Public Log")
+                    }
                 }
 
                 Section(header: Text("Unwatched Movies")) {
