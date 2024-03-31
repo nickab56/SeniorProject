@@ -57,6 +57,13 @@ final class SocialView_UITests: XCTestCase {
         // Switch back to Logs tab and verify "No logs found" again
         app.segmentedControls.buttons["Logs"].tap()
         XCTAssertTrue(logsTabElement.exists, "No logs text should be visible again in the Logs tab after switching back")
+        
+        app.tabBars["Tab Bar"].buttons["person.2.fill"].tap()
+        app/*@START_MENU_TOKEN@*/.buttons["Settings"]/*[[".otherElements[\"socialViewTab\"].buttons[\"Settings\"]",".buttons[\"Settings\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        
+        let scrollViewsQuery = app/*@START_MENU_TOKEN@*/.scrollViews/*[[".otherElements[\"socialViewTab\"].scrollViews",".scrollViews"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
+        scrollViewsQuery.otherElements.containing(.staticText, identifier:"Settings").element.swipeUp()
+        scrollViewsQuery.otherElements.buttons["LOG OUT"].tap()
         }
     
     func testChangeAvatarProcess() throws {
@@ -107,6 +114,10 @@ final class SocialView_UITests: XCTestCase {
         // Verify the selected avatar is displayed in settings
         let selectedAvatarImage = app.images["SettingsProfilePicture"]
         XCTAssertTrue(selectedAvatarImage.exists, "Selected avatar should be visible in settings")
+        
+        let scrollViewsQuery = app/*@START_MENU_TOKEN@*/.scrollViews/*[[".otherElements[\"socialViewTab\"].scrollViews",".scrollViews"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
+        scrollViewsQuery.otherElements.containing(.staticText, identifier:"Settings").element.swipeUp()
+        scrollViewsQuery.otherElements.buttons["LOG OUT"].tap()
     }
     
         func testAddFriendUIElements() throws {
@@ -204,6 +215,13 @@ final class SocialView_UITests: XCTestCase {
         let cancelBlockUserButton = app.alerts.buttons["Cancel"]
         XCTAssertTrue(cancelBlockUserButton.waitForExistence(timeout: 5), "Cancel button in Block User alert should be present")
         cancelBlockUserButton.tap()
+        
+        app.tabBars["Tab Bar"].buttons["person.2.fill"].tap()
+        app/*@START_MENU_TOKEN@*/.buttons["Settings"]/*[[".otherElements[\"socialViewTab\"].buttons[\"Settings\"]",".buttons[\"Settings\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        
+        let scrollViewsQuery = app/*@START_MENU_TOKEN@*/.scrollViews/*[[".otherElements[\"socialViewTab\"].scrollViews",".scrollViews"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
+        scrollViewsQuery.otherElements.containing(.staticText, identifier:"Settings").element.swipeUp()
+        scrollViewsQuery.otherElements.buttons["LOG OUT"].tap()
     }
 
 

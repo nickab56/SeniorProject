@@ -45,6 +45,12 @@ final class LoginView_UITests: XCTestCase {
         let loginButton = app.buttons["loginButton"]
         XCTAssertTrue(loginButton.waitForExistence(timeout: 5), "Login button should be present")
         loginButton.tap()
+        
+        app/*@START_MENU_TOKEN@*/.buttons["Settings"]/*[[".otherElements[\"socialViewTab\"].buttons[\"Settings\"]",".buttons[\"Settings\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        
+        let scrollViewsQuery = app/*@START_MENU_TOKEN@*/.scrollViews/*[[".otherElements[\"socialViewTab\"].scrollViews",".scrollViews"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
+        scrollViewsQuery.otherElements.containing(.staticText, identifier:"Settings").element.swipeUp()
+        scrollViewsQuery.otherElements.buttons["LOG OUT"].tap()
 
         
     }
