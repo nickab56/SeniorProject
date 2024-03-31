@@ -484,7 +484,13 @@ final class LandingView_UITests: XCTestCase {
         XCTAssertTrue(confirmDeleteAlertButton.waitForExistence(timeout: 5), "Confirmation alert for deleting the log should appear")
         confirmDeleteAlertButton.tap()
         
+        app.tabBars["Tab Bar"].buttons["person.2.fill"].tap()
+        app/*@START_MENU_TOKEN@*/.buttons["Settings"]/*[[".otherElements[\"socialViewTab\"].buttons[\"Settings\"]",".buttons[\"Settings\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
         
+        let scrollViewsQuery = app/*@START_MENU_TOKEN@*/.scrollViews/*[[".otherElements[\"socialViewTab\"].scrollViews",".scrollViews"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
+        scrollViewsQuery.otherElements.containing(.staticText, identifier:"Settings").element.swipeUp()
+        scrollViewsQuery.otherElements.buttons["LOG OUT"].tap()
+                
             
     }
     
