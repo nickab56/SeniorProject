@@ -26,6 +26,8 @@ struct AddLogSheetView: View {
 
     @State public var collaborators: [UserData] = []
     
+    @State private var showingNameRequiredNotification = false
+    
     var friends: [UserData] {
         logsViewModel.friends.filter { !collaborators.contains($0) }
     }
@@ -131,12 +133,20 @@ struct AddLogSheetView: View {
                 }
 
                 Button(action: {
-                    if (logsViewModel.getUserId() != nil) {
-                        logsViewModel.addLog(name: newLogName, isVisible: isPublic, collaborators: collaborators.compactMap { $0.userId })
+                    // Check if the log name is not empty
+                    if !newLogName.isEmpty {
+                        if (logsViewModel.getUserId() != nil) {
+                            logsViewModel.addLog(name: newLogName, isVisible: isPublic, collaborators: collaborators.compactMap { $0.userId })
+                        } else {
+                            addNewLocalLog()
+                        }
+                        isPresented = false
                     } else {
-                        addNewLocalLog()
+                        // Show the notification if the log name is empty
+                        withAnimation {
+                            showingNameRequiredNotification = true
+                        }
                     }
-                    isPresented = false
                 }) {
                     Text("Add Log")
                         .frame(maxWidth: .infinity)
@@ -162,6 +172,20 @@ struct AddLogSheetView: View {
                 logsViewModel.getFriends()
             }
         })
+        
+        if showingNameRequiredNotification {
+            NameRequiredNotificationView()
+                .transition(.move(edge: .bottom))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(.top, 100)
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        withAnimation {
+                            showingNameRequiredNotification = false
+                        }
+                    }
+                }
+        }
     }
 
     /**
@@ -213,6 +237,20 @@ struct AddLogSheetView: View {
     private func removeCollaborator(at offsets: IndexSet) {
         withAnimation {
             collaborators.remove(atOffsets: offsets)
+        }
+    }
+    
+    // Notification view for "Log Name Required"
+    struct NameRequiredNotificationView: View {
+        var body: some View {
+            Text("Please enter a name for the log")
+                .padding()
+                .background(Color.gray)
+                .foregroundColor(Color.white)
+                .cornerRadius(10)
+                .shadow(radius: 10)
+                .zIndex(1)
+                .accessibility(identifier: "LogNameRequiredNotification")
         }
     }
 
