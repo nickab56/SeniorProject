@@ -79,42 +79,43 @@ struct LandingView: View {
                     .padding(.top, 100)
 
                 if vm.logs.isEmpty {
+                    
+                    Image(systemName: "square.stack.3d.up.slash")
+                        .resizable()
+                        .frame(width: 70, height: 70)
+                        .foregroundColor(Color(hex: "#9F9F9F"))
+                        .padding(.top, 120)
+                    Text("You have no logs")
+                        .padding(.top, 30)
+                        .bold()
+                        .foregroundColor(.white)
+                        .font(.system(size: 25))
+                    Text("Create a new one below.")
+                        .foregroundColor(.gray)
+                        .font(.system(size: 15))
+                    
+                    
                     Button(action: {
-                        //TODO: if we want to have it have the add log action sheet pop up on here
+                        // TODO: Action to add a log
                     }) {
-                        Rectangle()
-                            .cornerRadius(10)
-                            .frame(width: 361, height: 202.882)
-                            .padding(.horizontal, 16)
-                            .padding(.top, 8)
-                            .foregroundColor(Color(hex: "#232323"))
-                            .overlay(
-                                VStack(){
-                                    Image(systemName: "square.stack.3d.up.slash")
-                                        .resizable()
-                                        .frame(width: 50, height: 50)
-                                        .foregroundColor(Color(hex: "#9F9F9F"))
-                                    Text("Get Started and Create a log")
-                                        .padding(.top, 10)
-                                        .bold()
-                                        .foregroundColor(.white)
-                                        .font(.system(size: 25))
-                                }
-                            )
-                    }
+                        Text("Create New Log")
+                            .foregroundColor(.black)
+                            .padding(.horizontal, 100)
+                            .padding(.vertical, 15)
+                            .background(Color(hex: "#3891E1"))
+                            .cornerRadius(30)
+                    }.padding(.top, 100)
+                    
+                    
+                    
                 } else if vm.hasWatchNextMovie, let firstLog = vm.priorityLog {
                     WhatsNextView(log: firstLog, vm: vm)
                         .padding(.top, -20)
+                    
+                    MyLogsView(vm: vm)
+                        .padding(.bottom, 150)
+                        .padding(.top, 15)
                 } else {
-//                    VStack {
-//                        Text("All Caught Up!")
-//                            .font(.title)
-//                            .foregroundColor(.white)
-//                            .accessibilityIdentifier("NoNextMovieText")
-//
-//                        Text("You've watched all the movies in this log.")
-//                            .foregroundColor(.gray)
-//                    }
                     Rectangle()
                         .cornerRadius(10)
                         //.frame(width: 361, height: 202.882)
@@ -135,12 +136,10 @@ struct LandingView: View {
                                     .font(.system(size: 25))
                             }
                         )
-                    
+                    MyLogsView(vm: vm)
+                        .padding(.bottom, 150)
+                        .padding(.top, 15)
                 }
-
-                MyLogsView(vm: vm)
-                    .padding(.bottom, 150)
-                    .padding(.top, 15)
             }
         }
         .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
