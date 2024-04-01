@@ -20,6 +20,7 @@ import CoreData
  */
 struct WhatsNextView: View {
     var log: LogType
+    @Binding var showingNotification: Bool
     @ObservedObject var vm: LogsViewModel
 
     /**
@@ -75,6 +76,7 @@ struct WhatsNextView: View {
                     Button(action: {
                         withAnimation {
                             vm.markMovieAsWatched(log: log)
+                            showingNotification = true
                             
                             // Trigger medium-sized haptic feedback
                             let generator = UIImpactFeedbackGenerator(style: .medium)
