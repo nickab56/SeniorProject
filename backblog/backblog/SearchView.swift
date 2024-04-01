@@ -70,14 +70,14 @@ struct SearchView: View {
                                 NavigationLink(destination: GenreView(genre: "Action")) {
                                     genreButtonContent(imageName: "actionSearch", genreId: 28, genreName: "Action")
                                 }
-                                .frame(width: 170, height: 100)
+                                .frame(width: 180, height: 110)
                                 .cornerRadius(8)
                                 .accessibility(identifier: "GenreButton_Action")
                                 
                                 NavigationLink(destination: GenreView(genre: "Horror")) {
                                     genreButtonContent(imageName: "horrorSearch", genreId: 27, genreName: "Horror")
                                 }
-                                .frame(width: 170, height: 100)
+                                .frame(width: 180, height: 110)
                                 .cornerRadius(8)
                                 .accessibility(identifier: "GenreButton_Horror")
                                 
@@ -90,14 +90,14 @@ struct SearchView: View {
                                 NavigationLink(destination: GenreView(genre: "Sci-Fi")) {
                                     genreButtonContent(imageName: "SciFiSearch", genreId: 878, genreName: "Sci-Fi")
                                 }
-                                .frame(width: 170, height: 100)
+                                .frame(width: 180, height: 110)
                                 .cornerRadius(8)
                                 .accessibility(identifier: "GenreButton_SciFi")
                                 
                                 NavigationLink(destination: GenreView(genre: "Fantasy")) {
                                     genreButtonContent(imageName: "fantasySearch", genreId: 14, genreName: "Fantasy")
                                 }
-                                .frame(width: 170, height: 100)
+                                .frame(width: 180, height: 110)
                                 .cornerRadius(8)
                                 .accessibility(identifier: "GenreButton_Fantasy")
                                 
@@ -297,15 +297,20 @@ struct SearchView: View {
                 Image(imageName)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .frame(width: 170, height: 100)
+                    .frame(width: 180, height: 110)
                     .overlay(Color.black.opacity(0.2))
+                
+                Rectangle()
+                    .fill(Color.black.opacity(0.5)) // Adjust opacity as needed
+                    .frame(width: 180, height: 110)
+                
                 Text(genreName)
                     .foregroundColor(.white)
                     .font(.title2)
                     .bold()
             }
             .cornerRadius(8)
-            .frame(width: 170, height: 100)
+            .frame(width: 180, height: 110)
         }
         //.buttonStyle(PlainButtonStyle())
     }
