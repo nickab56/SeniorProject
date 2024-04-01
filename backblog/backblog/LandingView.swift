@@ -17,6 +17,7 @@ import CoreData
 struct LandingView: View {
     @StateObject private var vm: LogsViewModel
     @StateObject private var authViewModel: AuthViewModel
+    @State private var showingWhatsNextCompleteNotification = false
 
     /**
      Initializes the `LandingView`, configuring the navigation bar and tab bar, and initializing view models.
@@ -109,7 +110,7 @@ struct LandingView: View {
                     
                     
                 } else if vm.hasWatchNextMovie, let firstLog = vm.priorityLog {
-                    WhatsNextView(log: firstLog, vm: vm)
+                    WhatsNextView(log: firstLog, showingNotification: $showingWhatsNextCompleteNotification, vm: vm)
                         .padding(.top, -20)
                     
                     MyLogsView(vm: vm)
@@ -142,6 +143,25 @@ struct LandingView: View {
                 }
             }
         }
+        .overlay(
+            Group {
+                if showingWhatsNextCompleteNotification {
+                    WatchedNotificationView()
+                        .transition(.move(edge: .bottom))
+                        .padding(.top, 675)
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                withAnimation {
+                                    showingWhatsNextCompleteNotification = false
+                                }
+                            }
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                } else {
+                    EmptyView()
+                }
+            }
+        )
         .background(LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .edgesIgnoringSafeArea(.all)
         .onAppear {
@@ -151,4 +171,20 @@ struct LandingView: View {
         .navigationBarBackButtonHidden(true)
     }
 
+    
+    struct WatchedNotificationView: View {
+        /**
+         The body of the `WatchedNotificationsView` view, defining the SwiftUI content.
+         */
+        var body: some View {
+            Text("Movie added to watched")
+                .padding()
+                .background(Color.gray)
+                .foregroundColor(Color.white)
+                .cornerRadius(10)
+                .shadow(radius: 10)
+                .zIndex(1) // Ensure the notification view is always on top
+                .accessibility(identifier: "AddedToWatchedSwiped")
+        }
+    }
 }

@@ -34,7 +34,7 @@ struct SignupView: View {
                 
                 // Card background
                 RoundedRectangle(cornerRadius: 25, style: .continuous)
-                    .fill(Color(hex: "#242b2f"))
+                    .fill(Color(hex: "#23272d"))
                     .shadow(radius: 10)
                     .padding()
                 

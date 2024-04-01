@@ -58,7 +58,7 @@ struct LoginView: View {
                             .accessibilityIdentifier("loginMessage")
 
                         VStack (spacing: 15) {
-                            TextField("Email or Username", text: $username)
+                            TextField("Email", text: $username)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .padding(.horizontal)
                                 .autocapitalization(.none)

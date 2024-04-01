@@ -37,6 +37,8 @@ class LogsViewModel: ObservableObject {
     // Add Log Sheet View
     @Published var friends: [UserData] = []
     
+    @Published var showingWhatsNextCompleteNotification = false
+    
     private var fb: FirebaseProtocol
     private var movieService: MovieProtocol
     private let viewContext = PersistenceController.shared.container.viewContext
@@ -255,6 +257,7 @@ class LogsViewModel: ObservableObject {
                         }
                         
                         _ = try await self.movieRepo.markMovie(logId: logId, movieId: movieId, watched: true).get()
+                        self.showingWhatsNextCompleteNotification = true
                         self.loadNextUnwatchedMovie() // Refresh the view to show the next unwatched movie
                     } catch {
                         print("Error getting log data: \(error)")
@@ -277,6 +280,7 @@ class LogsViewModel: ObservableObject {
             // Save changes to the data store
             do {
                 try viewContext.save()
+                showingWhatsNextCompleteNotification = true
                 loadNextUnwatchedMovie()  // Refresh the view to show the next unwatched movie
             } catch {
                 print("Error marking movie as watched: \(error.localizedDescription)")
