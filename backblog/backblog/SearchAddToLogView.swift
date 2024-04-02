@@ -12,6 +12,8 @@ struct SearchAddToLogView: View {
     @State private var searchText = ""
     var log: LogType // The log to which movies will be added
     @State private var selectedMovieId: String?
+    
+    @State private var showingAlreadyInLogNotification = false
 
 
     var body: some View {
@@ -25,6 +27,19 @@ struct SearchAddToLogView: View {
                     movieList
                 }
             }
+            if showingAlreadyInLogNotification {
+                        NotificationView()
+                            .transition(.move(edge: .bottom))
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .padding(.top, 375)
+                            .onAppear {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                    withAnimation {
+                                        showingAlreadyInLogNotification = false
+                                    }
+                                }
+                            }
+                    }
         }
         .navigationTitle(searchText.isEmpty ? "Add Movies" : "Results")
         .navigationBarTitleDisplayMode(.large)
@@ -60,7 +75,7 @@ struct SearchAddToLogView: View {
                             .font(.footnote)
                     }
                     Spacer()
-                    addButton(for: movie) // This button might need adjustments to not interfere with navigation
+                    addButton(for: movie)
                 }
             }
             .buttonStyle(PlainButtonStyle())
@@ -92,15 +107,39 @@ struct SearchAddToLogView: View {
     }
 
     private func addButton(for movie: MovieSearchData.MovieSearchResult) -> some View {
-        Button(action: {
-            // Call the method to add the movie directly to the log
-            viewModel.addMovieToLog(movieId: String(movie.id ?? 0), log: log)
+        let isMovieAdded = viewModel.isMovieInLog(movieId: String(movie.id ?? 0), log: log)
+        return Button(action: {
+            if isMovieAdded {
+                withAnimation {
+                    showingAlreadyInLogNotification = true
+                }
+            } else {
+                viewModel.addMovieToLog(movieId: String(movie.id ?? 0), log: log)
+            }
         }) {
             Image(systemName: "plus.circle.fill")
-                .foregroundColor(Color(hex: "#3891e1"))
+                .foregroundColor(isMovieAdded ? .gray : Color(hex: "#3891e1"))
                 .imageScale(.large)
         }
         .padding()
+    }
+
+
+    
+    struct NotificationView: View {
+        /**
+         The body of the `WatchedNotificationsView` view, defining the SwiftUI content.
+         */
+        var body: some View {
+            Text("Movie already in log")
+                .padding()
+                .background(Color.gray)
+                .foregroundColor(Color.white)
+                .cornerRadius(10)
+                .shadow(radius: 10)
+                .zIndex(1) // Ensure the notification view is always on top
+                .accessibility(identifier: "AddedToWatchedSwiped")
+        }
     }
 }
 

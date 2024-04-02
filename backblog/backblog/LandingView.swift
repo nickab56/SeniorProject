@@ -18,6 +18,9 @@ struct LandingView: View {
     @StateObject private var vm: LogsViewModel
     @StateObject private var authViewModel: AuthViewModel
     @State private var showingWhatsNextCompleteNotification = false
+    
+    @State private var showingAddLogSheet = false
+
 
     /**
      Initializes the `LandingView`, configuring the navigation bar and tab bar, and initializing view models.
@@ -97,7 +100,7 @@ struct LandingView: View {
                     
                     
                     Button(action: {
-                        // TODO: Action to add a log
+                        showingAddLogSheet = true
                     }) {
                         Text("Create New Log")
                             .foregroundColor(.black)
@@ -106,7 +109,9 @@ struct LandingView: View {
                             .background(Color(hex: "#3891E1"))
                             .cornerRadius(30)
                     }.padding(.top, 100)
-                    
+                    .sheet(isPresented: $showingAddLogSheet) { // Present the AddLogSheetView when the state changes
+                        AddLogSheetView(isPresented: $showingAddLogSheet, logsViewModel: vm)
+                    }
                     
                     
                 } else if vm.hasWatchNextMovie, let firstLog = vm.priorityLog {

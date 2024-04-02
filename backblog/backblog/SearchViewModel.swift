@@ -166,7 +166,16 @@ class SearchViewModel: ObservableObject {
             }
         }
     }
-
+    
+    func isMovieInLog(movieId: String, log: LogType) -> Bool {
+        switch log {
+        case .log(let fbLog):
+            return fbLog.movieIds?.contains(movieId) ?? false
+        case .localLog(let localLog):
+            let movieIds = localLog.movie_ids?.allObjects as? [LocalMovieData] ?? []
+            return movieIds.contains(where: { $0.movie_id == movieId })
+        }
+    }
 
     /**
      Formats the release year from a given date string.
