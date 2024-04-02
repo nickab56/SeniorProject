@@ -75,6 +75,14 @@ struct SocialView: View {
             
             // Logs Tab View
             if vm.selectedTab == "Logs" {
+                Text("Public Logs")
+                    .font(.system(size: 26))
+                    .bold()
+                    .foregroundColor(.white)
+                    .accessibility(identifier: "LogSection")
+                    .padding(.trailing, 220)
+                    .padding(.top, 20)
+                
                 ScrollView {
                     if (vm.logs.count > 0) {
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
@@ -87,6 +95,7 @@ struct SocialView: View {
                             }
                         }
                         .padding(.horizontal)
+                        .padding(.top, 10)
                     } else {
                         Text("No public logs found.")
                             .foregroundColor(.gray)
@@ -112,7 +121,7 @@ struct SocialView: View {
                             .foregroundColor(.white)
                     }
                     .accessibilityIdentifier("addFriendButton")
-                    .frame(width: 80, height: 40)
+                    .frame(width: 100, height: 40)
                     .background(Color.blue)
                     .cornerRadius(10)
                 }.padding()
@@ -162,6 +171,7 @@ struct SocialView: View {
                                     .frame(height: 1)
                                     .foregroundColor(.gray)
                             }
+                            .padding(.bottom, 20)
                             ForEach(vm.friends) { friendId in FriendListElement(friendId: friendId.userId ?? "", userId: vm.getUserId(), username: friendId.username ?? "", avatarPreset: friendId.avatarPreset ?? 1)
                                     .padding(.horizontal)
                                     .accessibilityIdentifier("FriendProfileElement")
