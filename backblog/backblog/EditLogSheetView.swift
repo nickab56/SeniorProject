@@ -53,6 +53,14 @@ struct EditLogSheetView: View {
         }
 
         _draftMovies = State(initialValue: vm.movies)
+        
+        switch vm.log {
+        case .log(let logData):
+            _draftPublicLog = State(initialValue: logData.isVisible ?? true)
+        case .localLog:
+            _draftPublicLog = State(initialValue: false)
+        }
+        
     }
 
     /**
@@ -65,9 +73,11 @@ struct EditLogSheetView: View {
                     TextField("Log Name", text: $draftLogName)
                 }
                 
-                Section{
-                    Toggle(isOn: $draftPublicLog) {
-                        Text("Public Log")
+                if case .log(_) = vm.log {
+                    Section {
+                        Toggle(isOn: $draftPublicLog) {
+                            Text("Public Log")
+                        }
                     }
                 }
 
@@ -86,6 +96,7 @@ struct EditLogSheetView: View {
 
                 Section {
                     Button("Save") {
+                        vm.updateLogVisibility(isVisible: draftPublicLog)
                         vm.saveChanges(draftLogName: draftLogName, movies: draftMovies)
                         isPresented = false
                     }

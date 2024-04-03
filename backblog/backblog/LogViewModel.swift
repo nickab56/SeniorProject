@@ -746,6 +746,18 @@ class LogViewModel: ObservableObject {
     private func removeListener() {
         logListener?.remove()
     }
+    
+    func updateLogVisibility(isVisible: Bool) {
+        guard case .log(let fbLog) = log, let logId = fbLog.logId else { return }
+        
+        Task {
+            do {
+                _ = try await logRepo.updateLog(logId: logId, updateData: ["is_visible": isVisible])
+            } catch {
+                print("Error updating log visibility: \(error.localizedDescription)")
+            }
+        }
+    }
 
 }
 
