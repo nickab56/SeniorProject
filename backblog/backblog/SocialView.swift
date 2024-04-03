@@ -111,6 +111,7 @@ struct SocialView: View {
                         .bold()
                         .foregroundColor(.white)
                         .accessibility(identifier: "FriendsSection")
+                        .padding(.bottom, 20)
                     
                     Spacer()
                     
@@ -143,6 +144,7 @@ struct SocialView: View {
                                 RequestList(viewModel: vm, notificationActive: $vm.showingNotification, notificationMessage: $vm.notificationMessage, reqId: friendReq.0.requestId ?? "", reqUserId: friendReq.1.userId ?? "", reqType: "friend", reqUsername: friendReq.1.username ?? "", avatarPreset: friendReq.1.avatarPreset ?? 1)
                                     .padding(.horizontal)
                             }
+                            .padding(.leading, 10)
                         }
                         if vm.logRequests.isEmpty == false {
                             HStack {
@@ -159,23 +161,26 @@ struct SocialView: View {
                                 RequestList(viewModel: vm, notificationActive: $vm.showingNotification, notificationMessage: $vm.notificationMessage, reqId: logReq.0.requestId ?? "", reqUserId: logReq.1.userId ?? "", reqType: "log", reqUsername: logReq.1.username ?? "", avatarPreset: logReq.1.avatarPreset ?? 1 )
                                     .padding(.horizontal)
                             }
+                            .padding(.leading, 10)
                         }
                         if vm.friends.isEmpty == false {
                             HStack {
                                 Text("Friends")
                                     .foregroundColor(.gray)
-                                    .padding(.horizontal, 20)
+                                    .padding(.leading, 20)
                                     .accessibility(identifier: "FriendsSectionHeader")
+                                    .padding(.bottom, 4)
                                 Spacer()
                                 Rectangle()
-                                    .frame(height: 1)
+                                    .frame(width: 285, height: 1)
                                     .foregroundColor(.gray)
                             }
-                            .padding(.bottom, 20)
+                            .padding(.bottom, 10)
                             ForEach(vm.friends) { friendId in FriendListElement(friendId: friendId.userId ?? "", userId: vm.getUserId(), username: friendId.username ?? "", avatarPreset: friendId.avatarPreset ?? 1)
                                     .padding(.horizontal)
                                     .accessibilityIdentifier("FriendProfileElement")
                             }
+                            .padding(.leading, 10)
                         } else {
                             Text("No friends found.")
                                 .foregroundColor(.gray)
