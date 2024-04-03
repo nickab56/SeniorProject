@@ -161,7 +161,7 @@ struct SettingsView: View {
                     
                     // Present the BlockedUsersSheet
                     .sheet(isPresented: $showingBlockedUsersSheet) {
-                        BlockedUsersSheet()
+                        BlockedUsersSheet(vm: vm)
                     }
                     
                     Button(action: {
@@ -216,33 +216,33 @@ struct SettingsView: View {
     }
     
     struct BlockedUsersSheet: View {
-        @State private var blockedUsers: [String] = ["User1", "User2", "User3"]
-        @State private var showAlert = false // State to manage alert presentation
-        @State private var userToUnblock: String? // Keep track of which user to unblock
-        @Environment(\.presentationMode) var presentationMode // Environment variable for sheet dismissal
+        @ObservedObject var vm: SocialViewModel
+        @Environment(\.presentationMode) var presentationMode
+        @State private var isShowingUnblockConfirmation = false
+        @State private var userToUnblock: UserData?
 
         var body: some View {
             NavigationView {
-                List {
-                    ForEach(blockedUsers, id: \.self) { user in
-                        HStack {
-                            Text(user)
-                            Spacer()
-                            Button("Unblock") {
-                                userToUnblock = user
-                                showAlert = true // Show the alert
-                            }
-                            .foregroundColor(.red)
+                List(vm.blockedUsers, id: \.userId) { user in
+                    HStack {
+                        Text(user.username ?? "Unknown User")
+                        Spacer()
+                        Button("Unblock") {
+                            userToUnblock = user
+                            isShowingUnblockConfirmation = true
                         }
+                        .foregroundColor(.red)
                     }
                 }
-                .alert(isPresented: $showAlert) {
+                .alert(isPresented: $isShowingUnblockConfirmation) {
                     Alert(
                         title: Text("Unblock User"),
-                        message: Text("Are you sure you want to unblock \(userToUnblock ?? "")?"),
+                        message: Text("Are you sure you want to unblock \(userToUnblock?.username ?? "")?"),
                         primaryButton: .destructive(Text("Unblock")) {
                             if let user = userToUnblock {
-                                unblockUser(user: user)
+                                Task {
+                                    await vm.unblockUser(userId: vm.getUserId(), blockedId: user.userId ?? "")
+                                }
                             }
                         },
                         secondaryButton: .cancel()
@@ -254,19 +254,12 @@ struct SettingsView: View {
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
+                .onAppear {
+                    vm.fetchBlockedUsers()
+                }
             }
             .preferredColorScheme(.dark)
         }
-
-        func unblockUser(user: String) {
-            // Implement unblocking logic here
-            // For demonstration, simply remove the user from the list
-            if let index = blockedUsers.firstIndex(of: user) {
-                blockedUsers.remove(at: index)
-            }
-        }
     }
-
-
 
 }

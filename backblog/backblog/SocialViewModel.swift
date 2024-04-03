@@ -32,6 +32,7 @@ class SocialViewModel: ObservableObject {
     @Published var friends: [UserData] = []
     @Published var friendRequests: [(FriendRequestData, UserData)] = []
     @Published var logRequests: [(LogRequestData, UserData)] = []
+    @Published var blockedUsers: [UserData] = []
     
     // Notification message
     @Published var showingNotification = false
@@ -569,4 +570,55 @@ class SocialViewModel: ObservableObject {
         friendReqListener?.remove()
         friendListener?.remove()
     }
+    
+    func fetchBlockedUsers() {
+        DispatchQueue.main.async { [self] in
+            Task {
+                guard let userId = fb.getUserId() else {
+                    print("User ID not found")
+                    return
+                }
+                
+                do {
+                    let userData = try await userRepo.getUser(userId: userId).get()
+                    guard let blockedIds = userData.blocked?.keys else {
+                        print("No blocked users found")
+                        return
+                    }
+                    
+                    var blockedUsersData: [UserData] = []
+                    for blockedId in blockedIds {
+                        do {
+                            let blockedUserData = try await userRepo.getUser(userId: blockedId).get()
+                            blockedUsersData.append(blockedUserData)
+                        } catch {
+                            print("Failed to fetch blocked user data for ID: \(blockedId)")
+                        }
+                    }
+                    
+                    DispatchQueue.main.async {
+                        self.blockedUsers = blockedUsersData
+                    }
+                } catch {
+                    print("Error fetching user data: \(error)")
+                }
+            }
+        }
+    }
+    
+    func unblockUser(userId: String, blockedId: String) async {
+        do {
+            // Remove blockedId from the current user's blocked list
+            let update = ["blocked.\(blockedId)": FieldValue.delete()]
+            _ = try await fb.put(updates: update, docId: userId, collection: "users").get()
+            
+            fetchBlockedUsers()
+            
+            print("User \(blockedId) successfully unblocked.")
+        } catch {
+            print("Failed to unblock user \(blockedId): \(error)")
+        }
+    }
+
+
 }
