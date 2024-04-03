@@ -125,6 +125,7 @@ struct SocialView: View {
                     .frame(width: 100, height: 40)
                     .background(Color.blue)
                     .cornerRadius(10)
+                    .padding(.bottom, 15)
                 }.padding()
                 
                 ScrollView {

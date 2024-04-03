@@ -118,7 +118,7 @@ class FriendsProfileViewModel: ObservableObject {
     /**
      Blocks the specified user, preventing them from interacting with the current user.
      */
-    func blockUser() {
+    func blockUser(completion: @escaping () -> Void) {
         DispatchQueue.main.async { [self] in
             Task {
                 let username = userData?.username ?? "null"
@@ -131,6 +131,8 @@ class FriendsProfileViewModel: ObservableObject {
                     
                     notificationMessage = "You have blocked \(username)"
                     showingNotification = true
+                    completion()
+                    
                 } catch {
                     print("Error fetching logs: \(error.localizedDescription)")
                     notificationMessage = "There was an error blocking \(username)"
