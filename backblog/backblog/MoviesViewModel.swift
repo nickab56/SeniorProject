@@ -22,7 +22,10 @@ class MoviesViewModel: ObservableObject {
     var isComingFromLog: Bool
     var log: LogType?
     
-    var isInUnwatchlist: Bool { return false }
+    var isInUnwatchlist: Bool { return false } // this var is not used in anything, so it is always marked as unwatched
+    
+    @Published var isInUnwatchedMovies: Bool = false
+    @Published var isInWatchedMovies: Bool = false
     
     private var fb: FirebaseProtocol
     private var movieService: MovieProtocol
@@ -44,6 +47,36 @@ class MoviesViewModel: ObservableObject {
         self.moviesRepo = MovieRepository(fb: fb, movieService: movieService)
         self.fb = fb
         self.movieService = movieService
+        
+        checkMovieStatus()
+    }
+    
+    func checkMovieStatus() {
+        guard let log = log else { return }
+        
+        switch log {
+        case .log(let fbLog):
+            self.isInUnwatchedMovies = fbLog.movieIds?.contains(movieId) ?? false
+            self.isInWatchedMovies = fbLog.watchedIds?.contains(movieId) ?? false
+        case .localLog(let localLog):
+            // Assuming LocalLogData has appropriate methods or properties to check for movieId
+            self.isInUnwatchedMovies = localLog.movie_ids?.contains(where: { ($0 as? LocalMovieData)?.movie_id == movieId }) ?? false
+            self.isInWatchedMovies = localLog.watched_ids?.contains(where: { ($0 as? LocalMovieData)?.movie_id == movieId }) ?? false
+        }
+    }
+    
+    func moveMovieToWatched() {
+        guard let log = log, isInUnwatchedMovies else { return }
+        
+        // needs implemented so the movie is moved to watched list
+        
+    }
+    
+    func moveMovieToUnwatched() {
+        guard let log = log, isInWatchedMovies else { return }
+        
+        // needs implemented so the movie is moved to unwatched list
+        
     }
     
     /**

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
 /**
  ViewModel for handling search operations and managing movie data in the context of search.
@@ -22,6 +23,8 @@ class SearchViewModel: ObservableObject {
     private var movieService: MovieProtocol // Movie service for API interactions.
     
     private let movieRepo: MovieRepository // Repository for movie data fetching.
+    
+    let logRepo = LogRepository(fb: FirebaseService())
     
     init(fb: FirebaseProtocol, movieService: MovieProtocol) {
         self.fb = fb
@@ -140,29 +143,60 @@ class SearchViewModel: ObservableObject {
         switch log {
         case .log(let fbLog):
             guard let logId = fbLog.logId else { return }
-            
-            Task {
-                let result = await movieRepo.addMovie(logId: logId, movieId: movieId)
+
+            // Determine if the movie is in watchedIds
+            if fbLog.watchedIds?.contains(movieId) == true {
+                // Prepare updates for moving from watchedIds to movieIds
+                let updates: [String: Any] = [
+                    "watched_ids": FieldValue.arrayRemove([movieId]),
+                    "movie_ids": FieldValue.arrayUnion([movieId])
+                ]
                 
-                switch result {
-                case .success:
-                    print("Movie added successfully to the log")
-                case .failure(let error):
-                    print("Error adding movie to the log: \(error.localizedDescription)")
+                // Perform the update
+                Task {
+                    let updateResult = await logRepo.updateLog(logId: logId, updateData: updates)
+                    
+                    switch updateResult {
+                    case .success:
+                        print("Movie added to unwatched!")
+                    case .failure(let error):
+                        print("Error moving movie from watched to movie list: \(error)")
+                    }
+                }
+            } else {
+                guard let logId = fbLog.logId else { return }
+                
+                Task {
+                    let result = await movieRepo.addMovie(logId: logId, movieId: movieId)
+                    
+                    switch result {
+                    case .success:
+                        print("Movie added successfully to the log")
+                    case .failure(let error):
+                        print("Error adding movie to the log: \(error.localizedDescription)")
+                    }
                 }
             }
         case .localLog(let localLog):
-            // Create a new LocalMovieData object and add it to the localLog
-            let newMovie = LocalMovieData(context: viewContext)
-            newMovie.movie_id = movieId
-            newMovie.movie_index = Int64(localLog.movie_ids?.count ?? 0)
-            localLog.addToMovie_ids(newMovie)
+            // Check if the movie is already in watchedIds
+            if let watchedMovies = localLog.watched_ids as? Set<LocalMovieData>, let movieToMove = watchedMovies.first(where: { $0.movie_id == movieId }) {
+                // Move from watched to unwatched
+                localLog.removeFromWatched_ids(movieToMove)
+                movieToMove.movie_index = Int64(localLog.movie_ids?.count ?? 0) // adds it to the bottom of watched
+                localLog.addToMovie_ids(movieToMove)
+            } else {
+                // Add new unwatched movie
+                let newMovie = LocalMovieData(context: viewContext)
+                newMovie.movie_id = movieId
+                newMovie.movie_index = Int64(localLog.movie_ids?.count ?? 0) // adds it to the bottom of watched
+                localLog.addToMovie_ids(newMovie)
+            }
 
+            // Save context
             do {
                 try viewContext.save()
-                print("Movie added successfully to the local log")
             } catch {
-                print("Error adding movie to the local log: \(error.localizedDescription)")
+                print("Failed to save context: \(error.localizedDescription)")
             }
         }
     }

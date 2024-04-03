@@ -161,37 +161,21 @@ struct MovieDetailsView: View {
                                 
                                 HStack() {
                                     if vm.isComingFromLog {
-                                        if vm.isInUnwatchlist {
-                                            Button(action: {
-                                                //code to make movie to watched in log
-                                            }) {
-                                                Text("ADD TO WATCHED")
-                                                    .foregroundColor(.white)
-                                                    .bold()
+                                        Button(action: {
+                                            if vm.isInUnwatchedMovies {
+                                                vm.moveMovieToWatched()
+                                            } else if vm.isInWatchedMovies {
+                                                vm.moveMovieToUnwatched()
                                             }
-                                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
-                                            .frame(height: 50)
-                                            .background(Color(hex: "3891E1"))
-                                            .cornerRadius(25)
-                                            //.padding(.top, 5)
-                                            //.padding(.leading, 20)
+                                        }) {
+                                            Text(vm.isInUnwatchedMovies ? "ADD TO WATCHED" : vm.isInWatchedMovies ? "ADD TO UNWATCHED" : "ADD TO LOG")
+                                                .foregroundColor(.white)
+                                                .bold()
                                         }
-                                        
-                                        else{
-                                            Button(action: {
-                                                //code to make movie to unwatch in log
-                                            }) {
-                                                Text("ADD TO UNWATCHED")
-                                                    .foregroundColor(.white)
-                                                    .bold()
-                                            }
-                                            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
-                                            .frame(height: 50)
-                                            .background(Color(hex: "3891E1"))
-                                            .cornerRadius(25)
-                                            //.padding(.top, 5)
-                                            //.padding(.leading, 0)
-                                        }
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 50)
+                                        .background(Color(hex: "3891E1"))
+                                        .cornerRadius(25)
                                     }
                                     else{
                                         Button(action: {

@@ -14,6 +14,8 @@ struct SearchAddToLogView: View {
     @State private var selectedMovieId: String?
     
     @State private var showingAlreadyInLogNotification = false
+    @State private var showingMovieAddedNotification = false
+
 
 
     var body: some View {
@@ -28,7 +30,7 @@ struct SearchAddToLogView: View {
                 }
             }
             if showingAlreadyInLogNotification {
-                        NotificationView()
+                NotificationView(text: "Movie already in log")
                             .transition(.move(edge: .bottom))
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .padding(.top, 375)
@@ -40,6 +42,20 @@ struct SearchAddToLogView: View {
                                 }
                             }
                     }
+            if showingMovieAddedNotification {
+                NotificationView(text: "Movie added to log")
+                    .transition(.move(edge: .bottom))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(.top, 375)
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            withAnimation {
+                                showingMovieAddedNotification = false 
+                            }
+                        }
+                    }
+            }
+
         }
         .navigationTitle(searchText.isEmpty ? "Add Movies" : "Results")
         .navigationBarTitleDisplayMode(.large)
@@ -115,6 +131,9 @@ struct SearchAddToLogView: View {
                 }
             } else {
                 viewModel.addMovieToLog(movieId: String(movie.id ?? 0), log: log)
+                withAnimation {
+                    showingMovieAddedNotification = true // Show "Movie added to log" notification
+                }
             }
         }) {
             Image(systemName: "plus.circle.fill")
@@ -125,22 +144,22 @@ struct SearchAddToLogView: View {
     }
 
 
+
     
     struct NotificationView: View {
-        /**
-         The body of the `WatchedNotificationsView` view, defining the SwiftUI content.
-         */
+        let text: String
+        
         var body: some View {
-            Text("Movie already in log")
+            Text(text)
                 .padding()
                 .background(Color.gray)
                 .foregroundColor(Color.white)
                 .cornerRadius(10)
                 .shadow(radius: 10)
-                .zIndex(1) // Ensure the notification view is always on top
-                .accessibility(identifier: "AddedToWatchedSwiped")
+                .zIndex(1)
         }
     }
+
 }
 
 
