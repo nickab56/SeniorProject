@@ -33,6 +33,8 @@ struct FriendsProfileView: View {
     
     @State private var activeAlert: ActiveAlert?
 
+    @Environment(\.presentationMode) var presentationMode
+
     
     enum ActiveAlert: Identifiable {
         case blockUser, removeFriend
@@ -197,7 +199,9 @@ struct FriendsProfileView: View {
                     title: Text("Block User"),
                     message: Text("Are you sure you want to block this user? This action cannot be undone."),
                     primaryButton: .destructive(Text("Block")) {
-                        viewModel.blockUser()
+                        viewModel.blockUser {
+                            presentationMode.wrappedValue.dismiss()
+                        }
                     },
                     secondaryButton: .cancel()
                 )
