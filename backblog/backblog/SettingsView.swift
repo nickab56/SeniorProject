@@ -25,6 +25,11 @@ import CoreData
 
  The view is structured within a `ZStack` to layer the content over a gradient background, and a `ScrollView` is used to accommodate content that may exceed the screen size. User input fields and action buttons are styled consistently with the app's theme.
  */
+
+/**
+ TO DO: Automate log syncing.
+ */
+
 struct SettingsView: View {
     @ObservedObject var vm: SocialViewModel
     
@@ -45,7 +50,6 @@ struct SettingsView: View {
             LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
                 .edgesIgnoringSafeArea(.all)
             
-            ScrollView {
                 VStack{
                     HStack{
                         
@@ -64,7 +68,8 @@ struct SettingsView: View {
                         Image(uiImage: UIImage(named: getAvatarId(avatarPreset: vm.avatarSelection)) ?? UIImage())
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 120, height: 120)
+                            .frame(width: 105, height: 105)
+                            .padding(.trailing, 35)
                             .accessibilityIdentifier("SettingsProfilePicture")
                         
                         
@@ -119,18 +124,29 @@ struct SettingsView: View {
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding(.horizontal, 15)
                     
-                    if (vm.getLocalLogCount() > 0) {
-                        Button(action: {
-                            vm.syncLocalLogsToDB()
-                        }) {
-                            Text("SYNC LOGS")
-                                .foregroundColor(.white)
-                        }
-                        .frame(width: 300, height: 50)
-                        .background(Color.blue)
-                        .cornerRadius(50)
-                        .padding(.top, 5)
+//                    if (vm.getLocalLogCount() > 0) {
+//                        Button(action: {
+//                            vm.syncLocalLogsToDB()
+//                        }) {
+//                            Text("SYNC LOGS")
+//                                .foregroundColor(.white)
+//                        }
+//                        .frame(width: 300, height: 50)
+//                        .background(Color.blue)
+//                        .cornerRadius(50)
+//                        .padding(.top, 5)
+//                    }
+                    
+                    Button(action: {
+                        vm.updateUser(username: usernameText, newPassword: newPasswordText, password: oldPasswordText)
+                    }) {
+                        Text("SAVE")
+                            .foregroundColor(.white)
                     }
+                    .frame(width: 300, height: 50)
+                    .background(Color.blue)
+                    .cornerRadius(50)
+                    .padding(.top, 5)
                     
                     Button(action: {
                         showingBlockedUsersSheet = true
@@ -149,17 +165,6 @@ struct SettingsView: View {
                     }
                     
                     Button(action: {
-                        vm.updateUser(username: usernameText, newPassword: newPasswordText, password: oldPasswordText)
-                    }) {
-                        Text("SAVE")
-                            .foregroundColor(.white)
-                    }
-                    .frame(width: 300, height: 50)
-                    .background(Color.blue)
-                    .cornerRadius(50)
-                    .padding(.top, 5)
-                    
-                    Button(action: {
                         vm.logout()
                     }) {
                         Text("LOG OUT")
@@ -175,7 +180,6 @@ struct SettingsView: View {
                     
                     Spacer()
                 }.padding(.top, 10)
-            }
             
             if vm.showingNotification {
                 notificationView
