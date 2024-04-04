@@ -82,7 +82,7 @@ class FriendsProfileViewModelTests: XCTestCase {
     }
     
     func testBlockUserSuccess() {
-        friendsProfileVMSucceed.blockUser()
+        friendsProfileVMSucceed.blockUser(completion: {})
         let expectation = XCTNSPredicateExpectation(
             predicate: NSPredicate(block: { _, _ in
                 self.friendsProfileVMSucceed.notificationMessage.contains("You have blocked") &&
@@ -93,7 +93,7 @@ class FriendsProfileViewModelTests: XCTestCase {
     
     func testBlockUserInvalidUserId() {
         mockFBError.validUserId = false
-        friendsProfileVMError.blockUser()
+        friendsProfileVMError.blockUser(completion: {})
         let expectation = XCTNSPredicateExpectation(
             predicate: NSPredicate(block: { _, _ in
                 self.friendsProfileVMError.showingNotification == false
@@ -102,7 +102,7 @@ class FriendsProfileViewModelTests: XCTestCase {
     }
     
     func testBlockUserError() {
-        friendsProfileVMError.blockUser()
+        friendsProfileVMError.blockUser(completion: {})
         let expectation = XCTNSPredicateExpectation(
             predicate: NSPredicate(block: { _, _ in
                 self.friendsProfileVMError.notificationMessage.contains("There was an error blocking") &&

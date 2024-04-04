@@ -15,15 +15,17 @@ class LogSelectionViewModel: ObservableObject {
     @Published var selectedLogs: Set<String> = Set() // The logs selected by the user to add the movie to.
     @Published var logsWithDuplicates: Set<String> = Set() // Logs that already contain the movie.
     @Published var showingNotification = false // Controls the visibility of notifications/alerts.
+    @Published var userId: String?
     
-    private let fb = FirebaseService() // Firebase service for remote operations.
-    private let movieService = MovieService() // Movie service for API interactions.
+    private let fb: FirebaseProtocol // Firebase service for remote operations.
+    private let movieService: MovieProtocol // Movie service for API interactions.
     private let logRepo: LogRepository // Repository for log data fetching.
     private let movieRepo: MovieRepository // Repository for movie data fetching.
-    private let userId: String? // The current user's ID, if authenticated.
     
-    init(selectedMovieId: Int) {
+    init(selectedMovieId: Int, fb: FirebaseProtocol, movieService: MovieProtocol) {
         self.selectedMovieId = selectedMovieId
+        self.fb = fb
+        self.movieService = movieService
         self.logRepo = LogRepository(fb: fb)
         self.movieRepo = MovieRepository(fb: fb, movieService: movieService)
         self.userId = fb.getUserId()
@@ -39,7 +41,8 @@ class LogSelectionViewModel: ObservableObject {
             DispatchQueue.main.async {
                 Task {
                     do {
-                        let result = try await self.logRepo.getLogs(userId: self.userId!, showPrivate: true).get()
+                        guard let userId = self.userId else { return }
+                        let result = try await self.logRepo.getLogs(userId: userId, showPrivate: true).get()
                         self.logs = result.map { LogType.log($0) }
                     } catch {
                         print("Error getting logs \(error)")
@@ -277,7 +280,7 @@ class LogSelectionViewModel: ObservableObject {
                     let newLogId = try await logRepo.addLog(name: name, isVisible: true, ownerId: userId).get()
                     print("Successfully created new log with ID \(newLogId) in Firebase")
                     
-                    await getLogs()
+                    getLogs()
                 } catch {
                     print("Error creating new log: \(error.localizedDescription)")
                 }
@@ -289,7 +292,6 @@ class LogSelectionViewModel: ObservableObject {
             newLog.log_id = Int64(UUID().hashValue)
 
             do {
-                getLocalLogs()
                 try viewContext.save()
                 print("Successfully created new local log with name \(name)")
                 

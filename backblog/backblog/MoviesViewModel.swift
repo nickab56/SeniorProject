@@ -67,16 +67,10 @@ class MoviesViewModel: ObservableObject {
     
     func moveMovieToWatched() {
         guard let log = log, isInUnwatchedMovies else { return }
-        
-        // needs implemented so the movie is moved to watched list
-        
     }
     
     func moveMovieToUnwatched() {
         guard let log = log, isInWatchedMovies else { return }
-        
-        // needs implemented so the movie is moved to unwatched list
-        
     }
     
     /**
