@@ -21,7 +21,7 @@ struct LogSelectionView: View {
      */
     init(selectedMovieId: Int, showingSheet: Binding<Bool>) {
         _showingSheet = showingSheet
-        _vm = StateObject(wrappedValue: LogSelectionViewModel(selectedMovieId: selectedMovieId))
+        _vm = StateObject(wrappedValue: LogSelectionViewModel(selectedMovieId: selectedMovieId, fb: FirebaseService(), movieService: MovieService()))
     }
     
     /**

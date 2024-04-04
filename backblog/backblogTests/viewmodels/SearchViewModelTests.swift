@@ -83,6 +83,24 @@ class SearchViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 5)
     }
     
+    func testSearchMoviesByGenreSuccessful() {
+        searchVMSucceed.searchMoviesByGenre(genreId: "38")
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                self.searchVMSucceed.movies == []
+            }), object: nil)
+        wait(for: [expectation], timeout: 5)
+    }
+    
+    func testSearchMoviesByGenreError() {
+        searchVMError.searchMoviesByGenre(genreId: "38")
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                self.searchVMError.errorMessage != nil
+            }), object: nil)
+        wait(for: [expectation], timeout: 5)
+    }
+    
     func testLoadHalfSheetPathSuccessful() {
         let movieId = 11
         searchVMSucceed.loadHalfSheetImage(movieId: movieId)
@@ -146,7 +164,7 @@ class SearchViewModelTests: XCTestCase {
     }
     
     func testAddMovieToLogSuccessful() {
-        let logData = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: nil, movieIds: [], watchedIds: [], collaborators: [], order: [:])
+        let logData = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: nil, movieIds: [], watchedIds: ["11"], collaborators: [], order: [:])
         let log = LogType.log(logData)
         let movieId = "11"
         
@@ -162,7 +180,7 @@ class SearchViewModelTests: XCTestCase {
     }
     
     func testAddMovieToLogError() {
-        let logData = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: nil, movieIds: [], watchedIds: [], collaborators: [], order: [:])
+        let logData = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: nil, movieIds: ["11"], watchedIds: [], collaborators: [], order: [:])
         let log = LogType.log(logData)
         let movieId = "11"
         
@@ -182,6 +200,94 @@ class SearchViewModelTests: XCTestCase {
         searchVMSucceed.addMovieToLog(movieId: movieId, log: log)
         
         resetAllLogs()
+    }
+    
+    func testAddMovieToLocalLogInWatchedSuccessful() {
+        // Add test log
+        let context = PersistenceController.shared.container.viewContext
+        let logData = LocalLogData(context: context)
+        logData.log_id = 123
+        logData.name = "My Log"
+        logData.creation_date = "now"
+        
+        // Fake movie data
+        let movieData = LocalMovieData(context: context)
+        movieData.movie_id = "11"
+        movieData.movie_index = 0
+        
+        logData.addToWatched_ids(movieData)
+        
+        let log = LogType.localLog(logData)
+        let movieId = "11"
+        
+        searchVMSucceed.addMovieToLog(movieId: movieId, log: log)
+        
+        resetAllLogs()
+    }
+    
+    func testIsMovieNotInLogSuccess() {
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: nil, watchedIds: ["11", "13", "1"], collaborators: [], order: [:])
+        
+        let result = searchVMSucceed.isMovieInLog(movieId: "11", log: LogType.log(log))
+        
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                result == false
+            }), object: nil)
+        wait(for: [expectation], timeout: 10)
+    }
+    
+    func testIsMovieInLogSuccess() {
+        let log = LogData(logId: "log123", name: "My Log", creationDate: "now", lastModifiedDate: "now", isVisible: true, owner: Owner(userId: "mockUserId", priority: 1), movieIds: ["11", "12", "156"], watchedIds: ["11", "13", "1"], collaborators: [], order: [:])
+        
+        let result = searchVMSucceed.isMovieInLog(movieId: "11", log: LogType.log(log))
+        
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                result == true
+            }), object: nil)
+        wait(for: [expectation], timeout: 10)
+    }
+    
+    func testIsMovieNotInLogLocalSuccess() {
+        let context = PersistenceController.shared.container.viewContext
+        
+        // Test log data
+        let log = LocalLogData(context: context)
+        log.log_id = 123
+        log.name = "My Log"
+        
+        let result = searchVMSucceed.isMovieInLog(movieId: "11", log: LogType.localLog(log))
+        
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                result == false
+            }), object: nil)
+        wait(for: [expectation], timeout: 10)
+    }
+    
+    func testIsMovieInLogLocalSuccess() {
+        let context = PersistenceController.shared.container.viewContext
+        
+        // Test log data
+        let log = LocalLogData(context: context)
+        log.log_id = 123
+        log.name = "My Log"
+        
+        // Fake movie data
+        let movieData = LocalMovieData(context: context)
+        movieData.movie_id = "11"
+        movieData.movie_index = 0
+        
+        log.addToMovie_ids(movieData)
+        
+        let result = searchVMSucceed.isMovieInLog(movieId: "11", log: LogType.localLog(log))
+        
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(block: { _, _ in
+                result == true
+            }), object: nil)
+        wait(for: [expectation], timeout: 10)
     }
     
     private func resetAllLogs() {

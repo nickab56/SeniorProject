@@ -56,6 +56,8 @@
 		972FFADD2B82D3D600E8F0B3 /* MovieImageDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972FFADC2B82D3D600E8F0B3 /* MovieImageDataTests.swift */; };
 		972FFADF2B82E2EA00E8F0B3 /* LogRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972FFADE2B82E2EA00E8F0B3 /* LogRepositoryTests.swift */; };
 		972FFAE12B82EEE400E8F0B3 /* MovieRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972FFAE02B82EEE400E8F0B3 /* MovieRepositoryTests.swift */; };
+		9757A5C52BBF440E00ECE2E5 /* LogsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9757A5C42BBF440E00ECE2E5 /* LogsViewModelTests.swift */; };
+		9757A5C72BBF60B700ECE2E5 /* LogSelectionViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9757A5C62BBF60B700ECE2E5 /* LogSelectionViewModelTests.swift */; };
 		975B33FF2B7A9B10004167D2 /* MockFirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975B33FE2B7A9B10004167D2 /* MockFirebaseService.swift */; };
 		975B34012B7AA44E004167D2 /* SocialViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975B34002B7AA44E004167D2 /* SocialViewModel.swift */; };
 		975B34032B7AACC7004167D2 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 975B34022B7AACC7004167D2 /* AuthViewModel.swift */; };
@@ -180,6 +182,8 @@
 		972FFADC2B82D3D600E8F0B3 /* MovieImageDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieImageDataTests.swift; sourceTree = "<group>"; };
 		972FFADE2B82E2EA00E8F0B3 /* LogRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogRepositoryTests.swift; sourceTree = "<group>"; };
 		972FFAE02B82EEE400E8F0B3 /* MovieRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieRepositoryTests.swift; sourceTree = "<group>"; };
+		9757A5C42BBF440E00ECE2E5 /* LogsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsViewModelTests.swift; sourceTree = "<group>"; };
+		9757A5C62BBF60B700ECE2E5 /* LogSelectionViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogSelectionViewModelTests.swift; sourceTree = "<group>"; };
 		975B33FE2B7A9B10004167D2 /* MockFirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFirebaseService.swift; sourceTree = "<group>"; };
 		975B34002B7AA44E004167D2 /* SocialViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialViewModel.swift; sourceTree = "<group>"; };
 		975B34022B7AACC7004167D2 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
@@ -446,6 +450,8 @@
 				977CFF622BAD21C6001F3051 /* FriendsProfileViewModelTests.swift */,
 				971A14312BB2134300F3F4B7 /* SearchViewModelTests.swift */,
 				971A14332BB2225700F3F4B7 /* LogViewModelTests.swift */,
+				9757A5C42BBF440E00ECE2E5 /* LogsViewModelTests.swift */,
+				9757A5C62BBF60B700ECE2E5 /* LogSelectionViewModelTests.swift */,
 			);
 			path = viewmodels;
 			sourceTree = "<group>";
@@ -766,6 +772,7 @@
 				3469C1922B312A4700B8EEFB /* backblogTests.swift in Sources */,
 				977CFF632BAD21C6001F3051 /* FriendsProfileViewModelTests.swift in Sources */,
 				9775898F2BACDA9F008E2242 /* MockMovieService.swift in Sources */,
+				9757A5C72BBF60B700ECE2E5 /* LogSelectionViewModelTests.swift in Sources */,
 				972FFAD92B82D28600E8F0B3 /* MovieDataTests.swift in Sources */,
 				972FFAD32B82D19C00E8F0B3 /* LogRequestDataTests.swift in Sources */,
 				9775898D2BACD25E008E2242 /* MoviesViewModelTests.swift in Sources */,
@@ -774,6 +781,7 @@
 				971A14342BB2225700F3F4B7 /* LogViewModelTests.swift in Sources */,
 				972FFADD2B82D3D600E8F0B3 /* MovieImageDataTests.swift in Sources */,
 				977CFF612BAD148B001F3051 /* SocialViewModelTests.swift in Sources */,
+				9757A5C52BBF440E00ECE2E5 /* LogsViewModelTests.swift in Sources */,
 				972FFADB2B82D30300E8F0B3 /* MovieSearchDataTests.swift in Sources */,
 				972FFAD12B82D11B00E8F0B3 /* FriendRequestDataTests.swift in Sources */,
 			);
