@@ -27,6 +27,12 @@ struct EditCollaboratorSheetView: View {
     
     @State public var collaborators: [UserData] = []
     
+    init(isPresented: Binding<Bool>, vm: LogViewModel) {
+        self._isPresented = isPresented
+        self.vm = vm
+        self._collaborators = State(initialValue: vm.collaborators)
+    }
+    
     // Computed property to get the list of friends not already collaborators
     var friends: [UserData] {
         vm.friends.filter { !collaborators.contains($0) && $0.userId != vm.log.toLog()!.owner?.userId }

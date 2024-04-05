@@ -248,15 +248,8 @@ class LogRepository {
                             
                             // Check if target sent a request to this user
                             let targetRequests = try await UserRepository(fb: self.fb).getLogRequests(userId: e).get()
-                            if ((targetRequests.firstIndex(where: { $0.senderId == userId && $0.targetId == e })) != nil) {
+                            if ((targetRequests.firstIndex(where: { $0.senderId == userId && $0.targetId == e && $0.logId == logId })) != nil) {
                                 // Log request already sent!
-                                return false
-                            }
-                            
-                            // Check if user already sent a request to this target
-                            let userRequests = try await UserRepository(fb: self.fb).getLogRequests(userId: userId).get()
-                            if ((userRequests.firstIndex(where: { $0.senderId == e && $0.targetId == userId })) != nil) {
-                                // User has already sent a friend request!
                                 return false
                             }
                             
