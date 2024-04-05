@@ -136,7 +136,7 @@ class LogViewModel: ObservableObject {
             for movieId in unwatchedMovies {
                 group.enter()
                 Task {
-                    if (!movies.contains(where: { String($0.0.id ?? 0) == movieId })) {
+                    if (!self.movies.contains(where: { String($0.0.id ?? 0) == movieId })) {
                         await fetchMovieDetails(movieId: movieId, isWatched: false)
                     }
                     group.leave()
@@ -752,7 +752,7 @@ class LogViewModel: ObservableObject {
         
         Task {
             do {
-                _ = try await logRepo.updateLog(logId: logId, updateData: ["is_visible": isVisible])
+                _ = try await logRepo.updateLog(logId: logId, updateData: ["is_visible": isVisible]).get()
             } catch {
                 print("Error updating log visibility: \(error.localizedDescription)")
             }

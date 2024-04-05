@@ -112,5 +112,36 @@ class UserRepository {
         }
     }
     
+    func getLogRequests(userId: String, friendId: String) async -> Result<[LogRequestData], Error> {
+        do {
+            let q = fb.getCollectionRef(refName: "log_requests")?.whereField("target_id", isEqualTo: userId).whereField("sender_id", isEqualTo: friendId).whereField("is_complete", isEqualTo: false)
+            var result = try await fb.getBatch(type: LogRequestData(), query: q).get()
+            
+            let q1 = fb.getCollectionRef(refName: "log_requests")?.whereField("target_id", isEqualTo: friendId).whereField("sender_id", isEqualTo: userId).whereField("is_complete", isEqualTo: false)
+            let result1 = try await fb.getBatch(type: LogRequestData(), query: q1).get()
+            
+            result.append(contentsOf: result1)
+            
+            return .success(result)
+        } catch {
+            return .failure(error)
+        }
+    }
+    
+    func getFriendRequests(userId: String, friendId: String) async -> Result<[FriendRequestData], Error> {
+        do {
+            let q = fb.getCollectionRef(refName: "friend_requests")?.whereField("target_id", isEqualTo: userId).whereField("sender_id", isEqualTo: friendId).whereField("is_complete", isEqualTo: false)
+            var result = try await fb.getBatch(type: FriendRequestData(), query: q).get()
+            
+            let q1 = fb.getCollectionRef(refName: "friend_requests")?.whereField("target_id", isEqualTo: friendId).whereField("sender_id", isEqualTo: userId).whereField("is_complete", isEqualTo: false)
+            let result1 = try await fb.getBatch(type: FriendRequestData(), query: q1).get()
+            
+            result.append(contentsOf: result1)
+            
+            return .success(result)
+        } catch {
+            return .failure(error)
+        }
+    }
     
 }

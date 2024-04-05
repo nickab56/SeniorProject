@@ -177,7 +177,7 @@ struct SocialView: View {
                                     .foregroundColor(.gray)
                             }
                             .padding(.bottom, 10)
-                            ForEach(vm.friends) { friendId in FriendListElement(friendId: friendId.userId ?? "", userId: vm.getUserId(), username: friendId.username ?? "", avatarPreset: friendId.avatarPreset ?? 1)
+                            ForEach(vm.friends) { friendId in FriendListElement(friendId: friendId.userId ?? "", userId: vm.getUserId(), username: friendId.username ?? "", avatarPreset: friendId.avatarPreset ?? 1, user: vm.userData)
                                     .padding(.horizontal)
                                     .accessibilityIdentifier("FriendProfileElement")
                             }
@@ -263,7 +263,7 @@ struct RequestList: View {
     let avatarPreset: Int
     
     var body: some View {
-        NavigationLink(destination: FriendsProfileView(friendId: reqUserId)) {
+        NavigationLink(destination: FriendsProfileView(friendId: reqUserId, user: viewModel.userData)) {
             HStack {
                 let preset = getAvatarId(avatarPreset: avatarPreset)
                 Image(uiImage: UIImage(named: preset) ?? UIImage())
