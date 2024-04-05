@@ -51,38 +51,20 @@ struct LogDetailsView: View {
                 .edgesIgnoringSafeArea(.all)
 
             VStack {
-                let logName = switch log {
-                case .localLog(let log):
-                    log.name ?? ""
-                case .log(let log):
-                    log.name ?? ""
-                }
                 HStack{
-//                    Text("\(logName)")
-//                        .font(.system(size: 30))
-//                        .fontWeight(.bold)
-//                        .foregroundColor(.white)
-//                        .padding()
-                    CustomTitleView(title: "\(logName)")
+                    CustomTitleView(title: "\(vm.getLogName())")
                         .bold()
-                        //.padding(.top, 80)
                     
                     Spacer()
                 }
                 
                 HStack(alignment: .center){
                     VStack(){
-                        if case .log = log {
-                            if ((vm.isOwner() || vm.isCollaborator())) {
-                                CollaboratorsView(collaborators: vm.getCollaboratorAvatars())
-                                .frame(maxWidth: 80)
-                                //.padding(.horizontal)
-                                //.padding(.bottom)
-                                //.offset(y: -20)
-                            }
+                        if (vm.isOwner || vm.isCollaborator) {
+                            CollaboratorsView(collaborators: vm.getCollaboratorAvatars())
+                            .frame(maxWidth: 80)
                         }
                     }
-                    //.clipped()
                     
                     VStack(alignment: .leading) {
                         if (vm.movies.count == 1) {
@@ -91,40 +73,27 @@ struct LogDetailsView: View {
                         else {
                             Text("\(vm.movies.count) Movies")
                         }
-//                        Text("Unwatched: \(vm.movies.count)")
-//                            .fontWeight(.bold)
-//                            .foregroundColor(.gray)
-//                            //.padding()
-//                        
-//                        Text("Watched: \(vm.watchedMovies.count)")
-//                            .fontWeight(.bold)
-//                            .foregroundColor(.gray)
-//                            .padding(.leading, -20)
-                            ///.padding()
-                        
-                        //Spacer()
-                    }//.padding(.top, -25)
+                    }
                     Spacer()
                 }.padding(.leading, 16)
                     .offset(y: -20)
                 
                 HStack {
-                        if case .log = log { // Only show for non-local logs
-                                if (vm.isOwner()) {
-                                    Button(action: {
-                                        editCollaboratorSheet = true
-                                    }) {
-                                        Image(systemName: "person.badge.plus")
-                                            .padding()
-                                            .font(.system(size: 25))
-                                    }
-                                    .background(Color.clear)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(8)
-                                    .accessibilityIdentifier("editCollabButton")
-                                }
-                            }
-                        
+                    if (vm.isOwner && !vm.isLocalLog()) {
+                        Button(action: {
+                            editCollaboratorSheet = true
+                        }) {
+                            Image(systemName: "person.badge.plus")
+                                .padding()
+                                .font(.system(size: 25))
+                        }
+                        .background(Color.clear)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        .accessibilityIdentifier("editCollabButton")
+                    }
+                    
+                    if (vm.isCollaborator || vm.isOwner) {
                         Button(action: {
                             editLogSheet = true
                         }) {
@@ -157,7 +126,7 @@ struct LogDetailsView: View {
                         .foregroundColor(.white)
                         .cornerRadius(8)
                         
-                        NavigationLink(destination: SearchAddToLogView(log: log), isActive: $showingSearchAddToLogView) {
+                        NavigationLink(destination: SearchAddToLogView(log: vm.log), isActive: $showingSearchAddToLogView) {
                             EmptyView() // Hidden NavigationLink
                         }
 
@@ -173,10 +142,11 @@ struct LogDetailsView: View {
                         .background(Color.clear)
                         .foregroundColor(.blue)
                         .cornerRadius(8)
-                        
-                    }.padding(.top, -20)
-                    .padding(.bottom, 10)
-                    .padding(.horizontal, 16)
+                    }
+                }
+                .padding(.top, -20)
+                .padding(.bottom, 10)
+                .padding(.horizontal, 16)
                 
                 
                 if vm.movies.isEmpty && vm.watchedMovies.isEmpty {
@@ -186,28 +156,26 @@ struct LogDetailsView: View {
                 } else {
                     List {
                         if !vm.movies.isEmpty {
-//                            Section(header: Text("Unwatched")                            .background(Color.clear).foregroundColor(.white).accessibility(identifier: "UnwatchedSectionHeader")) {
-                                ForEach(vm.movies, id: \.0.id) { (movie, halfSheetPath) in
-                                    MovieRow(movie: movie, halfSheetPath: halfSheetPath, log: log)
-                                        .listRowBackground(Color.clear)
-                                        .textCase(nil)
-                                        .swipeActions(edge: .trailing, allowsFullSwipe: vm.canSwipeToMarkWatchedUnwatched()) {
-                                            if vm.canSwipeToMarkWatchedUnwatched() {
-                                                Button {
-                                                    vm.markMovieAsWatched(movieId: movie.id ?? 0)
-                                                } label: {
-                                                    Label("Watched", systemImage: "checkmark.circle.fill")
-                                                }
-                                                .tint(.blue)
+                            ForEach(vm.movies, id: \.0.id) { (movie, halfSheetPath) in
+                                MovieRow(movie: movie, halfSheetPath: halfSheetPath, log: vm.log)
+                                    .listRowBackground(Color.clear)
+                                    .textCase(nil)
+                                    .swipeActions(edge: .trailing, allowsFullSwipe: vm.canSwipeToMarkWatchedUnwatched()) {
+                                        if vm.canSwipeToMarkWatchedUnwatched() {
+                                            Button {
+                                                vm.markMovieAsWatched(movieId: movie.id ?? 0)
+                                            } label: {
+                                                Label("Watched", systemImage: "checkmark.circle.fill")
                                             }
+                                            .tint(.blue)
                                         }
-                                }
-                            //}
+                                    }
+                            }
                         }
 
                         Section(header: Text("Watched").foregroundColor(.white).accessibility(identifier: "WatchedSectionHeader")) {
                             ForEach(vm.watchedMovies, id: \.0.id) { (movie, halfSheetPath) in
-                                MovieRow(movie: movie, halfSheetPath: halfSheetPath, log: log)
+                                MovieRow(movie: movie, halfSheetPath: halfSheetPath, log: vm.log)
                                     .listRowBackground(Color.clear)
                                     .textCase(nil)
                                     .swipeActions(edge: .trailing, allowsFullSwipe: vm.canSwipeToMarkWatchedUnwatched()) {

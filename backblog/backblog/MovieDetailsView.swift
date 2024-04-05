@@ -168,14 +168,21 @@ struct MovieDetailsView: View {
                                                 vm.moveMovieToUnwatched()
                                             }
                                         }) {
-                                            Text(vm.isInUnwatchedMovies ? "ADD TO WATCHED" : vm.isInWatchedMovies ? "ADD TO UNWATCHED" : "ADD TO LOG")
-                                                .foregroundColor(.white)
-                                                .bold()
+                                            if (!vm.completed) {
+                                                Text(vm.isInUnwatchedMovies ? "ADD TO WATCHED" : vm.isInWatchedMovies ? "ADD TO UNWATCHED" : "ADD TO LOG")
+                                                    .foregroundColor(.white)
+                                                    .bold()
+                                            } else {
+                                                Text("ADDED ✓")
+                                                    .foregroundColor(.white)
+                                                    .bold()
+                                            }
                                         }
                                         .frame(maxWidth: .infinity)
                                         .frame(height: 50)
                                         .background(Color(hex: "3891E1"))
                                         .cornerRadius(25)
+                                        .disabled(vm.completed)
                                     }
                                     else{
                                         Button(action: {

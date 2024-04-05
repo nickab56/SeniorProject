@@ -29,7 +29,8 @@ struct EditLogSheetView: View {
     
     @State private var draftLogName: String
     @State private var draftPublicLog: Bool = true
-    @State private var draftMovies: [(MovieData, String)]
+    @State private var draftUnwatchedMovies: [(MovieData, String)]
+    @State private var draftWatchedMovies: [(MovieData, String)]
     @State private var showDeleteConfirmation: Bool = false
 
     /**
@@ -52,7 +53,8 @@ struct EditLogSheetView: View {
             _draftLogName = State(initialValue: "")
         }
 
-        _draftMovies = State(initialValue: vm.movies)
+        _draftUnwatchedMovies = State(initialValue: vm.movies)
+        _draftWatchedMovies = State(initialValue: vm.watchedMovies)
         
         switch vm.log {
         case .log(let logData):
@@ -82,35 +84,46 @@ struct EditLogSheetView: View {
                 }
 
                 Section(header: Text("Unwatched Movies")) {
-                    ForEach(draftMovies, id: \.0.id) { (movie, _) in
+                    ForEach(draftUnwatchedMovies, id: \.0.id) { (movie, _) in
                         Text(movie.title ?? "Unknown Movie")
                     }
                     .onDelete(perform: { indexSet in
-                        draftMovies = vm.deleteDraftMovie(movies: draftMovies, at: indexSet)
+                        draftUnwatchedMovies = vm.deleteDraftMovie(movies: draftUnwatchedMovies, at: indexSet)
                     })
-                    //.onDelete(perform: deleteDraftMovie)
                     .onMove(perform: { indices, newOffset in
-                        draftMovies = vm.moveDraftMovies(movies: draftMovies, from: indices, to: newOffset)
+                        draftUnwatchedMovies = vm.moveDraftMovies(movies: draftUnwatchedMovies, from: indices, to: newOffset)
+                    })
+                }
+                
+                Section(header: Text("Watched Movies")) {
+                    ForEach(draftWatchedMovies, id: \.0.id) { (movie, _) in
+                        Text(movie.title ?? "Unknown Movie")
+                    }
+                    .onDelete(perform: { indexSet in
+                        draftWatchedMovies = vm.deleteDraftMovie(movies: draftWatchedMovies, at: indexSet)
+                    })
+                    .onMove(perform: { indices, newOffset in
+                        draftWatchedMovies = vm.moveDraftMovies(movies: draftWatchedMovies, from: indices, to: newOffset)
                     })
                 }
 
                 Section {
                     Button("Save") {
                         vm.updateLogVisibility(isVisible: draftPublicLog)
-                        vm.saveChanges(draftLogName: draftLogName, movies: draftMovies)
+                        vm.saveChanges(draftLogName: draftLogName, movies: draftUnwatchedMovies, watchedMovies: draftWatchedMovies)
                         isPresented = false
                     }
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity)
 
-
-                    Button("Delete Log") {
-                        showDeleteConfirmation = true
+                    if (vm.isOwner) {
+                        Button("Delete Log") {
+                            showDeleteConfirmation = true
+                        }
+                        .foregroundColor(.red)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity)
                     }
-                    .foregroundColor(.red)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity)
-
 
                     Button("Cancel") {
                         isPresented = false

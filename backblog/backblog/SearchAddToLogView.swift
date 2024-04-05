@@ -65,7 +65,7 @@ struct SearchAddToLogView: View {
         HStack {
             Image(systemName: "magnifyingglass").foregroundColor(.gray)
             TextField("Search for a movie", text: $searchText)
-                .onChange(of: searchText) { newValue in
+                .onChange(of: searchText) { newValue, oldValue in
                     viewModel.searchMovies(query: newValue)
                 }
                 .font(.system(size: 18, weight: .bold))
