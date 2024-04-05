@@ -8,7 +8,6 @@
 //  Description: Manages the data and business logic of a log, including
 //  its movies and collaborators.
 //
-
 import Foundation
 import SwiftUI
 import CoreData

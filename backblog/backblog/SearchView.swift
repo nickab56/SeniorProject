@@ -230,9 +230,6 @@ struct SearchView: View {
             .buttonStyle(PlainButtonStyle())
         }
     }
-
-    
-    // KNOWN BUG: Shows the static placeholder image FIRST, then shows the animated one if it is actually loading an image. Should first show the animated image and if there is an image show that and if there is no image it should show the static.
     
     /**
      Fetches and displays the movie's image.
@@ -373,7 +370,6 @@ struct SearchView: View {
             .cornerRadius(8)
             .frame(width: 180, height: 110)
         }
-        //.buttonStyle(PlainButtonStyle())
     }
 
 }

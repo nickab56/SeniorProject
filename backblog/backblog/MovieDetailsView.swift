@@ -241,24 +241,13 @@ struct MovieDetailsView: View {
                                         .font(.caption)
                                         .bold()
                                         .padding(.bottom, 50)
-                                    //                                    VStack(alignment: .leading) {
-                                    //                                        ForEach(cast.prefix(3), id: \.id) { castMember in
-                                    //                                            Text(castMember.name ?? "N/A")
-                                    //                                                .foregroundColor(.white)
-                                    //                                                .bold()
-                                    //                                        }
-                                    //}.padding()
                                         .accessibility(identifier: "movieCast")
                                 }
                             }
                         }
                         .padding(.horizontal, 16)
-                        //.padding(.top, 95)
                     }
-                    //.padding(.top, 90)
-                    .scrollClipDisabled()
-                    //.scrollBounceBehavior(.basedOnSize, axes: [.vertical])
-                    
+                    .scrollClipDisabled()                    
                     .padding(.top, 95)
                 }
             } else if vm.errorMessage != nil {

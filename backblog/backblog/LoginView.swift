@@ -92,9 +92,6 @@ struct LoginView: View {
                         .cornerRadius(10)
                         .padding()
                         .accessibility(identifier: "loginButton")
-//                        TODO: if we want the fields to be in dark mode or light mode
-//                        .preferredColorScheme(.dark)
-
                         NavigationLink(destination: SignupView(vm: vm)) {
                            HStack {
                                Text("Don't have an account?")

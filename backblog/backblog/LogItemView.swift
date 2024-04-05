@@ -57,9 +57,7 @@ struct LogItemView: View {
                             .overlay(
                                 Image("nomovies") // Use the local asset as a fallback
                                     .resizable()
-                                    //.scaledToFill()
                                     .overlay(Rectangle().foregroundColor(.black).opacity(0.7))
-                                    //.blur(radius: 10)
                         )
                     @unknown default:
                         EmptyView()
@@ -72,9 +70,7 @@ struct LogItemView: View {
                     .overlay(
                         Image("nomovies")
                             .resizable()
-                            //.scaledToFill()
                             .overlay(Rectangle().foregroundColor(.black).opacity(0.7))
-                            //.blur(radius: 10)
                 )
             }
 

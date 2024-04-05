@@ -55,27 +55,6 @@ struct MyLogsView: View {
             .sheet(isPresented: $showingAddLogSheet) {
                 AddLogSheetView(isPresented: $showingAddLogSheet, logsViewModel: vm)
             }
-            //        VStack(alignment: .leading) {
-            //            HStack {
-            //                Text("My Logs")
-            //                    .font(.system(size: 24))
-            //                    .bold()
-            //                    .foregroundColor(.white)
-            //
-            //                Spacer()
-            //
-            //                Button(action: {
-            //                    showingAddLogSheet = true
-            //                }) {
-            //                    Image(systemName: "plus.square.fill.on.square.fill")
-            //                        .foregroundColor(Color(hex: "#1b2731"))
-            //                }
-            //                .padding(8)
-            //                .background(Color(hex: "#3891e1"))
-            //                .cornerRadius(8)
-            //                .accessibility(identifier: "addLogButton")
-            //            }
-            //            .padding([.top, .leading, .trailing])
             VStack(alignment: .leading) {
                 ScrollView {
                     switch (vm.logs.first) {
@@ -88,9 +67,6 @@ struct MyLogsView: View {
                 Spacer()
             }
         }
-//        .sheet(isPresented: $showingAddLogSheet) {
-//            AddLogSheetView(isPresented: $showingAddLogSheet, logsViewModel: vm)
-//        }
     }
     
     /**
@@ -130,9 +106,6 @@ struct MyLogsView: View {
                 ForEach(logList, id: \.self) { log in
                     NavigationLink(destination: LogDetailsView(log: LogType.log(log))) {
                         LogItemView(log: LogType.log(log))
-                        //Rectangle()
-                            //.aspectRatio(1.0, contentMode: .fit)
-                            //.cornerRadius(5)
                     }
                     .overlay(
                         Rectangle()

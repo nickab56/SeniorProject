@@ -109,7 +109,7 @@ struct LandingView: View {
                             .background(Color(hex: "#3891E1"))
                             .cornerRadius(30)
                     }.padding(.top, 100)
-                    .sheet(isPresented: $showingAddLogSheet) { // Present the AddLogSheetView when the state changes
+                    .sheet(isPresented: $showingAddLogSheet) {
                         AddLogSheetView(isPresented: $showingAddLogSheet, logsViewModel: vm)
                     }
                     
@@ -124,7 +124,6 @@ struct LandingView: View {
                 } else {
                     Rectangle()
                         .cornerRadius(10)
-                        //.frame(width: 361, height: 202.882)
                         .frame(height: 202.882)
                         .padding(.horizontal, 16)
                         .padding(.top, 8)

@@ -41,7 +41,6 @@ struct backblogApp: App {
                                     resetAllLogs()
                                 }
                             }
-                            // Your existing splash screen logic here...
                         }
                 } else {
                     LandingView()
@@ -60,7 +59,7 @@ struct backblogApp: App {
     
     /*
      TO DO: Have resetAllLogs also include online logs so that the test starts fresh no matter what
-     Additoinally, have it sign the user out if possibl
+     Additionally, have it sign the user out if possible
      */
     
     /**
@@ -82,7 +81,7 @@ struct backblogApp: App {
     }
     
     func signOutUserForUITesting() async {
-        let firebaseService = FirebaseService() // Assuming you have access to FirebaseService here
+        let firebaseService = FirebaseService()
         _ = firebaseService.logout()
     }
 

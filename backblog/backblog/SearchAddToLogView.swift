@@ -16,8 +16,6 @@ struct SearchAddToLogView: View {
     @State private var showingAlreadyInLogNotification = false
     @State private var showingMovieAddedNotification = false
 
-
-
     var body: some View {
         ZStack {
             LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
