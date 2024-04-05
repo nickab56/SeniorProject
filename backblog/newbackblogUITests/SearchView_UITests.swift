@@ -301,7 +301,13 @@ final class SearchView_UITests: XCTestCase {
              ("Action", "GenreButton_Action"),
              ("Horror", "GenreButton_Horror"),
              ("Sci-Fi", "GenreButton_SciFi"),
-             ("Fantasy", "GenreButton_Fantasy")
+             ("Fantasy", "GenreButton_Fantasy"),
+             ("Animation", "GenreButton_Animation"),
+             ("Comedy", "GenreButton_Comedy"),
+             ("Crime", "GenreButton_Crime"),
+             ("Drama", "GenreButton_Drama"),
+             ("Family", "GenreButton_Family"),
+             ("Western", "GenreButton_Western")
          ]
          
          for (genreName, genreIdentifier) in genres {

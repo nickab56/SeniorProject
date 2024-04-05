@@ -113,7 +113,7 @@ struct SearchView: View {
                                 }
                                 .frame(width: 180, height: 110)
                                 .cornerRadius(8)
-                                .accessibility(identifier: "GenreButton_SciFi")
+                                .accessibility(identifier: "GenreButton_Animation")
                                 
                                 NavigationLink(destination: GenreView(genre: "Comedy")) {
                                     genreButtonContent(imageName: "fantasySearch", genreId: 35, genreName: "Comedy")

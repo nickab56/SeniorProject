@@ -100,21 +100,27 @@ struct EditLogSheetView: View {
                         vm.saveChanges(draftLogName: draftLogName, movies: draftMovies)
                         isPresented = false
                     }
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+
 
                     Button("Delete Log") {
                         showDeleteConfirmation = true
                     }
                     .foregroundColor(.red)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+
 
                     Button("Cancel") {
                         isPresented = false
                     }
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+
                 }
             }
             .navigationBarTitle("Edit Log", displayMode: .inline)
-            .toolbar {
-                EditButton()
-            }
             .alert("Are you sure you want to delete this log?", isPresented: $showDeleteConfirmation) {
                 Button("Yes", role: .destructive) {
                     vm.deleteLog()
