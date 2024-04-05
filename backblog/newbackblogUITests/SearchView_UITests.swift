@@ -80,7 +80,7 @@ final class SearchView_UITests: XCTestCase {
         sleep(1)
 
         // 1. Create a new log
-        app.buttons["addLogButton"].tap()
+        app.buttons["Create New Log"].tap()
         
         let newLogNameTextField = app.textFields["newLogNameTextField"]
         XCTAssertTrue(newLogNameTextField.waitForExistence(timeout: 5), "New Log Name text field should appear")
@@ -134,7 +134,7 @@ final class SearchView_UITests: XCTestCase {
 
         // Create the first log
         app.tabBars["Tab Bar"].buttons["Hdr"].tap()
-        app.buttons["addLogButton"].tap()
+        app.buttons["Create New Log"].tap()
 
         let newLogNameTextField = app.textFields["newLogNameTextField"]
         XCTAssertTrue(newLogNameTextField.waitForExistence(timeout: 5), "New Log Name text field should appear")
@@ -207,7 +207,7 @@ final class SearchView_UITests: XCTestCase {
 
         // Create the first log
         app.tabBars["Tab Bar"].buttons["Hdr"].tap()
-        app.buttons["addLogButton"].tap()
+        app.buttons["Create New Log"].tap()
 
         let newLogNameTextField = app.textFields["newLogNameTextField"]
         XCTAssertTrue(newLogNameTextField.waitForExistence(timeout: 5), "New Log Name text field should appear")
@@ -255,7 +255,7 @@ final class SearchView_UITests: XCTestCase {
 
         // Create a new log
         app.tabBars["Tab Bar"].buttons["Hdr"].tap()
-        app.buttons["addLogButton"].tap()
+        app.buttons["Create New Log"].tap()
 
         let newLogNameTextField = app.textFields["newLogNameTextField"]
         XCTAssertTrue(newLogNameTextField.waitForExistence(timeout: 5), "New Log Name text field should appear")
@@ -294,6 +294,10 @@ final class SearchView_UITests: XCTestCase {
     {
         
         let app = XCUIApplication()
+        app.launch()
+        
+        sleep(1)
+        
          app.tabBars.buttons["Search"].tap()
          
          // Define the genre identifiers and names for easier iteration
