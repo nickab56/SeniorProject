@@ -55,6 +55,47 @@ final class LandingView_UITests: XCTestCase {
         let newLogEntry = app.staticTexts["Log 1"]
         XCTAssertTrue(newLogEntry.waitForExistence(timeout: 5), "Newly created log named 'Log 1' should exist on the landing page")
     }
+    
+    func test_LandingView_AddLogButton_MakePublicNewLog() {
+        
+        let app = XCUIApplication()
+        
+        // Given: The app is launched, wait for the "addLogButton" to be visible on the landing page.
+        let addLogButton = app.buttons["Create New Log"]
+        let exists = NSPredicate(format: "exists == true")
+        
+        expectation(for: exists, evaluatedWith: addLogButton, handler: nil)
+        waitForExpectations(timeout: 10) { error in
+            if error != nil {
+                XCTFail("Add Log button didn't appear in time")
+            }
+        }
+        
+        // When: We tap on the "addLogButton".
+        addLogButton.tap()
+        
+        // And: Enter the name "Log 1" in the "newLogNameTextField", and then tap the "createLogButton".
+        let newLogNameTextField = app.textFields["newLogNameTextField"]
+        XCTAssertTrue(newLogNameTextField.waitForExistence(timeout: 5), "New Log Name text field should be visible after tapping Add Log button")
+        newLogNameTextField.tap()
+        newLogNameTextField.typeText("Log 1")
+        
+        // toggles public log to be public
+        let togglePublicSwitch = app.switches["newPublicLogSwitch"]
+        XCTAssertTrue(togglePublicSwitch.waitForExistence(timeout: 5), "PublicLog switch should exist")
+        
+        togglePublicSwitch.tap()
+        
+        let createLogButton = app.buttons["createLogButton"]
+        XCTAssertTrue(createLogButton.waitForExistence(timeout: 5), "Create Log button should be visible after entering log name")
+        createLogButton.tap()
+        
+        sleep(2)
+        
+        // Then: We should be returned to the landing page, and there should be a new log named "Log 1".
+        let newLogEntry = app.staticTexts["Log 1"]
+        XCTAssertTrue(newLogEntry.waitForExistence(timeout: 5), "Newly created log named 'Log 1' should exist on the landing page")
+    }
 
 
     
@@ -273,6 +314,61 @@ final class LandingView_UITests: XCTestCase {
         // Step 5: Verify that the movie details are no longer displayed
         XCTAssertFalse(app.staticTexts["WhatsNextTitle"].exists, "Movie title should no longer be visible after marking as watched")
         XCTAssertFalse(app.staticTexts["WhatsNextDetails"].exists, "Movie details should no longer be visible after marking as watched")
+    }
+    
+    func test_WhatsNextView_MovieDetailView() {
+        let app = XCUIApplication()
+        app.launch()
+        sleep(2)
+        // Add a new log
+        let addLogButton = app.buttons["Create New Log"]
+        XCTAssertTrue(addLogButton.waitForExistence(timeout: 5), "Add Log button should be visible")
+        addLogButton.tap()
+        
+        let newLogNameTextField = app.textFields["newLogNameTextField"]
+        newLogNameTextField.tap()
+        newLogNameTextField.typeText("Test Log\n")
+
+        let createLogButton = app.buttons["createLogButton"]
+        createLogButton.tap()
+
+        // Wait for the log to be created
+        XCTAssertTrue(app.staticTexts["Test Log"].waitForExistence(timeout: 5))
+
+        // Step 2: Search for a movie and add it to the log
+        app.tabBars["Tab Bar"].buttons["Search"].tap()
+
+        let movieSearchField = app.textFields["movieSearchField"]
+        movieSearchField.tap()
+        movieSearchField.typeText("Inception\n")
+
+        sleep(3)
+        
+        // Tap the "Add to Log" button for the searched movie
+        let addToLogButton = app.buttons["AddToLogButton"].firstMatch
+        XCTAssertTrue(addToLogButton.waitForExistence(timeout: 5), "Add to Log button should appear for searched movie")
+        addToLogButton.tap()
+
+        // Select the log
+        let testLogButton = app.buttons["MultipleSelectionRow_Test Log"]
+        XCTAssertTrue(testLogButton.waitForExistence(timeout: 5))
+        testLogButton.tap()
+        
+        // Confirm adding the movie to the log
+        app.buttons["Add"].tap()
+
+        // Step 3: Verify movie details in "What's Next" section
+        app.tabBars["Tab Bar"].buttons["Hdr"].tap()
+        sleep(1)
+
+        // Verify the presence of movie details elements without checking specific content
+        XCTAssertTrue(app.staticTexts["WhatsNextTitle"].waitForExistence(timeout: 5), "Movie title should be visible in What's Next section")
+        XCTAssertTrue(app.staticTexts["WhatsNextDetails"].waitForExistence(timeout: 5), "Movie details should be visible in What's Next section")
+
+        // Step 4: Clcik on movie
+        let detailButton = app.buttons["logPosterImage"]
+        XCTAssertTrue(detailButton.waitForExistence(timeout: 5))
+        detailButton.tap()
     }
 
     

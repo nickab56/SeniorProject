@@ -48,6 +48,8 @@ final class LoginView_UITests: XCTestCase {
         
         app/*@START_MENU_TOKEN@*/.buttons["Settings"]/*[[".otherElements[\"socialViewTab\"].buttons[\"Settings\"]",".buttons[\"Settings\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
         
+        sleep(1)
+        
         app.buttons["LOG OUT"].tap()
 
     }
