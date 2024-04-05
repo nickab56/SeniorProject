@@ -49,14 +49,12 @@ class MoviesViewModelTests: XCTestCase {
         let errorMessage: String? = nil
         let movieId = "11"
         let isComingFromLog = true
-        let isInUnwatchlist = false
         
         XCTAssertEqual(moviesViewModelSucceed.isLoading, isLoading)
         XCTAssertEqual(moviesViewModelSucceed.movieData, movieData)
         XCTAssertEqual(moviesViewModelSucceed.errorMessage, errorMessage)
         XCTAssertEqual(moviesViewModelSucceed.movieId, movieId)
         XCTAssertEqual(moviesViewModelSucceed.isComingFromLog, isComingFromLog)
-        XCTAssertEqual(moviesViewModelSucceed.isInUnwatchlist, isInUnwatchlist)
     }
     
     func testFetchMovieDetailsSuccess() {
