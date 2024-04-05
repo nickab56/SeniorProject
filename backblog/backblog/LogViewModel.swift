@@ -136,7 +136,7 @@ class LogViewModel: ObservableObject {
             for movieId in unwatchedMovies {
                 group.enter()
                 Task {
-                    if (!movies.contains(where: { String($0.0.id ?? 0) == movieId })) {
+                    if (!self.movies.contains(where: { String($0.0.id ?? 0) == movieId })) {
                         await fetchMovieDetails(movieId: movieId, isWatched: false)
                     }
                     group.leave()
