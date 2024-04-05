@@ -241,7 +241,6 @@ struct LogDetailsView: View {
         } message: {
             Text("This will randomly rearrange the unwatched movies in your log. Do you want to proceed?")
         }
-
     }
     
     /**
