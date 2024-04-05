@@ -29,6 +29,8 @@ class LogViewModel: ObservableObject {
     @Published var showingWatchedNotification = false
     @Published var isActive = true
     
+    @Published var logDeleted = false
+    
     // State vars for editing log
     @Published var isOwner = false
     @Published var isCollaborator = false
@@ -780,6 +782,7 @@ class LogViewModel: ObservableObject {
                     // Document was likely deleted
                     self.isOwner = false
                     self.isCollaborator = false
+                    self.logDeleted = true
                     
                     let logData = LogData()
                     self.log = LogType.log(logData)
