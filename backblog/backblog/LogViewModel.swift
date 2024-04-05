@@ -752,7 +752,7 @@ class LogViewModel: ObservableObject {
         
         Task {
             do {
-                _ = try await logRepo.updateLog(logId: logId, updateData: ["is_visible": isVisible])
+                _ = try await logRepo.updateLog(logId: logId, updateData: ["is_visible": isVisible]).get()
             } catch {
                 print("Error updating log visibility: \(error.localizedDescription)")
             }

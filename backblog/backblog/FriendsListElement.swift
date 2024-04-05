@@ -12,10 +12,11 @@ struct FriendListElement: View {
     let userId: String
     let username: String
     let avatarPreset: Int
+    let user: UserData?
         
     var body: some View {
         if friendId != userId {
-            NavigationLink(destination: FriendsProfileView(friendId: friendId)) {
+            NavigationLink(destination: FriendsProfileView(friendId: friendId, user: user)) {
                 HStack {
                     let preset = getAvatarId(avatarPreset: avatarPreset)
                     Image(uiImage: UIImage(named: preset) ?? UIImage())
