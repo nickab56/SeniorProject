@@ -41,7 +41,6 @@ struct backblogApp: App {
                                     resetAllLogs()
                                 }
                             }
-                            // Your existing splash screen logic here...
                         }
                 } else {
                     LandingView()
@@ -82,7 +81,7 @@ struct backblogApp: App {
     }
     
     func signOutUserForUITesting() async {
-        let firebaseService = FirebaseService() // Assuming you have access to FirebaseService here
+        let firebaseService = FirebaseService()
         _ = await firebaseService.logout()
     }
 
