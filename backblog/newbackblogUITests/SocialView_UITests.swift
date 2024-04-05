@@ -17,6 +17,7 @@ final class SocialView_UITests: XCTestCase {
         
     }
     
+    // User nick has to have zero logs for test to work
     func testSocialViewTabulation() throws {
         let app = XCUIApplication()
         app.launch()
@@ -61,9 +62,7 @@ final class SocialView_UITests: XCTestCase {
         app.tabBars["Tab Bar"].buttons["person.2.fill"].tap()
         app/*@START_MENU_TOKEN@*/.buttons["Settings"]/*[[".otherElements[\"socialViewTab\"].buttons[\"Settings\"]",".buttons[\"Settings\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
         
-        let scrollViewsQuery = app/*@START_MENU_TOKEN@*/.scrollViews/*[[".otherElements[\"socialViewTab\"].scrollViews",".scrollViews"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
-        scrollViewsQuery.otherElements.containing(.staticText, identifier:"Settings").element.swipeUp()
-        scrollViewsQuery.otherElements.buttons["LOG OUT"].tap()
+        app.buttons["LOG OUT"].tap()
         }
     
     func testChangeAvatarProcess() throws {
@@ -115,9 +114,7 @@ final class SocialView_UITests: XCTestCase {
         let selectedAvatarImage = app.images["SettingsProfilePicture"]
         XCTAssertTrue(selectedAvatarImage.exists, "Selected avatar should be visible in settings")
         
-        let scrollViewsQuery = app/*@START_MENU_TOKEN@*/.scrollViews/*[[".otherElements[\"socialViewTab\"].scrollViews",".scrollViews"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
-        scrollViewsQuery.otherElements.containing(.staticText, identifier:"Settings").element.swipeUp()
-        scrollViewsQuery.otherElements.buttons["LOG OUT"].tap()
+        app.buttons["LOG OUT"].tap()
     }
     
         func testAddFriendUIElements() throws {
@@ -161,8 +158,14 @@ final class SocialView_UITests: XCTestCase {
             XCTAssertTrue(cancelButton.exists, "Cancel button should be present on the Add Friend sheet")
             
             cancelButton.tap()
+            
+            //Log out
+            app/*@START_MENU_TOKEN@*/.buttons["Settings"]/*[[".otherElements[\"socialViewTab\"].buttons[\"Settings\"]",".buttons[\"Settings\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+            
+            app.buttons["LOG OUT"].tap()
         }
     
+    // user apple must have atleast one friend
     func test_FriendsProfileView_BlockandRemoveandAdd() throws {
         let app = XCUIApplication()
         app.launch()
@@ -216,12 +219,11 @@ final class SocialView_UITests: XCTestCase {
         XCTAssertTrue(cancelBlockUserButton.waitForExistence(timeout: 5), "Cancel button in Block User alert should be present")
         cancelBlockUserButton.tap()
         
-        app.tabBars["Tab Bar"].buttons["person.2.fill"].tap()
+        app.buttons["Back"].tap()
+        
         app/*@START_MENU_TOKEN@*/.buttons["Settings"]/*[[".otherElements[\"socialViewTab\"].buttons[\"Settings\"]",".buttons[\"Settings\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
         
-        let scrollViewsQuery = app/*@START_MENU_TOKEN@*/.scrollViews/*[[".otherElements[\"socialViewTab\"].scrollViews",".scrollViews"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
-        scrollViewsQuery.otherElements.containing(.staticText, identifier:"Settings").element.swipeUp()
-        scrollViewsQuery.otherElements.buttons["LOG OUT"].tap()
+        app.buttons["LOG OUT"].tap()
     }
 
 
