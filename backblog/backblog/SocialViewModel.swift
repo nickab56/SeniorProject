@@ -250,9 +250,10 @@ class SocialViewModel: ObservableObject {
                 }
                 
                 do {
-                    // Check if users are already friends
+                    // Get user data
                     let result = try await userRepo.getUserByUsername(username: username).get()
                     
+                    // Check if users are already friends
                     let userFriends = result.friends ?? [:]
                     if (userFriends.contains(where: { $0.key == userId })) {
                         notificationMessage = "You are already friends with this user!"
@@ -263,8 +264,8 @@ class SocialViewModel: ObservableObject {
                         return
                     }
                     
-                    // Check if target sent a request to this user
-                    guard let targetId = result.userId else {
+                    // Check if valid userId. Also check if user has been blocked
+                    guard let targetId = result.userId, userData?.blocked?[targetId] == nil, result.blocked?[userId] == nil else {
                         notificationMessage = "User not found!"
                         showingNotification = true
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -272,6 +273,8 @@ class SocialViewModel: ObservableObject {
                         }
                         return
                     }
+                    
+                    // Check if target sent a request to this user
                     let targetRequests = try await userRepo.getFriendRequests(userId: targetId).get()
                     if ((targetRequests.firstIndex(where: { $0.senderId == userId && $0.targetId == targetId })) != nil) {
                         notificationMessage = "Friend request already sent!"
@@ -525,7 +528,7 @@ class SocialViewModel: ObservableObject {
                 
                 snapshot.documentChanges.forEach { diff in
                     // New or modified log requests
-                    if (diff.type == .added || diff.type == .modified) {
+                    if (diff.type == .added || diff.type == .modified || diff.type == .removed) {
                         self.fetchLogRequests()
                     }
                 }
@@ -541,12 +544,7 @@ class SocialViewModel: ObservableObject {
                 }
                 
                 snapshot.documentChanges.forEach { diff in
-                    if (diff.type == .added) {
-                        // New friend requests
-                        self.fetchFriendRequests()
-                    }
-                    if (diff.type == .modified) {
-                        // Modified friend request (could have new friend)
+                    if (diff.type == .added || diff.type == .modified || diff.type == .removed) {
                         self.fetchFriendRequests()
                     }
                 }
@@ -561,6 +559,7 @@ class SocialViewModel: ObservableObject {
                     return
                 }
                 
+                self.fetchUserData()
                 self.fetchFriends()
             }
     }

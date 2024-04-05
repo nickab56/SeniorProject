@@ -305,4 +305,71 @@ class LogRepository {
         }
     }
     
+    func getMatchingLogs(userId: String, friendId: String) async -> Result<[LogData], Error> {
+        do {
+            let logRef = fb.getCollectionRef(refName: "logs")
+            let logData: [LogData] = try await withThrowingTaskGroup(of: [LogData].self) { group in
+                // Query for user-owned logs
+                group.addTask {
+                    do {
+                        let q = logRef?.whereField("owner.user_id", isEqualTo: userId).whereField("collaborators", arrayContains: friendId)
+                        return try await self.fb.getBatch(type: LogData(), query: q).get()
+                    } catch {
+                        throw error
+                    }
+                }
+                
+                // Query for friend-owned logs and for both users in collaborators
+                group.addTask {
+                    do {
+                        let q = logRef?.whereField("collaborators", arrayContains: userId)
+                        return try await self.fb.getBatch(type: LogData(), query: q).get()
+                    } catch {
+                        throw error
+                    }
+                }
+                
+                var resultArr: [LogData] = []
+                
+                for try await result in group {
+                    resultArr.append(contentsOf: result)
+                }
+                
+                return resultArr
+            }
+            
+            return .success(logData)
+        } catch {
+            return .failure(error)
+        }
+    }
+    
+    func updateLogs(updates: [[String: Any]]) async -> Result<Bool, Error> {
+        do {
+            let result = try await withThrowingTaskGroup(of: Bool.self) { group in
+                for update in updates {
+                    group.addTask {
+                        guard let logId: String = update["log_id"] as? String else { return false }
+                        do {
+                            return try await self.fb.put(updates: update, docId: logId, collection: "logs").get()
+                        } catch {
+                            throw error
+                        }
+                    }
+                }
+                
+                for try await result in group {
+                    if (!result) {
+                        throw FirebaseError.failedTransaction
+                    }
+                }
+                
+                return true
+            }
+            
+            return .success(result)
+        } catch {
+            return .failure(error)
+        }
+    }
 }

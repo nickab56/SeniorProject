@@ -183,17 +183,75 @@ class FriendRepository {
         }
     }
     
-    // TODO Ensure blocker is removed from logs involving this user (excluding one he owns)
-    // Blocked user must also be removed from the logs that the user above owns
     func blockUser(userId: String, blockedId: String) async -> Result<Bool, Error> {
         do {
             // Add to blocked
             let updates = ["blocked.\(blockedId)": true]
-            let result = try await fb.put(updates: updates, docId: userId, collection: "users").get()
+            _ = try await fb.put(updates: updates, docId: userId, collection: "users").get()
             
             // Remove from friends list (both)
             _ = try await removeFriend(userId: userId, friendId: blockedId).get()
             _ = try await removeFriend(userId: blockedId, friendId: userId).get()
+            
+            // Check if user has any pending friend/log requests with this user
+            let userRepo = UserRepository(fb: fb)
+            
+            // User-targeted requests
+            let logRequests = try await userRepo.getLogRequests(userId: userId, friendId: blockedId).get()
+            let friendRequests = try await userRepo.getFriendRequests(userId: userId, friendId: blockedId).get()
+            
+            // Update requests as complete
+            for req in logRequests {
+                guard let reqId = req.requestId else { continue }
+                _ = try await updateLogRequest(logRequestId: reqId, isAccepted: false).get()
+            }
+            
+            for req in friendRequests {
+                guard let reqId = req.requestId else { continue }
+                _ = try await updateFriendRequest(friendRequestId: reqId, isAccepted: false).get()
+            }
+            
+            // Get matching logs
+            let logRepo = LogRepository(fb: fb)
+            let logs = try await logRepo.getMatchingLogs(userId: userId, friendId: blockedId).get()
+            
+            if (logs.isEmpty) {
+                return .success(true)
+            }
+            
+            var logUpdates: [[String: Any]] = []
+            
+            for log in logs {
+                if (log.owner?.userId == userId) {
+                    // Remove blockee from logs owned by blocker
+                    logUpdates.append([
+                        "log_id": log.logId as Any,
+                        "collaborators": FieldValue.arrayRemove([blockedId]),
+                        "order.\(blockedId)": FieldValue.delete()
+                    ])
+                } else if (logs.first?.owner?.userId == blockedId) {
+                    // Remove blocker from logs owned by blockee
+                    logUpdates.append([
+                            "log_id": log.logId as Any,
+                            "collaborators": FieldValue.arrayRemove([userId]),
+                            "order.\(userId)": FieldValue.delete()
+                    ])
+                } else {
+                    // Check if blocker and blockee are collaborators in the log
+                    let collaborators = log.collaborators ?? []
+                    if (collaborators.contains(userId) && collaborators.contains(blockedId)) {
+                        // Remove blocker from logs with blocker as collaborator
+                        logUpdates.append([
+                                "log_id": log.logId as Any,
+                                "collaborators": FieldValue.arrayRemove([userId, blockedId]),
+                                "order.\(blockedId)": FieldValue.delete(),
+                                "order.\(userId)": FieldValue.delete()
+                        ])
+                    }
+                }
+            }
+            
+            let result = try await logRepo.updateLogs(updates: logUpdates).get()
             
             return .success(result)
         } catch {

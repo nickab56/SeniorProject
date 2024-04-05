@@ -45,8 +45,8 @@ struct FriendsProfileView: View {
         }
     }
     
-    init(friendId: String) {
-        _viewModel = StateObject(wrappedValue: FriendsProfileViewModel(friendId: friendId, fb: FirebaseService()))
+    init(friendId: String, user: UserData?) {
+        _viewModel = StateObject(wrappedValue: FriendsProfileViewModel(friendId: friendId, fb: FirebaseService(), user: user))
     }
     
     var body: some View {
@@ -170,9 +170,11 @@ struct FriendsProfileView: View {
                                     .foregroundColor(.gray)
                             }
                             ForEach(viewModel.friends) { friendId in 
-                                FriendListElement(
-                                    friendId: friendId.userId ?? "", userId: viewModel.getUserId(), username: friendId.username ?? "", avatarPreset: friendId.avatarPreset ?? 1)
-                                    .padding(.horizontal)
+                                if (viewModel.user?.blocked?[friendId.userId ?? ""] == nil) {
+                                    FriendListElement(
+                                        friendId: friendId.userId ?? "", userId: viewModel.getUserId(), username: friendId.username ?? "", avatarPreset: friendId.avatarPreset ?? 1, user: viewModel.userData)
+                                        .padding(.horizontal)
+                                }
                             }
                         } else {
                             Text("No friends found.")
