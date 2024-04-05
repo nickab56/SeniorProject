@@ -48,11 +48,8 @@ final class LoginView_UITests: XCTestCase {
         
         app/*@START_MENU_TOKEN@*/.buttons["Settings"]/*[[".otherElements[\"socialViewTab\"].buttons[\"Settings\"]",".buttons[\"Settings\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
         
-        let scrollViewsQuery = app/*@START_MENU_TOKEN@*/.scrollViews/*[[".otherElements[\"socialViewTab\"].scrollViews",".scrollViews"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
-        scrollViewsQuery.otherElements.containing(.staticText, identifier:"Settings").element.swipeUp()
-        scrollViewsQuery.otherElements.buttons["LOG OUT"].tap()
+        app.buttons["LOG OUT"].tap()
 
-        
     }
     
     func test_LoginView_LoginButton_LoginFailsMissingUsername() {
