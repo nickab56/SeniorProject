@@ -57,6 +57,7 @@ struct AddLogSheetView: View {
                     Toggle(isOn: $isPublic) {
                         Text("Public Log")
                     }
+                    .accessibility(identifier: "newPublicLogSwitch")
                 }
                 
                 if (logsViewModel.getUserId() != nil) {
