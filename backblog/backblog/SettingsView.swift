@@ -26,10 +26,6 @@ import CoreData
  The view is structured within a `ZStack` to layer the content over a gradient background, and a `ScrollView` is used to accommodate content that may exceed the screen size. User input fields and action buttons are styled consistently with the app's theme.
  */
 
-/**
- TO DO: Automate log syncing.
- */
-
 struct SettingsView: View {
     @ObservedObject var vm: SocialViewModel
     
@@ -123,19 +119,6 @@ struct SettingsView: View {
                     SecureField("Enter New Password", text: $newPasswordText)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding(.horizontal, 15)
-                    
-//                    if (vm.getLocalLogCount() > 0) {
-//                        Button(action: {
-//                            vm.syncLocalLogsToDB()
-//                        }) {
-//                            Text("SYNC LOGS")
-//                                .foregroundColor(.white)
-//                        }
-//                        .frame(width: 300, height: 50)
-//                        .background(Color.blue)
-//                        .cornerRadius(50)
-//                        .padding(.top, 5)
-//                    }
                     
                     Button(action: {
                         vm.updateUser(username: usernameText, newPassword: newPasswordText, password: oldPasswordText)

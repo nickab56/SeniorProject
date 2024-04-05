@@ -135,9 +135,7 @@ struct LogDetailsView: View {
                         }) {
                             Image(systemName: "plus.circle.fill")
                                 .resizable()
-                                //.padding()
                                 .frame(width: 50, height: 50)
-                                //.font(.system(size: 30))
                         }
                         .background(Color.clear)
                         .foregroundColor(.blue)
@@ -289,14 +287,12 @@ struct MovieRow: View {
                     }
                     .frame(width: 145, height: 90)
                     .cornerRadius(8)
-                    //.padding(.leading)
                 }
                 
                 VStack(alignment: .leading) {
                     Text(movie.title ?? "N/A")
                         .foregroundColor(.white)
                         .fontWeight(.semibold)
-                        //.fontWeight(.bold)
                         .accessibility(identifier: "LogDetailsMovieTitle")
                 }
             }
@@ -323,7 +319,6 @@ struct AvatarView: View {
             .scaledToFill()
             .frame(width: 35, height: 35)
             .clipShape(Circle())
-            //.overlay(Circle().stroke(Color.white, lineWidth: 2))
     }
 }
 
@@ -357,7 +352,6 @@ struct CollaboratorsView: View {
                                 )
                         }
                     }
-                    //.padding(.leading, 10)
                 }
                 .frame(height: 45)
             }

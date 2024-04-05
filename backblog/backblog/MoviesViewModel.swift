@@ -60,7 +60,6 @@ class MoviesViewModel: ObservableObject {
             self.isInUnwatchedMovies = fbLog.movieIds?.contains(movieId) ?? false
             self.isInWatchedMovies = fbLog.watchedIds?.contains(movieId) ?? false
         case .localLog(let localLog):
-            // Assuming LocalLogData has appropriate methods or properties to check for movieId
             self.isInUnwatchedMovies = localLog.movie_ids?.contains(where: { ($0 as? LocalMovieData)?.movie_id == movieId }) ?? false
             self.isInWatchedMovies = localLog.watched_ids?.contains(where: { ($0 as? LocalMovieData)?.movie_id == movieId }) ?? false
         }
