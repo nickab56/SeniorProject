@@ -82,7 +82,9 @@ struct backblogApp: App {
     
     func signOutUserForUITesting() async {
         let firebaseService = FirebaseService()
+
         _ = firebaseService.logout()
+      
     }
 
 
