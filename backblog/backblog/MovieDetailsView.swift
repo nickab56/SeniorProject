@@ -115,6 +115,7 @@ struct MovieDetailsView: View {
                                             .foregroundColor(Color(hex: "#9F9F9F"))
                                             .accessibility(identifier: "movieReleaseDate")
                                             .padding(.leading, movie.posterPath == nil ? 20 : 0)
+                                            .font(.system(size: 18))
                                         
                                         // Runtime
                                         if let runtime = movie.runtime {
@@ -123,10 +124,12 @@ struct MovieDetailsView: View {
                                                     .foregroundColor(Color(hex: "#9F9F9F"))
                                                     .accessibility(identifier: "movieRunTime")
                                                     .padding(.leading, movie.posterPath == nil ? 20 : 0)
+                                                    .font(.system(size: 18))
                                             } else {
                                                 Text("No Runtime Found")
                                                     .foregroundColor(Color(hex: "#9F9F9F"))
                                                     .padding(.leading, movie.posterPath == nil ? 20 : 0)
+                                                    .font(.system(size: 18))
                                             }
                                         }
                                         
@@ -143,7 +146,7 @@ struct MovieDetailsView: View {
                                             ForEach(genres, id: \.id) { genre in
                                                 Text(genre.name ?? "N/A")
                                                     .foregroundColor(Color(hex: "#9F9F9F"))
-                                                    .font(.caption)
+                                                    .font(.system(size: 14))
                                                     .textCase(.uppercase)
                                                     .bold()
                                                     .padding(7)
@@ -207,24 +210,27 @@ struct MovieDetailsView: View {
                                     .padding(.bottom, 2)
                                     .padding(.top, 50)
                                     .foregroundColor(Color(hex: "#9F9F9F"))
-                                    .font(.caption)
+                                    .font(.system(size: 18))
+                                    .bold()
+                                
                                 Text(movie.overview ?? "No overview available.")
                                     .foregroundColor(.white)
                                     .bold()
-                                    .font(.caption)
+                                    .font(.system(size: 16))
                                 
                                 // Director
                                 Text("Directors")
                                     .padding(.bottom, 2)
                                     .padding(.top, 10)
                                     .foregroundColor(Color(hex: "#9F9F9F"))
-                                    .font(.caption)
+                                    .font(.system(size: 18))
+                                    .bold()
                                 if let crew = movie.credits?.crew, let director = crew.first(where: { $0.job == "Director" }) {
                                     Text(director.name ?? "N/A")
                                         .foregroundColor(.white)
                                         .bold()
-                                        .font(.caption)
                                         .accessibility(identifier: "movieDirector")
+                                        .font(.system(size: 16))
                                 }
                                 
                                 // Cast
@@ -232,16 +238,17 @@ struct MovieDetailsView: View {
                                     .padding(.bottom, 2)
                                     .padding(.top, 10)
                                     .foregroundColor(Color(hex: "#9F9F9F"))
-                                    .font(.caption)
+                                    .font(.system(size: 18))
+                                    .bold()
                                 if let cast = movie.credits?.cast, !cast.isEmpty {
                                     let names = cast.prefix(3).map { $0.name ?? "N/A" }
                                     let commaSepNames = names.joined(separator: ", ")
                                     Text(commaSepNames)
                                         .foregroundColor(.white)
-                                        .font(.caption)
                                         .bold()
                                         .padding(.bottom, 50)
                                         .accessibility(identifier: "movieCast")
+                                        .font(.system(size: 16))
                                 }
                             }
                         }

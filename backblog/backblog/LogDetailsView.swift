@@ -58,11 +58,12 @@ struct LogDetailsView: View {
                     Spacer()
                 }
                 
-                HStack(alignment: .center){
+                HStack(){
                     VStack(){
                         if (vm.isOwner || vm.isCollaborator) {
                             CollaboratorsView(collaborators: vm.getCollaboratorAvatars())
                             .frame(maxWidth: 80)
+                            .padding(.leading, 25)
                         }
                     }
                     
@@ -74,8 +75,9 @@ struct LogDetailsView: View {
                             Text("\(vm.movies.count) Movies")
                         }
                     }
+                    .padding(.leading, 35)
                     Spacer()
-                }.padding(.leading, 16)
+                }.padding(.trailing, 180)
                     .offset(y: -20)
                 
                 HStack {
@@ -341,7 +343,7 @@ struct CollaboratorsView: View {
                         alignment: .bottomTrailing
                     )
             } else {
-                ScrollView(.horizontal, showsIndicators: false) {
+                //ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 2) {
                         ForEach(collaborators.indices, id: \.self) { index in
                             AvatarView(imageName: collaborators[index])
@@ -352,7 +354,7 @@ struct CollaboratorsView: View {
                                 )
                         }
                     }
-                }
+                //}
                 .frame(height: 45)
             }
         }
