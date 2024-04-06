@@ -100,11 +100,11 @@ struct AddLogSheetView: View {
                                 ForEach(filteredFriends, id: \.self) { friend in
                                     HStack {
                                         Image(uiImage: UIImage(named: getAvatarId(avatarPreset: friend.avatarPreset ?? 1)) ?? UIImage())
-                                            .resizable() // Allows the image to be resized
-                                            .aspectRatio(contentMode: .fill) // Maintain the aspect ratio while filling the frame
-                                            .frame(width: 40, height: 40) // Set the desired frame size for the image
-                                            .clipShape(Circle()) // Clip the image to a circle shape
-                                            .overlay(Circle().stroke(Color.white, lineWidth: 2)) // Optional: Add a border around the circle
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: 40, height: 40)
+                                            .clipShape(Circle())
+                                            .overlay(Circle().stroke(Color.white, lineWidth: 2))
                                         Text(friend.username ?? "Unknown")
                                         Spacer()
                                         Button(action: {
@@ -127,14 +127,13 @@ struct AddLogSheetView: View {
                                     }
                                 }
                             }
-                            .transition(.opacity) // Apply a fade-in transition
+                            .transition(.opacity) // Fade-in transition
                         }
                     }
                     .transition(.opacity)
                 }
 
                 Button(action: {
-                    // Check if the log name is not empty
                     if !newLogName.isEmpty {
                         if (logsViewModel.getUserId() != nil) {
                             logsViewModel.addLog(name: newLogName, isVisible: isPublic, collaborators: collaborators.compactMap { $0.userId })

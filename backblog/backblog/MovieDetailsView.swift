@@ -168,14 +168,21 @@ struct MovieDetailsView: View {
                                                 vm.moveMovieToUnwatched()
                                             }
                                         }) {
-                                            Text(vm.isInUnwatchedMovies ? "ADD TO WATCHED" : vm.isInWatchedMovies ? "ADD TO UNWATCHED" : "ADD TO LOG")
-                                                .foregroundColor(.white)
-                                                .bold()
+                                            if (!vm.completed) {
+                                                Text(vm.isInUnwatchedMovies ? "ADD TO WATCHED" : vm.isInWatchedMovies ? "ADD TO UNWATCHED" : "ADD TO LOG")
+                                                    .foregroundColor(.white)
+                                                    .bold()
+                                            } else {
+                                                Text("ADDED ✓")
+                                                    .foregroundColor(.white)
+                                                    .bold()
+                                            }
                                         }
                                         .frame(maxWidth: .infinity)
                                         .frame(height: 50)
                                         .background(Color(hex: "3891E1"))
                                         .cornerRadius(25)
+                                        .disabled(vm.completed)
                                     }
                                     else{
                                         Button(action: {
@@ -234,24 +241,13 @@ struct MovieDetailsView: View {
                                         .font(.caption)
                                         .bold()
                                         .padding(.bottom, 50)
-                                    //                                    VStack(alignment: .leading) {
-                                    //                                        ForEach(cast.prefix(3), id: \.id) { castMember in
-                                    //                                            Text(castMember.name ?? "N/A")
-                                    //                                                .foregroundColor(.white)
-                                    //                                                .bold()
-                                    //                                        }
-                                    //}.padding()
                                         .accessibility(identifier: "movieCast")
                                 }
                             }
                         }
                         .padding(.horizontal, 16)
-                        //.padding(.top, 95)
                     }
-                    //.padding(.top, 90)
-                    .scrollClipDisabled()
-                    //.scrollBounceBehavior(.basedOnSize, axes: [.vertical])
-                    
+                    .scrollClipDisabled()                    
                     .padding(.top, 95)
                 }
             } else if vm.errorMessage != nil {

@@ -406,59 +406,6 @@ class SocialViewModel: ObservableObject {
     }
     
     /**
-     Syncs local logs with the database, transferring any locally stored logs to the server.
-     */
-    func syncLocalLogsToDB() {
-        DispatchQueue.main.async { [self] in
-            Task {
-                let logs = getLocalLogs()
-                
-                do {
-                    _ = try await withThrowingTaskGroup(of: Bool.self) { group in
-                        for (i, e) in logs.enumerated() {
-                            group.addTask {
-                                do {
-                                    let movieIds = (e.movie_ids?.allObjects as? [LocalMovieData])?.compactMap { $0.movie_id } ?? []
-                                    let watchedIds = (e.watched_ids?.allObjects as? [LocalMovieData])?.compactMap { $0.movie_id } ?? []
-                                    return try await self.logRepo.addLog(name: e.name ?? "Log",
-                                                                         ownerId: self.getUserId(),
-                                                                         priority: i,
-                                                                         creationDate: e.creation_date ?? String(currentTimeInMS()),
-                                                                         movieIds: movieIds,
-                                                                         watchedIds: watchedIds).get()
-                                } catch {
-                                    print("Error updating userId: \(error)")
-                                    throw error
-                                }
-                            }
-                        }
-                        
-                        for try await result in group {
-                            if (!result) {
-                                throw FirebaseError.failedTransaction
-                            }
-                        }
-                            
-                        return true
-                    }
-                    
-                    // Logs transferred, delete local logs
-                    resetAllLogs()
-                    
-                    notificationMessage = "Successfully transferred logs!"
-                    showingNotification = true
-                } catch {
-                    notificationMessage = "Error, please try syncing later."
-                    showingNotification = true
-                }
-                
-                // Delete all coredata
-                resetAllLogs()
-            }
-        }
-    }
-    
-    /**
      Counts the number of local logs stored in CoreData.
 
      - Returns: The count of local logs.
@@ -474,42 +421,6 @@ class SocialViewModel: ObservableObject {
             print("Error resetting logs: \(error), \(error.userInfo)")
         }
         return 0
-    }
-    
-    /**
-     Resets all logs stored locally, clearing the local database of log entries.
-     */
-    private func resetAllLogs() {
-        let context = PersistenceController.shared.container.viewContext
-
-        let fetchRequest: NSFetchRequest<LocalLogData> = LocalLogData.fetchRequest()
-        do {
-            let items = try context.fetch(fetchRequest)
-            for item in items {
-                context.delete(item)
-            }
-            try context.save()
-        } catch let error as NSError {
-            print("Error resetting logs: \(error), \(error.userInfo)")
-        }
-    }
-    
-    /**
-     Fetches all logs stored locally.
-
-     - Returns: An array of `LocalLogData` objects representing each local log.
-     */
-    private func getLocalLogs() -> [LocalLogData] {
-        let context = PersistenceController.shared.container.viewContext
-
-        let fetchRequest: NSFetchRequest<LocalLogData> = LocalLogData.fetchRequest()
-        do {
-            let items = try context.fetch(fetchRequest)
-            return items
-        } catch let error as NSError {
-            print("Error resetting logs: \(error), \(error.userInfo)")
-        }
-        return []
     }
     
     private func initFriendListeners() {

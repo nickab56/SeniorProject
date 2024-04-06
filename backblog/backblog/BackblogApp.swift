@@ -59,7 +59,7 @@ struct backblogApp: App {
     
     /*
      TO DO: Have resetAllLogs also include online logs so that the test starts fresh no matter what
-     Additoinally, have it sign the user out if possibl
+     Additionally, have it sign the user out if possible
      */
     
     /**
@@ -82,7 +82,9 @@ struct backblogApp: App {
     
     func signOutUserForUITesting() async {
         let firebaseService = FirebaseService()
-        _ = await firebaseService.logout()
+
+        _ = firebaseService.logout()
+      
     }
 
 

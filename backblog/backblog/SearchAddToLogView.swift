@@ -16,8 +16,6 @@ struct SearchAddToLogView: View {
     @State private var showingAlreadyInLogNotification = false
     @State private var showingMovieAddedNotification = false
 
-
-
     var body: some View {
         ZStack {
             LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -65,7 +63,7 @@ struct SearchAddToLogView: View {
         HStack {
             Image(systemName: "magnifyingglass").foregroundColor(.gray)
             TextField("Search for a movie", text: $searchText)
-                .onChange(of: searchText) { newValue in
+                .onChange(of: searchText) { newValue, oldValue in
                     viewModel.searchMovies(query: newValue)
                 }
                 .font(.system(size: 18, weight: .bold))

@@ -8,7 +8,6 @@
 //  Description: Manages the data and business logic of a log, including
 //  its movies and collaborators.
 //
-
 import Foundation
 import SwiftUI
 import CoreData
@@ -28,6 +27,12 @@ class LogViewModel: ObservableObject {
     @Published var watchedMovies: [(MovieData, String)] = []
     @Published var showingWatchedNotification = false
     @Published var isActive = true
+    
+    @Published var logDeleted = false
+    
+    // State vars for editing log
+    @Published var isOwner = false
+    @Published var isCollaborator = false
     
     // Log Item View
     @Published var posterURL: URL?
@@ -68,6 +73,7 @@ class LogViewModel: ObservableObject {
         self.movieRepo = MovieRepository(fb: fb, movieService: movieService)
         self.friendRepo = FriendRepository(fb: fb)
         self.userRepo = UserRepository(fb: fb)
+        self.isOwner = updateIsOwner()
         initLogListener()
     }
     
@@ -522,7 +528,7 @@ class LogViewModel: ObservableObject {
      - movies: The array of movies.
      - draftLogName: The draft name for the log.
      */
-    func saveChanges(draftLogName: String, movies: [(MovieData, String)]) {
+    func saveChanges(draftLogName: String, movies: [(MovieData, String)], watchedMovies: [(MovieData, String)]) {
         // Apply changes from draft state to the view model
         if (!draftLogName.isEmpty) {
             updateLogName(newName: draftLogName)
@@ -541,22 +547,37 @@ class LogViewModel: ObservableObject {
                         return
                     }
                     do {
-                        _ = try await logRepo.updateLog(logId: logId, updateData: ["movie_ids": movies.compactMap { String($0.0.id ?? 0) }]).get()
+                        _ = try await logRepo.updateLog(
+                            logId: logId,
+                            updateData: ["movie_ids": movies.compactMap { String($0.0.id ?? 0) }, "watched_ids": watchedMovies.compactMap { String($0.0.id ?? 0) }]
+                        ).get()
                     } catch {
                         print("Error updating movie order in Firebase: \(error.localizedDescription)")
                     }
                 }
             }
         case .localLog(let localLog):
-            var updatedArray: [LocalMovieData] = []
+            var updatedMovieArray: [LocalMovieData] = []
+            var updatedWatchedArray: [LocalMovieData] = []
+            
+            // Unwatched Movies
             for (index, e) in movies.enumerated() {
                 let movieData = LocalMovieData(context: self.viewContext)
                 movieData.movie_id = String(e.0.id ?? 0)
                 movieData.movie_index = Int64(index)
-                updatedArray.append(movieData)
+                updatedMovieArray.append(movieData)
             }
             
-            localLog.movie_ids = NSSet(array: updatedArray)
+            // Watched Movies
+            for (index, e) in watchedMovies.enumerated() {
+                let movieData = LocalMovieData(context: self.viewContext)
+                movieData.movie_id = String(e.0.id ?? 0)
+                movieData.movie_index = Int64(index)
+                updatedWatchedArray.append(movieData)
+            }
+            
+            localLog.movie_ids = NSSet(array: updatedMovieArray)
+            localLog.watched_ids = NSSet(array: updatedWatchedArray)
             do {
                 try viewContext.save()
             } catch {
@@ -672,14 +693,28 @@ class LogViewModel: ObservableObject {
         }
     }
     
-    func isOwner() -> Bool {
-        guard case .log(let fbLog) = log else { return false }
+    func updateIsOwner() -> Bool {
+        guard case .log(let fbLog) = log else { return true }
         return getUserId() == fbLog.owner?.userId
     }
     
-    func isCollaborator() -> Bool {
-        guard case .log(let fbLog) = log else { return false }
+    func updateIsCollaborator() -> Bool {
+        guard case .log(let fbLog) = log else { return true }
         return fbLog.collaborators?.contains(getUserId() ?? "") ?? false
+    }
+    
+    func isLocalLog() -> Bool {
+        guard case .log(_) = log else { return true }
+        return false
+    }
+    
+    func getLogName() -> String {
+        switch log {
+        case .localLog(let log):
+            return log.name ?? ""
+        case .log(let log):
+            return log.name ?? ""
+        }
     }
     
     func getCollaboratorAvatars() -> [String] {
@@ -711,7 +746,7 @@ class LogViewModel: ObservableObject {
         case .localLog:
             return true
         case .log:
-            return isOwner() || isCollaborator()
+            return updateIsOwner() || updateIsCollaborator()
         }
     }
     
@@ -729,6 +764,14 @@ class LogViewModel: ObservableObject {
                     do {
                         let logData = try document.data(as: LogData.self)
                         self.log = LogType.log(logData)
+                        
+                        // Check if still owner or collaborator
+                        self.isOwner = self.updateIsOwner()
+                        self.isCollaborator = self.updateIsCollaborator()
+                        
+                        // Update collaborators
+                        self.getCollaborators()
+                        
                         self.fetchMovies()
                     } catch {
                         print("Failed to decode document")
@@ -736,6 +779,10 @@ class LogViewModel: ObservableObject {
                     }
                 } else {
                     // Document was likely deleted
+                    self.isOwner = false
+                    self.isCollaborator = false
+                    self.logDeleted = true
+                    
                     let logData = LogData()
                     self.log = LogType.log(logData)
                     print("Document was deleted")
