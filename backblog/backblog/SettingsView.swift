@@ -41,6 +41,8 @@ struct SettingsView: View {
     @State private var saveMessage: String = ""
     @State private var messageColor: Color = Color.red
     
+    @State private var showingLogoutConfirmation = false
+    
     var body: some View {
         ZStack {
             LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -148,7 +150,7 @@ struct SettingsView: View {
                     }
                     
                     Button(action: {
-                        vm.logout()
+                        showingLogoutConfirmation = true
                     }) {
                         Text("LOG OUT")
                             .foregroundColor(.red)
@@ -163,6 +165,16 @@ struct SettingsView: View {
                     
                     Spacer()
                 }.padding(.top, 10)
+                .alert(isPresented: $showingLogoutConfirmation) { // 3. Attach the alert modifier
+                    Alert(
+                        title: Text("Log Out"),
+                        message: Text("Are you sure you want to log out?"),
+                        primaryButton: .destructive(Text("Yes")) {
+                            vm.logout()
+                        },
+                        secondaryButton: .cancel(Text("No"))
+                    )
+                }
             
             if vm.showingNotification {
                 notificationView
