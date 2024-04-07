@@ -60,14 +60,26 @@ struct LogDetailsView: View {
                     Spacer()
                 }
                 
-                if !vm.collaborators.isEmpty {
-                    Button("View Collaborators") {
-                        showingCollaboratorsListView = true
+                VStack(alignment: .leading, spacing: 5) {
+                    if !vm.collaborators.isEmpty {
+                        Button("View Collaborators") {
+                            showingCollaboratorsListView = true
+                        }
+                        .foregroundColor(.blue)
+                        .padding(.trailing, 200)
                     }
-                    .foregroundColor(.blue)
-                    .padding(.trailing, 200)
-                    .padding(.bottom, 25)
+                    
+                    if (vm.movies.count == 1) {
+                        Text("\(vm.movies.count) Movie")
+                            .padding(.trailing, 300)
+                    }
+                    else {
+                        Text("\(vm.movies.count) Movies")
+                            .padding(.trailing, 300)
+                    }
+                
                 }
+                .padding(.bottom, 25)
                 
                 HStack {
                     if (vm.isOwner && !vm.isLocalLog()) {
