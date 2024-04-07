@@ -165,6 +165,7 @@ struct LogDetailsView: View {
                                         if vm.canSwipeToMarkWatchedUnwatched() {
                                             Button {
                                                 vm.markMovieAsWatched(movieId: movie.id ?? 0)
+                                                HapticFeedbackManager.shared.triggerNotificationFeedback(type: .success)
                                             } label: {
                                                 Label("Watched", systemImage: "checkmark.circle.fill")
                                             }
@@ -183,6 +184,7 @@ struct LogDetailsView: View {
                                         if vm.canSwipeToMarkWatchedUnwatched() {
                                             Button {
                                                 vm.markMovieAsUnwatched(movieId: movie.id ?? 0)
+                                                HapticFeedbackManager.shared.triggerNotificationFeedback(type: .success)
                                             } label: {
                                                 Label("Unwatched", systemImage: "arrow.uturn.backward.circle.fill")
                                             }

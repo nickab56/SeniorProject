@@ -40,6 +40,7 @@
 		34AEBD742B754D6E00C6EA87 /* SocialView_UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEBD732B754D6E00C6EA87 /* SocialView_UITests.swift */; };
 		34AEBD762B75504B00C6EA87 /* LoginView_UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AEBD752B75504B00C6EA87 /* LoginView_UITests.swift */; };
 		34B36DE32B769CA6002768CC /* UITestPerformance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B36DE12B769C9F002768CC /* UITestPerformance.swift */; };
+		34D64BF42BC335DE00B26F63 /* HapticUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34D64BF32BC335DE00B26F63 /* HapticUtility.swift */; };
 		34F035A82B606B1B00EB35C7 /* LogDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035A72B606B1B00EB35C7 /* LogDetailsView.swift */; };
 		34F035AA2B60A93900EB35C7 /* AddLogSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035A92B60A93900EB35C7 /* AddLogSheetView.swift */; };
 		34F035AC2B60A95500EB35C7 /* LogItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F035AB2B60A95500EB35C7 /* LogItemView.swift */; };
@@ -166,6 +167,7 @@
 		34AEBD732B754D6E00C6EA87 /* SocialView_UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialView_UITests.swift; sourceTree = "<group>"; };
 		34AEBD752B75504B00C6EA87 /* LoginView_UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView_UITests.swift; sourceTree = "<group>"; };
 		34B36DE12B769C9F002768CC /* UITestPerformance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestPerformance.swift; sourceTree = "<group>"; };
+		34D64BF32BC335DE00B26F63 /* HapticUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticUtility.swift; sourceTree = "<group>"; };
 		34F035A72B606B1B00EB35C7 /* LogDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDetailsView.swift; sourceTree = "<group>"; };
 		34F035A92B60A93900EB35C7 /* AddLogSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLogSheetView.swift; sourceTree = "<group>"; };
 		34F035AB2B60A95500EB35C7 /* LogItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogItemView.swift; sourceTree = "<group>"; };
@@ -368,6 +370,7 @@
 				344BA2732B3785ED002626F1 /* CustomTitleView.swift */,
 				344BA27D2B3788F4002626F1 /* NavConfigUtility.swift */,
 				344BA27B2B37875D002626F1 /* ExtensionUtility.swift */,
+				34D64BF32BC335DE00B26F63 /* HapticUtility.swift */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -741,6 +744,7 @@
 				3469C17E2B312A4600B8EEFB /* LandingView.swift in Sources */,
 				34AEBD592B70823F00C6EA87 /* LogsViewModel.swift in Sources */,
 				97BF9EEA2B6B0B4300EE9ABB /* AvatarPresetMapper.swift in Sources */,
+				34D64BF42BC335DE00B26F63 /* HapticUtility.swift in Sources */,
 				3401834A2B5DFE1D009D7818 /* WhatsNextView.swift in Sources */,
 				975B34012B7AA44E004167D2 /* SocialViewModel.swift in Sources */,
 				97FA40722B754943004A4945 /* FriendsProfileViewModel.swift in Sources */,

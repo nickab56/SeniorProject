@@ -147,6 +147,7 @@ struct AddLogSheetView: View {
                             showingNameRequiredNotification = true
                         }
                     }
+                    HapticFeedbackManager.shared.triggerNotificationFeedback(type: .success)
                 }) {
                     Text("Add Log")
                         .frame(maxWidth: .infinity)

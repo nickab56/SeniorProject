@@ -48,6 +48,7 @@ struct LogSelectionView: View {
                                 vm.addMovieToSelectedLogs()
                                 showingSheet = false
                             }
+                            HapticFeedbackManager.shared.triggerImpactFeedback()
                         }) {
                             Text(vm.selectedLogs.isEmpty ? "New Log" : "Add")
                                 .frame(maxWidth: .infinity)
@@ -138,6 +139,7 @@ struct CreateLogPopup: View {
                 Button("Create Log") {
                     onCommit(logName)
                     isVisible = false
+                    HapticFeedbackManager.shared.triggerNotificationFeedback(type: .success)
                 }
                 .disabled(logName.isEmpty)
                 .foregroundColor(logName.isEmpty ? .gray : Color(UIColor.systemBlue))
