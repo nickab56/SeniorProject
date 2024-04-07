@@ -170,6 +170,7 @@ struct MovieDetailsView: View {
                                             } else if vm.isInWatchedMovies {
                                                 vm.moveMovieToUnwatched()
                                             }
+                                            HapticFeedbackManager.shared.triggerSelectionFeedback()
                                         }) {
                                             if (!vm.completed) {
                                                 Text(vm.isInUnwatchedMovies ? "ADD TO WATCHED" : vm.isInWatchedMovies ? "ADD TO UNWATCHED" : "ADD TO LOG")
@@ -190,6 +191,7 @@ struct MovieDetailsView: View {
                                     else{
                                         Button(action: {
                                             self.showingLogSelection = true
+                                            HapticFeedbackManager.shared.triggerImpactFeedback()
                                         }) {
                                             Text("ADD TO LOG")
                                                 .foregroundColor(.white)

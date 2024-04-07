@@ -293,6 +293,7 @@ struct SearchView: View {
                 self.selectedMovieForLog = movie
                 self.showingLogSelection = true
             }
+            HapticFeedbackManager.shared.triggerImpactFeedback()
         }) {
             Image(systemName: "plus.circle.fill")
                 .foregroundColor(Color(hex: "#3891e1"))
