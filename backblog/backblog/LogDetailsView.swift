@@ -31,6 +31,8 @@ struct LogDetailsView: View {
     
     @State private var showingShuffleConfirmation = false
     
+    @State private var showingCollaboratorsListView = false
+    
     /**
      Initializes the `LogDetailsView`, initializing the `LogViewModel`.
      
@@ -58,27 +60,14 @@ struct LogDetailsView: View {
                     Spacer()
                 }
                 
-                HStack(){
-                    VStack(){
-                        if (vm.isOwner || vm.isCollaborator) {
-                            CollaboratorsView(collaborators: vm.getCollaboratorAvatars())
-                            .frame(maxWidth: 80)
-                            .padding(.leading, 25)
-                        }
+                if !vm.collaborators.isEmpty {
+                    Button("View Collaborators") {
+                        showingCollaboratorsListView = true
                     }
-                    
-                    VStack(alignment: .leading) {
-                        if (vm.movies.count == 1) {
-                            Text("\(vm.movies.count) Movie")
-                        }
-                        else {
-                            Text("\(vm.movies.count) Movies")
-                        }
-                    }
-                    .padding(.leading, 35)
-                    Spacer()
-                }.padding(.trailing, 180)
-                    .offset(y: -20)
+                    .foregroundColor(.blue)
+                    .padding(.trailing, 200)
+                    .padding(.bottom, 25)
+                }
                 
                 HStack {
                     if (vm.isOwner && !vm.isLocalLog()) {
@@ -241,6 +230,7 @@ struct LogDetailsView: View {
         } message: {
             Text("This will randomly rearrange the unwatched movies in your log. Do you want to proceed?")
         }
+        NavigationLink(destination: CollaboratorsListView(collaborators: vm.collaborators, currentUser: vm.ownerData), isActive: $showingCollaboratorsListView) { EmptyView() }
     }
     
     /**
@@ -330,68 +320,43 @@ struct AvatarView: View {
  - Parameters:
      - collaborators: An array of avatar image names representing log collaborators.
  */
-struct CollaboratorsView: View {
-    var collaborators: [String]
-    @State private var expanded = false
+struct CollaboratorsListView: View {
+    let collaborators: [UserData]
+    let currentUser: UserData?
 
+    
+    // Note: Not sure why the background is black even when applying the gradient. It is good enough for now but it would look better if
+    // it had the normal gradient used in the app...
     var body: some View {
-        HStack(spacing: 0) {
-            if collaborators.count > 4 && !expanded {
-                AvatarView(imageName: collaborators.first ?? "")
-                    .overlay(
-                        expandButtonOverlay,
-                        alignment: .bottomTrailing
-                    )
-            } else {
-                //ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 2) {
-                        ForEach(collaborators.indices, id: \.self) { index in
-                            AvatarView(imageName: collaborators[index])
-                                .overlay(
-                                    // Only show condense button if there are more than 4 collaborators
-                                    (index == collaborators.count - 1 && collaborators.count > 4) ? condenseButtonOverlay : nil,
-                                    alignment: .bottomTrailing
-                                )
-                        }
-                    }
-                //}
-                .frame(height: 45)
+        ZStack {
+            LinearGradient(gradient: Gradient(colors: [Color(hex: "#3b424a"), Color(hex: "#212222")]), startPoint: .topLeading, endPoint: .bottomTrailing)
+                .edgesIgnoringSafeArea(.all)
+            
+            List(collaborators) { collaborator in
+                NavigationLink(destination: FriendsProfileView(friendId: collaborator.userId ?? "", user: currentUser)) {
+                    CollaboratorRow(collaborator: collaborator)
+                }
             }
+            .background(Color.clear)
+            .navigationBarTitle("Collaborators")
         }
-        .frame(alignment: .leading)
-    }
-
-    /**
-     A private method that creates an expand button for the list of collaborators.
-     */
-    private var expandButtonOverlay: some View {
-        Button(action: {
-            withAnimation {
-                expanded = true
-            }
-        }) {
-            Circle()
-                .fill(Color.blue)
-                .frame(width: 20, height: 20)
-                .overlay(Text("+").font(.system(size: 12)).foregroundColor(.white))
-        }
-        .padding(5)
-    }
-
-    /**
-     A private method that creates an condense button for the list of collaborators.
-     */
-    private var condenseButtonOverlay: some View {
-        Button(action: {
-            withAnimation {
-                expanded = false
-            }
-        }) {
-            Circle()
-                .fill(Color.gray)
-                .frame(width: 20, height: 20)
-                .overlay(Text("–").font(.system(size: 12)).foregroundColor(.white))
-        }
-        .padding(5)
     }
 }
+
+struct CollaboratorRow: View {
+    let collaborator: UserData
+
+    var body: some View {
+        HStack {
+            AvatarView(imageName: getAvatarId(avatarPreset: collaborator.avatarPreset ?? 1))
+                .padding(4)
+            Text(collaborator.username ?? "Unknown User")
+                .padding(.leading, 8)
+        }
+    }
+
+    private func getAvatarId(avatarPreset: Int) -> String {
+        return "avatar\(avatarPreset)"
+    }
+}
+
