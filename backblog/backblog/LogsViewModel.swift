@@ -11,6 +11,7 @@
 import Foundation
 import SwiftUI
 import CoreData
+import Firebase
 
 /**
  Manages user logs and related data.
@@ -43,6 +44,10 @@ class LogsViewModel: ObservableObject {
     private var movieService: MovieProtocol
     private let viewContext = PersistenceController.shared.container.viewContext
     
+    // Listeners
+    private var logOwnerListener: ListenerRegistration?
+    private var logCollabListener: ListenerRegistration?
+    
     let movieRepo: MovieRepository
     let logRepo: LogRepository
     let friendRepo: FriendRepository
@@ -60,6 +65,11 @@ class LogsViewModel: ObservableObject {
         self.logRepo = LogRepository(fb: fb)
         self.movieRepo = MovieRepository(fb: fb, movieService: movieService)
         self.friendRepo = FriendRepository(fb: fb)
+        initLogsListener()
+    }
+    
+    deinit {
+        removeListener()
     }
     
     /**
@@ -356,6 +366,111 @@ class LogsViewModel: ObservableObject {
         }
     }
 
+    private func initLogsListener() {
+        guard let userId = fb.getUserId() else { return }
+        let logRef = fb.getCollectionRef(refName: "logs")
+        logOwnerListener = logRef?.whereField("owner.user_id", isEqualTo: userId)
+            .addSnapshotListener { querySnapshot, error in
+                guard let snapshot = querySnapshot else {
+                    print("Error fetching documents: \(error!)")
+                    return
+                }
+            
+                snapshot.documentChanges.forEach { diff in
+                    do {
+                        if (diff.type == .added) {
+                            let decodedLog = try diff.document.data(as: LogData.self)
+                            self.logs.append(LogType.log(decodedLog))
+                        }
+                        
+                        if (diff.type == .modified) {
+                            let decodedLog = try diff.document.data(as: LogData.self)
+                            let index = self.logs.firstIndex(where: { $0.toLog()?.logId == decodedLog.logId })
+                            if (index != nil && index! < self.logs.count) { // safety check
+                                self.logs[index!] = LogType.log(decodedLog)
+                            }
+                        }
+                        
+                        if (diff.type == .removed) {
+                            let removedLog = try diff.document.data(as: LogData.self)
+                            self.logs.removeAll(where: { $0.toLog()?.logId == removedLog.logId })
+                        }
+                    } catch {
+                        print("Error: \(error)")
+                    }
+                }
+                
+                // Sort logs
+                self.logs = self.sortLogs(userId: userId, logs: self.logs)
+                self.loadNextUnwatchedMovie()
+          }
+        
+        logCollabListener = logRef?.whereField("collaborators", arrayContains: userId)
+            .addSnapshotListener { querySnapshot, error in
+                guard let snapshot = querySnapshot else {
+                    print("Error fetching documents: \(error!)")
+                    return
+                }
+            
+                snapshot.documentChanges.forEach { diff in
+                    do {
+                        if (diff.type == .added) {
+                            let decodedLog = try diff.document.data(as: LogData.self)
+                            self.logs.append(LogType.log(decodedLog))
+                        }
+                        
+                        if (diff.type == .modified) {
+                            let decodedLog = try diff.document.data(as: LogData.self)
+                            let index = self.logs.firstIndex(where: { $0.toLog()?.logId == decodedLog.logId })
+                            if (index != nil && index! < self.logs.count) { // safety check
+                                self.logs[index!] = LogType.log(decodedLog)
+                            }
+                        }
+                        
+                        if (diff.type == .removed) {
+                            let removedLog = try diff.document.data(as: LogData.self)
+                            self.logs.removeAll(where: { $0.toLog()?.logId == removedLog.logId })
+                        }
+                    } catch {
+                        print("Error: \(error)")
+                    }
+                }
+                
+                // Sort logs
+                self.logs = self.sortLogs(userId: userId, logs: self.logs)
+                self.loadNextUnwatchedMovie()
+          }
+    }
+    
+    private func removeListener() {
+        logOwnerListener?.remove()
+        logCollabListener?.remove()
+    }
+    
+    private func sortLogs(userId: String?, logs: [LogType]) -> [LogType] {
+        // Sort logs by priority
+        let logData: [LogData] = logs.compactMap { $0.toLog() }
+        let sorted = logData.sorted { log1, log2 in
+            let p1: Int
+            let p2: Int
+            
+            if log1.owner?.userId == userId {
+                p1 = log1.owner?.priority ?? 0
+            } else {
+                p1 = log1.order?[userId ?? ""] ?? 0
+            }
+            
+            if log2.owner?.userId == userId {
+                p2 = log2.owner?.priority ?? 0
+            } else {
+                p2 = log2.order?[userId ?? ""] ?? 0
+            }
+            
+            return p1 < p2
+        }
+        
+        return sorted.map { LogType.log($0) }
+    }
 }
 
 /**

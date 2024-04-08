@@ -85,12 +85,12 @@ class LogViewModel: ObservableObject {
      Fetches movies for the log based on its type, updating the `movies` and `watchedMovies` arrays.
      */
     func fetchMovies() {
-        // Clear existing data
-        movies = []
-        watchedMovies = []
-        
         switch (log) {
         case .localLog(let localLog):
+            // Clear existing data
+            movies = []
+            watchedMovies = []
+            
             // Fetch unwatched movies
             var unwatchedMovieEntities = localLog.movie_ids?.allObjects as? [LocalMovieData] ?? []
             unwatchedMovieEntities.sort { $0.movie_index < $1.movie_index }
@@ -596,7 +596,8 @@ class LogViewModel: ObservableObject {
                         return
                     }
                     do {
-                        let shuffledArray = movies.compactMap { $0.1 }.shuffled()
+                        self.movies.shuffle()
+                        let shuffledArray = movies.compactMap { String($0.0.id ?? 11) }
                         _ = try await logRepo.updateLog(logId: logId, updateData: ["movie_ids": shuffledArray]).get()
                     } catch {
                         print("Error updating movie order in Firebase: \(error.localizedDescription)")
