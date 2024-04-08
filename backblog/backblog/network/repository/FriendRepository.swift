@@ -229,7 +229,7 @@ class FriendRepository {
                         "collaborators": FieldValue.arrayRemove([blockedId]),
                         "order.\(blockedId)": FieldValue.delete()
                     ])
-                } else if (logs.first?.owner?.userId == blockedId) {
+                } else if (log.owner?.userId == blockedId) {
                     // Remove blocker from logs owned by blockee
                     logUpdates.append([
                             "log_id": log.logId as Any,
