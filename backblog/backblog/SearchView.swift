@@ -105,66 +105,6 @@ struct SearchView: View {
                                 
                             }
                             
-                            HStack{
-                                Spacer()
-                                //TODO: update background image
-                                NavigationLink(destination: GenreView(genre: "Animation")) {
-                                    genreButtonContent(imageName: "SciFiSearch", genreId: 16, genreName: "Animation")
-                                }
-                                .frame(width: 180, height: 110)
-                                .cornerRadius(8)
-                                .accessibility(identifier: "GenreButton_Animation")
-                                
-                                NavigationLink(destination: GenreView(genre: "Comedy")) {
-                                    genreButtonContent(imageName: "fantasySearch", genreId: 35, genreName: "Comedy")
-                                }
-                                .frame(width: 180, height: 110)
-                                .cornerRadius(8)
-                                .accessibility(identifier: "GenreButton_Comedy")
-                                
-                                Spacer()
-                                
-                            }
-                            HStack{
-                                Spacer()
-                                //TODO: update background image
-                                NavigationLink(destination: GenreView(genre: "Crime")) {
-                                    genreButtonContent(imageName: "SciFiSearch", genreId: 80, genreName: "Crime")
-                                }
-                                .frame(width: 180, height: 110)
-                                .cornerRadius(8)
-                                .accessibility(identifier: "GenreButton_Crime")
-                                
-                                NavigationLink(destination: GenreView(genre: "Drama")) {
-                                    genreButtonContent(imageName: "fantasySearch", genreId: 18, genreName: "Drama")
-                                }
-                                .frame(width: 180, height: 110)
-                                .cornerRadius(8)
-                                .accessibility(identifier: "GenreButton_Drama")
-                                
-                                Spacer()
-                                
-                            }
-                            HStack{
-                                Spacer()
-                                //TODO: update background image
-                                NavigationLink(destination: GenreView(genre: "Family")) {
-                                    genreButtonContent(imageName: "SciFiSearch", genreId: 10751, genreName: "Family")
-                                }
-                                .frame(width: 180, height: 110)
-                                .cornerRadius(8)
-                                .accessibility(identifier: "GenreButton_Family")
-                                
-                                NavigationLink(destination: GenreView(genre: "Western")) {
-                                    genreButtonContent(imageName: "fantasySearch", genreId: 37, genreName: "Western")
-                                }
-                                .frame(width: 180, height: 110)
-                                .cornerRadius(8)
-                                .accessibility(identifier: "GenreButton_Western")
-                                
-                                Spacer()
-                                
-                            }
                         }
                         .padding()
                     }
