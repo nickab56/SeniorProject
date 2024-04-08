@@ -53,11 +53,13 @@ struct AddLogSheetView: View {
                 TextField("Log Name", text: $newLogName)
                     .accessibility(identifier: "newLogNameTextField")
                 
-                Section{
-                    Toggle(isOn: $isPublic) {
-                        Text("Public Log")
+                if logsViewModel.getUserId() != nil {
+                    Section {
+                        Toggle(isOn: $isPublic) {
+                            Text("Public Log")
+                        }
+                        .accessibility(identifier: "newPublicLogSwitch")
                     }
-                    .accessibility(identifier: "newPublicLogSwitch")
                 }
                 
                 if (logsViewModel.getUserId() != nil) {
