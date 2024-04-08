@@ -133,6 +133,7 @@ struct SearchAddToLogView: View {
                     showingMovieAddedNotification = true // Show "Movie added to log" notification
                 }
             }
+            HapticFeedbackManager.shared.triggerImpactFeedback()
         }) {
             Image(systemName: "plus.circle.fill")
                 .foregroundColor(isMovieAdded ? .gray : Color(hex: "#3891e1"))
