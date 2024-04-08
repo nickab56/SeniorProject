@@ -170,6 +170,9 @@ struct MovieDetailsView: View {
                                             } else if vm.isInWatchedMovies {
                                                 vm.moveMovieToUnwatched()
                                             }
+                                            else {
+                                                vm.addToLog()
+                                            }
                                             HapticFeedbackManager.shared.triggerSelectionFeedback()
                                         }) {
                                             if (!vm.completed) {
