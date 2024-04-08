@@ -664,8 +664,10 @@ class LogViewModel: ObservableObject {
                     guard let logId = fbLog.logId else {
                         return
                     }
-                    let result = try await self.logRepo.getCollaborators(logId: logId).get()
+                    var result = try await self.logRepo.getCollaborators(logId: logId).get()
                     self.collaborators = result
+                    guard let owner = self.ownerData else {return}
+                    self.collaborators.insert(owner, at: 0)
                 } catch {
                     print("Error getting collaborators: \(error)")
                 }
