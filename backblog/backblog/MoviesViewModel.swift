@@ -173,4 +173,13 @@ class MoviesViewModel: ObservableObject {
         return String(year)
     }
     
+    func addToLog() {
+        guard let log = log else { return }
+        
+        let searchVM = SearchViewModel(fb: fb, movieService: movieService) // Create this only if it doesn't already exist in your ViewModel.
+        searchVM.addMovieToLog(movieId: movieId, log: log)
+        completed = true
+    }
+
+    
 }

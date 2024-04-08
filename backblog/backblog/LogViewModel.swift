@@ -135,10 +135,10 @@ class LogViewModel: ObservableObject {
         case .log(let fbLog):
             // Fetch unwatched movies
             let unwatchedMovies = fbLog.movieIds ?? []
-            
+
             // Dispatch group to wait for all tasks to complete
             let group = DispatchGroup()
-            
+
             for movieId in unwatchedMovies {
                 group.enter()
                 Task {
@@ -148,10 +148,10 @@ class LogViewModel: ObservableObject {
                     group.leave()
                 }
             }
-            
+
             // Fetch watched movies
             let watchedMovies = fbLog.watchedIds ?? []
-            
+
             for movieId in watchedMovies {
                 group.enter()
                 Task {
@@ -164,6 +164,14 @@ class LogViewModel: ObservableObject {
             
             // Notify when all tasks are completed
             group.notify(queue: .main) {
+                
+                self.movies = self.movies.filter { movieTuple in
+                    unwatchedMovies.contains(String(movieTuple.0.id ?? 0))
+                }
+                self.watchedMovies = self.watchedMovies.filter { movieTuple in
+                    watchedMovies.contains(String(movieTuple.0.id ?? 0))
+                }
+                
                 self.movies.sort { entityA, entityB in
                     let i = unwatchedMovies.firstIndex(where: { $0 == String(entityA.0.id ?? 0) } ) ?? Int.max
                     let i2 = unwatchedMovies.firstIndex(where: { $0 == String(entityB.0.id ?? 0) } ) ?? Int.max
